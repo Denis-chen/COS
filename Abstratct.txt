@@ -1,0 +1,18 @@
+/***********************************************************************
+ * Copyright (c)  2008 - 2016, Shanghai AisinoChip Co.,Ltd .
+ * All rights reserved.
+ * Filename    : Abstract.txt
+ * Description : log file
+ * Author(s)   : Eric  
+ * version     : V1.0
+ * Modify date : 2016-03-24
+ ***********************************************************************/
+
+°æ±¾£ºV1.0	(20160324)
+
+
+
+
+
+
+

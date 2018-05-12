@@ -1,0 +1,833 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;/******************************************************
+                       ***********************
+    2 00000000         ; * @file:    startup.s
+    3 00000000         ; * @purpose: CMSIS Cortex-M3 Core Device Startup File 
+    4 00000000         ; *           for the ARM 'Microcontroller Prototyping S
+                       ystem' 
+    5 00000000         ; * @version: V1.0
+    6 00000000         ; * @date:    
+    7 00000000         ; *
+    8 00000000         ; ******************************************************
+                       ***********************/
+    9 00000000         
+   10 00000000         ;* <<< Use Configuration Wizard in Context Menu >>>  
+   11 00000000         
+   12 00000000         ; Amount of memory (in bytes) allocated for Stack
+   13 00000000         ; Tailor this value to your application needs
+   14 00000000         ; <h> Stack Configuration
+   15 00000000         ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
+   16 00000000         ; </h> 
+   17 00000000         
+   18 00000000         ; Stack Configuration
+   19 00000000 00000800 
+                       Stack_Size
+                               EQU              0x00000800
+   20 00000000                 AREA             STACK, NOINIT, READWRITE, ALIGN
+=3
+   21 00000000         Stack_Mem
+                               SPACE            Stack_Size
+   22 00000800         __initial_sp
+   23 00000800         
+   24 00000800         
+   25 00000800         ; <h> Heap Configuration
+   26 00000800         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+   27 00000800         ; </h>
+   28 00000800         
+   29 00000800         ; Heap Configuration
+   30 00000800 00000A00 
+                       Heap_Size
+                               EQU              0x00000a00
+   31 00000800                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
+3
+   32 00000000         __heap_base
+   33 00000000         Heap_Mem
+                               SPACE            Heap_Size
+   34 00000A00         __heap_limit
+   35 00000A00         
+   36 00000A00                 PRESERVE8
+   37 00000A00                 THUMB
+   38 00000A00         
+   39 00000A00         ; Vector Table Mapped to Address 0 at Reset
+   40 00000A00         
+   41 00000A00                 AREA             RESET, DATA, READONLY
+   42 00000000                 EXPORT           __Vectors
+   43 00000000         
+   44 00000000         __Vectors
+   45 00000000 00000000        DCD              __initial_sp ; Top of Stack
+   46 00000004 00000000        DCD              Reset_Handler ; Reset Handler
+   47 00000008 00000000        DCD              NMI_Handler ; NMI Handler ²»¿ÉÆ
+                                                            Á±ÎÖÐ¶Ï
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   48 0000000C 00000000        DCD              HardFault_Handler ; Hard Fault 
+                                                            Handler
+   49 00000010 00000000        DCD              MemManage_Handler 
+                                                            ; MPU Fault Handler
+                                                            
+   50 00000014 00000000        DCD              BusFault_Handler 
+                                                            ; Bus Fault Handler
+                                                            
+   51 00000018 00000000        DCD              UsageFault_Handler ; Usage Faul
+                                                            t Handler
+   52 0000001C 00000000        DCD              0           ; Reserved
+   53 00000020 00000000        DCD              0           ; Reserved
+   54 00000024 00000000        DCD              0           ; Reserved
+   55 00000028 00000000        DCD              0           ; Reserved
+   56 0000002C 00000000        DCD              SVC_Handler ; SVCall Handler £¬
+                                                            Ïàµ±ÓÚSWI
+   57 00000030 00000000        DCD              DebugMon_Handler ; Debug Monito
+                                                            r Handler
+   58 00000034 00000000        DCD              0           ; Reserved
+   59 00000038 00000000        DCD              PendSV_Handler ; PendSV Handler
+                                                            
+   60 0000003C 00000000        DCD              SysTick_Handler ; SysTick Handl
+                                                            er£¬ÏµÍ³µÎ´ð¶¨Ê±Æ÷£
+                                                            ¬¼´ÖÜÆÚÐÔÒç³öµÄÊ±»ù
+                                                            ¶¨Ê±Æ÷
+   61 00000040         
+   62 00000040         ; External Interrupts
+   63 00000040 00000000        DCD              WDT_IRQHandler ; 0:  WDT_IRQHan
+                                                            dler  
+   64 00000044 00000000        DCD              TIMER_IRQHandler ; 1:  TIMER_IR
+                                                            QHandler 
+   65 00000048 00000000        DCD              0           ; 2:  Reserved 
+   66 0000004C 00000000        DCD              UARTA_IRQHandler ; 3:  UARTA_IR
+                                                            QHandler 
+   67 00000050 00000000        DCD              SPIA_IRQHandler ; 4:  SPIA_IRQH
+                                                            andler
+   68 00000054 00000000        DCD              SPIB_IRQHandler ; 5:  SPIB_IRQH
+                                                            andler
+   69 00000058 00000000        DCD              GPIOA_IRQHandler ; 6:  GPIOA_IR
+                                                            QHandler 
+   70 0000005C 00000000        DCD              USB_IRQHandler ; 7:  USB_IRQHan
+                                                            dler 
+   71 00000060 00000000        DCD              0           ; 8:  Reserved 
+   72 00000064 00000000        DCD              SM1_IRQHandler ; 9:  SM1_IRQHan
+                                                            dler/SCB2_IRQHandle
+                                                            r 
+   73 00000068 00000000        DCD              DES_IRQHandler ; 10: DES_IRQHan
+                                                            dler 
+   74 0000006C 00000000        DCD              ECC_IRQHandler ; 11: ECC_IRQHan
+                                                            dler
+   75 00000070 00000000        DCD              EFC_IRQHandler ; 12: EFC_IRQHan
+                                                            dler
+   76 00000074 00000000        DCD              0           ; 13: Reserved
+   77 00000078 00000000        DCD              I2C_IRQHandler ; 14: I2C_IRQHan
+                                                            dler
+   78 0000007C 00000000        DCD              MS7816RST_IRQHandler ; 15: MS78
+                                                            16RST_IRQHandler
+   79 00000080 00000000        DCD              SM4_IRQHandler ; 16: SM4_IRQHan
+                                                            dler
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   80 00000084 00000000        DCD              GPIOB_IRQHandler ; 17: GPIOB_IR
+                                                            QHandler
+   81 00000088 00000000        DCD              DMA_IRQHandler ; 18: DMA_IRQHan
+                                                            dler
+   82 0000008C 00000000        DCD              CCPWM_IRQHandler ; 19: CCPWMA_I
+                                                            RQHandler
+   83 00000090 00000000        DCD              SDIO_IRQHandler ; 20: SDIO_IRQH
+                                                            andler
+   84 00000094 00000000        DCD              UARTB_IRQHandler ; 21: UARTB_IR
+                                                            QHandler
+   85 00000098 00000000        DCD              BCH_IRQHandler ; 22: BCH_IRQHan
+                                                            dler
+   86 0000009C 00000000        DCD              NFM_IRQHandler ; 23: NFM_IRQHan
+                                                            dler
+   87 000000A0 00000000        DCD              EMW_IRQHandle 
+                                                            ; 24: EMW_IRQHandle
+                                                            
+   88 000000A4 00000000        DCD              0           ; 25: Reserved
+   89 000000A8 00000000        DCD              SENSOR_IRQHandler ; 26: SENSOR_
+                                                            IRQHandler
+   90 000000AC 00000000        DCD              ISO7816MS_IRQHandler ; 27: ISO7
+                                                            816MS_IRQHandler
+   91 000000B0 00000000        DCD              0           ; 28: Reserved 
+   92 000000B4 00000000        DCD              0           ; 29: Reserved
+   93 000000B8 00000000        DCD              0           ; 30: Reserved
+   94 000000BC 00000000        DCD              WAKEUP_IRQHandler ; 31: WAKEUP_
+                                                            IRQHandler
+   95 000000C0         
+   96 000000C0                 AREA             |.text|, CODE, READONLY
+   97 00000000         
+   98 00000000         ; Reset handler routine
+   99 00000000         Reset_Handler
+                               PROC
+  100 00000000                 EXPORT           Reset_Handler             [WEAK
+]
+  101 00000000                 IMPORT           __main
+  102 00000000         
+  103 00000000         ;IMPORT  __set_CONTROL
+  104 00000000         ;MOVS     R0, #0x01             ;ÓÃ»§¼¶£¬ThreadºÍhandler
+                       Ä£Ê½¹²ÏíÍ¬Ò»¸ö¶ÑÕ»MSP
+  105 00000000         ;BL      __set_CONTROL        ;×ªÈëÓÃ»§¼¶Ïß³ÌÄ£Ê½    
+  106 00000000 4805            LDR              R0, =__main
+  107 00000002 4700            BX               R0          ;BX:Ìø×ªµ½ÓÉ¼Ä´æÆ÷¸
+                                                            ø³öµÄµØÖ·, B:Ìø×ªµ½
+                                                            ±êºÅ´¦¶ÔÓ¦µÄµØÖ·
+  108 00000004                 ENDP
+  109 00000004         
+  110 00000004         ; Dummy Exception Handlers (infinite loops which can be 
+                       modified)
+  111 00000004         NMI_Handler
+                               PROC
+  112 00000004                 EXPORT           NMI_Handler               [WEAK
+]
+  113 00000004 E7FE            B                .
+  114 00000006                 ENDP
+  116 00000006         HardFault_Handler
+                               PROC
+  117 00000006                 EXPORT           HardFault_Handler         [WEAK
+]
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+  118 00000006 E7FE            B                .
+  119 00000008                 ENDP
+  121 00000008         MemManage_Handler
+                               PROC
+  122 00000008                 EXPORT           MemManage_Handler         [WEAK
+]
+  123 00000008 E7FE            B                .
+  124 0000000A                 ENDP
+  126 0000000A         BusFault_Handler
+                               PROC
+  127 0000000A                 EXPORT           BusFault_Handler          [WEAK
+]
+  128 0000000A E7FE            B                .
+  129 0000000C                 ENDP
+  131 0000000C         UsageFault_Handler
+                               PROC
+  132 0000000C                 EXPORT           UsageFault_Handler        [WEAK
+]
+  133 0000000C E7FE            B                .
+  134 0000000E                 ENDP
+  135 0000000E         SVC_Handler
+                               PROC
+  136 0000000E                 EXPORT           SVC_Handler               [WEAK
+]
+  137 0000000E E7FE            B                .
+  138 00000010                 ENDP
+  140 00000010         DebugMon_Handler
+                               PROC
+  141 00000010                 EXPORT           DebugMon_Handler          [WEAK
+]
+  142 00000010 E7FE            B                .
+  143 00000012                 ENDP
+  144 00000012         PendSV_Handler
+                               PROC
+  145 00000012                 EXPORT           PendSV_Handler            [WEAK
+]
+  146 00000012 E7FE            B                .
+  147 00000014                 ENDP
+  148 00000014         SysTick_Handler
+                               PROC
+  149 00000014                 EXPORT           SysTick_Handler           [WEAK
+]
+  150 00000014 E7FE            B                .
+  151 00000016                 ENDP
+  152 00000016         
+  153 00000016         Default_Handler
+                               PROC
+  154 00000016                 EXPORT           WDT_IRQHandler           [WEAK]
+  155 00000016                 EXPORT           TIMER_IRQHandler         [WEAK]
+  156 00000016                 EXPORT           UARTA_IRQHandler         [WEAK]
+  157 00000016                 EXPORT           SPIA_IRQHandler          [WEAK]
+  158 00000016                 EXPORT           SPIB_IRQHandler          [WEAK]
+  159 00000016                 EXPORT           GPIOA_IRQHandler         [WEAK]
+  160 00000016                 EXPORT           USB_IRQHandler           [WEAK]
+  161 00000016                 EXPORT           SM1_IRQHandler           [WEAK]
+  162 00000016                 EXPORT           DES_IRQHandler           [WEAK]
+  163 00000016                 EXPORT           ECC_IRQHandler           [WEAK]
+  164 00000016                 EXPORT           EFC_IRQHandler           [WEAK]
+  165 00000016                 EXPORT           I2C_IRQHandler           [WEAK]
+
+
+
+ARM Macro Assembler    Page 5 
+
+
+  166 00000016                 EXPORT           MS7816RST_IRQHandler     [WEAK]
+  167 00000016                 EXPORT           SM4_IRQHandler           [WEAK]
+  168 00000016                 EXPORT           GPIOB_IRQHandler         [WEAK]
+  169 00000016                 EXPORT           DMA_IRQHandler     [WEAK]
+  170 00000016                 EXPORT           CCPWM_IRQHandler         [WEAK]
+  171 00000016                 EXPORT           SDIO_IRQHandler          [WEAK]
+  172 00000016                 EXPORT           UARTB_IRQHandler         [WEAK]
+  173 00000016                 EXPORT           BCH_IRQHandler           [WEAK]
+  174 00000016                 EXPORT           NFM_IRQHandler           [WEAK]
+  175 00000016                 EXPORT           EMW_IRQHandle            [WEAK]
+  176 00000016                 EXPORT           SENSOR_IRQHandler        [WEAK]
+  177 00000016                 EXPORT           ISO7816MS_IRQHandler     [WEAK]
+  178 00000016                 EXPORT           WAKEUP_IRQHandler    [WEAK]
+  179 00000016         WDT_IRQHandler
+  180 00000016         TIMER_IRQHandler
+  181 00000016         UARTA_IRQHandler
+  182 00000016         SPIA_IRQHandler
+  183 00000016         SPIB_IRQHandler
+  184 00000016         GPIOA_IRQHandler
+  185 00000016         USB_IRQHandler
+  186 00000016         SM1_IRQHandler
+  187 00000016         DES_IRQHandler
+  188 00000016         ECC_IRQHandler
+  189 00000016         EFC_IRQHandler
+  190 00000016         I2C_IRQHandler
+  191 00000016         MS7816RST_IRQHandler
+  192 00000016         SM4_IRQHandler
+  193 00000016         GPIOB_IRQHandler
+  194 00000016         DMA_IRQHandler
+  195 00000016         CCPWM_IRQHandler
+  196 00000016         SDIO_IRQHandler
+  197 00000016         UARTB_IRQHandler
+  198 00000016         BCH_IRQHandler
+  199 00000016         NFM_IRQHandler
+  200 00000016         EMW_IRQHandle
+  201 00000016         SENSOR_IRQHandler
+  202 00000016         ISO7816MS_IRQHandler
+  203 00000016         WAKEUP_IRQHandler
+  204 00000016 E7FE            B                .
+  205 00000018                 ENDP
+  206 00000018                 ALIGN
+  207 00000018         
+  208 00000018         ; User Initial Stack & Heap
+  209 00000018         
+  210 00000018                 IF               :DEF:__MICROLIB
+  211 00000018         
+  212 00000018                 EXPORT           __initial_sp
+  213 00000018                 EXPORT           __heap_base
+  214 00000018                 EXPORT           __heap_limit
+  215 00000018         
+  216 00000018                 ELSE
+  230                          ENDIF
+  231 00000018         
+  232 00000018                 END
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=.\out_files\startup.d -o.\out_files\startup.o -IC:\Keil_v5\ARM\RV3
+1\INC -IC:\Keil_v5\ARM\CMSIS\Include -IC:\Keil_v5\ARM\Inc\NXP\LPC13xx --predefi
+ne="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 518" --list=.\startu
+
+
+
+ARM Macro Assembler    Page 6 
+
+
+p.lst ACH512\system\startup.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+STACK 00000000
+
+Symbol: STACK
+   Definitions
+      At line 20 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: STACK unused
+Stack_Mem 00000000
+
+Symbol: Stack_Mem
+   Definitions
+      At line 21 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: Stack_Mem unused
+__initial_sp 00000800
+
+Symbol: __initial_sp
+   Definitions
+      At line 22 in file ACH512\system\startup.s
+   Uses
+      At line 45 in file ACH512\system\startup.s
+      At line 212 in file ACH512\system\startup.s
+
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+HEAP 00000000
+
+Symbol: HEAP
+   Definitions
+      At line 31 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: HEAP unused
+Heap_Mem 00000000
+
+Symbol: Heap_Mem
+   Definitions
+      At line 33 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: Heap_Mem unused
+__heap_base 00000000
+
+Symbol: __heap_base
+   Definitions
+      At line 32 in file ACH512\system\startup.s
+   Uses
+      At line 213 in file ACH512\system\startup.s
+Comment: __heap_base used once
+__heap_limit 00000A00
+
+Symbol: __heap_limit
+   Definitions
+      At line 34 in file ACH512\system\startup.s
+   Uses
+      At line 214 in file ACH512\system\startup.s
+Comment: __heap_limit used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+RESET 00000000
+
+Symbol: RESET
+   Definitions
+      At line 41 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: RESET unused
+__Vectors 00000000
+
+Symbol: __Vectors
+   Definitions
+      At line 44 in file ACH512\system\startup.s
+   Uses
+      At line 42 in file ACH512\system\startup.s
+Comment: __Vectors used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 96 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: .text unused
+BCH_IRQHandler 00000016
+
+Symbol: BCH_IRQHandler
+   Definitions
+      At line 198 in file ACH512\system\startup.s
+   Uses
+      At line 85 in file ACH512\system\startup.s
+      At line 173 in file ACH512\system\startup.s
+
+BusFault_Handler 0000000A
+
+Symbol: BusFault_Handler
+   Definitions
+      At line 126 in file ACH512\system\startup.s
+   Uses
+      At line 50 in file ACH512\system\startup.s
+      At line 127 in file ACH512\system\startup.s
+
+CCPWM_IRQHandler 00000016
+
+Symbol: CCPWM_IRQHandler
+   Definitions
+      At line 195 in file ACH512\system\startup.s
+   Uses
+      At line 82 in file ACH512\system\startup.s
+      At line 170 in file ACH512\system\startup.s
+
+DES_IRQHandler 00000016
+
+Symbol: DES_IRQHandler
+   Definitions
+      At line 187 in file ACH512\system\startup.s
+   Uses
+      At line 73 in file ACH512\system\startup.s
+      At line 162 in file ACH512\system\startup.s
+
+DMA_IRQHandler 00000016
+
+Symbol: DMA_IRQHandler
+   Definitions
+      At line 194 in file ACH512\system\startup.s
+   Uses
+      At line 81 in file ACH512\system\startup.s
+      At line 169 in file ACH512\system\startup.s
+
+DebugMon_Handler 00000010
+
+Symbol: DebugMon_Handler
+   Definitions
+      At line 140 in file ACH512\system\startup.s
+   Uses
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 57 in file ACH512\system\startup.s
+      At line 141 in file ACH512\system\startup.s
+
+Default_Handler 00000016
+
+Symbol: Default_Handler
+   Definitions
+      At line 153 in file ACH512\system\startup.s
+   Uses
+      None
+Comment: Default_Handler unused
+ECC_IRQHandler 00000016
+
+Symbol: ECC_IRQHandler
+   Definitions
+      At line 188 in file ACH512\system\startup.s
+   Uses
+      At line 74 in file ACH512\system\startup.s
+      At line 163 in file ACH512\system\startup.s
+
+EFC_IRQHandler 00000016
+
+Symbol: EFC_IRQHandler
+   Definitions
+      At line 189 in file ACH512\system\startup.s
+   Uses
+      At line 75 in file ACH512\system\startup.s
+      At line 164 in file ACH512\system\startup.s
+
+EMW_IRQHandle 00000016
+
+Symbol: EMW_IRQHandle
+   Definitions
+      At line 200 in file ACH512\system\startup.s
+   Uses
+      At line 87 in file ACH512\system\startup.s
+      At line 175 in file ACH512\system\startup.s
+
+GPIOA_IRQHandler 00000016
+
+Symbol: GPIOA_IRQHandler
+   Definitions
+      At line 184 in file ACH512\system\startup.s
+   Uses
+      At line 69 in file ACH512\system\startup.s
+      At line 159 in file ACH512\system\startup.s
+
+GPIOB_IRQHandler 00000016
+
+Symbol: GPIOB_IRQHandler
+   Definitions
+      At line 193 in file ACH512\system\startup.s
+   Uses
+      At line 80 in file ACH512\system\startup.s
+      At line 168 in file ACH512\system\startup.s
+
+HardFault_Handler 00000006
+
+Symbol: HardFault_Handler
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+   Definitions
+      At line 116 in file ACH512\system\startup.s
+   Uses
+      At line 48 in file ACH512\system\startup.s
+      At line 117 in file ACH512\system\startup.s
+
+I2C_IRQHandler 00000016
+
+Symbol: I2C_IRQHandler
+   Definitions
+      At line 190 in file ACH512\system\startup.s
+   Uses
+      At line 77 in file ACH512\system\startup.s
+      At line 165 in file ACH512\system\startup.s
+
+ISO7816MS_IRQHandler 00000016
+
+Symbol: ISO7816MS_IRQHandler
+   Definitions
+      At line 202 in file ACH512\system\startup.s
+   Uses
+      At line 90 in file ACH512\system\startup.s
+      At line 177 in file ACH512\system\startup.s
+
+MS7816RST_IRQHandler 00000016
+
+Symbol: MS7816RST_IRQHandler
+   Definitions
+      At line 191 in file ACH512\system\startup.s
+   Uses
+      At line 78 in file ACH512\system\startup.s
+      At line 166 in file ACH512\system\startup.s
+
+MemManage_Handler 00000008
+
+Symbol: MemManage_Handler
+   Definitions
+      At line 121 in file ACH512\system\startup.s
+   Uses
+      At line 49 in file ACH512\system\startup.s
+      At line 122 in file ACH512\system\startup.s
+
+NFM_IRQHandler 00000016
+
+Symbol: NFM_IRQHandler
+   Definitions
+      At line 199 in file ACH512\system\startup.s
+   Uses
+      At line 86 in file ACH512\system\startup.s
+      At line 174 in file ACH512\system\startup.s
+
+NMI_Handler 00000004
+
+Symbol: NMI_Handler
+   Definitions
+      At line 111 in file ACH512\system\startup.s
+   Uses
+      At line 47 in file ACH512\system\startup.s
+      At line 112 in file ACH512\system\startup.s
+
+
+
+ARM Macro Assembler    Page 4 Alphabetic symbol ordering
+Relocatable symbols
+
+
+PendSV_Handler 00000012
+
+Symbol: PendSV_Handler
+   Definitions
+      At line 144 in file ACH512\system\startup.s
+   Uses
+      At line 59 in file ACH512\system\startup.s
+      At line 145 in file ACH512\system\startup.s
+
+Reset_Handler 00000000
+
+Symbol: Reset_Handler
+   Definitions
+      At line 99 in file ACH512\system\startup.s
+   Uses
+      At line 46 in file ACH512\system\startup.s
+      At line 100 in file ACH512\system\startup.s
+
+SDIO_IRQHandler 00000016
+
+Symbol: SDIO_IRQHandler
+   Definitions
+      At line 196 in file ACH512\system\startup.s
+   Uses
+      At line 83 in file ACH512\system\startup.s
+      At line 171 in file ACH512\system\startup.s
+
+SENSOR_IRQHandler 00000016
+
+Symbol: SENSOR_IRQHandler
+   Definitions
+      At line 201 in file ACH512\system\startup.s
+   Uses
+      At line 89 in file ACH512\system\startup.s
+      At line 176 in file ACH512\system\startup.s
+
+SM1_IRQHandler 00000016
+
+Symbol: SM1_IRQHandler
+   Definitions
+      At line 186 in file ACH512\system\startup.s
+   Uses
+      At line 72 in file ACH512\system\startup.s
+      At line 161 in file ACH512\system\startup.s
+
+SM4_IRQHandler 00000016
+
+Symbol: SM4_IRQHandler
+   Definitions
+      At line 192 in file ACH512\system\startup.s
+   Uses
+      At line 79 in file ACH512\system\startup.s
+      At line 167 in file ACH512\system\startup.s
+
+SPIA_IRQHandler 00000016
+
+Symbol: SPIA_IRQHandler
+   Definitions
+
+
+
+ARM Macro Assembler    Page 5 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 182 in file ACH512\system\startup.s
+   Uses
+      At line 67 in file ACH512\system\startup.s
+      At line 157 in file ACH512\system\startup.s
+
+SPIB_IRQHandler 00000016
+
+Symbol: SPIB_IRQHandler
+   Definitions
+      At line 183 in file ACH512\system\startup.s
+   Uses
+      At line 68 in file ACH512\system\startup.s
+      At line 158 in file ACH512\system\startup.s
+
+SVC_Handler 0000000E
+
+Symbol: SVC_Handler
+   Definitions
+      At line 135 in file ACH512\system\startup.s
+   Uses
+      At line 56 in file ACH512\system\startup.s
+      At line 136 in file ACH512\system\startup.s
+
+SysTick_Handler 00000014
+
+Symbol: SysTick_Handler
+   Definitions
+      At line 148 in file ACH512\system\startup.s
+   Uses
+      At line 60 in file ACH512\system\startup.s
+      At line 149 in file ACH512\system\startup.s
+
+TIMER_IRQHandler 00000016
+
+Symbol: TIMER_IRQHandler
+   Definitions
+      At line 180 in file ACH512\system\startup.s
+   Uses
+      At line 64 in file ACH512\system\startup.s
+      At line 155 in file ACH512\system\startup.s
+
+UARTA_IRQHandler 00000016
+
+Symbol: UARTA_IRQHandler
+   Definitions
+      At line 181 in file ACH512\system\startup.s
+   Uses
+      At line 66 in file ACH512\system\startup.s
+      At line 156 in file ACH512\system\startup.s
+
+UARTB_IRQHandler 00000016
+
+Symbol: UARTB_IRQHandler
+   Definitions
+      At line 197 in file ACH512\system\startup.s
+   Uses
+      At line 84 in file ACH512\system\startup.s
+      At line 172 in file ACH512\system\startup.s
+
+
+
+
+ARM Macro Assembler    Page 6 Alphabetic symbol ordering
+Relocatable symbols
+
+USB_IRQHandler 00000016
+
+Symbol: USB_IRQHandler
+   Definitions
+      At line 185 in file ACH512\system\startup.s
+   Uses
+      At line 70 in file ACH512\system\startup.s
+      At line 160 in file ACH512\system\startup.s
+
+UsageFault_Handler 0000000C
+
+Symbol: UsageFault_Handler
+   Definitions
+      At line 131 in file ACH512\system\startup.s
+   Uses
+      At line 51 in file ACH512\system\startup.s
+      At line 132 in file ACH512\system\startup.s
+
+WAKEUP_IRQHandler 00000016
+
+Symbol: WAKEUP_IRQHandler
+   Definitions
+      At line 203 in file ACH512\system\startup.s
+   Uses
+      At line 94 in file ACH512\system\startup.s
+      At line 178 in file ACH512\system\startup.s
+
+WDT_IRQHandler 00000016
+
+Symbol: WDT_IRQHandler
+   Definitions
+      At line 179 in file ACH512\system\startup.s
+   Uses
+      At line 63 in file ACH512\system\startup.s
+      At line 154 in file ACH512\system\startup.s
+
+37 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+Heap_Size 00000A00
+
+Symbol: Heap_Size
+   Definitions
+      At line 30 in file ACH512\system\startup.s
+   Uses
+      At line 33 in file ACH512\system\startup.s
+Comment: Heap_Size used once
+Stack_Size 00000800
+
+Symbol: Stack_Size
+   Definitions
+      At line 19 in file ACH512\system\startup.s
+   Uses
+      At line 21 in file ACH512\system\startup.s
+Comment: Stack_Size used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+__main 00000000
+
+Symbol: __main
+   Definitions
+      At line 101 in file ACH512\system\startup.s
+   Uses
+      At line 106 in file ACH512\system\startup.s
+Comment: __main used once
+1 symbol
+383 symbols in table

@@ -1,0 +1,14 @@
+.\out_files\hmac.o: APP\hmac.c
+.\out_files\hmac.o: APP\internal.h
+.\out_files\hmac.o: APP\wally_core.h
+.\out_files\hmac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\out_files\hmac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\out_files\hmac.o: APP\secp256k1.h
+.\out_files\hmac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\out_files\hmac.o: APP\app_config.h
+.\out_files\hmac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\out_files\hmac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\out_files\hmac.o: APP\hmac.h
+.\out_files\hmac.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\out_files\hmac.o: APP\sha2.h
+.\out_files\hmac.o: APP\hmac_sha2.h

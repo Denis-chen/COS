@@ -1,0 +1,80 @@
+Dependencies for Project 'ACH512', Target 'project': (DO NOT MODIFY !)
+F (.\ACH512\system\startup.s)(0x58EEE558)(--cpu Cortex-M3 --li -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC13xx--list .\startup.lst --xref -o .\out_files\startup.o --depend .\out_files\startup.d)
+F (.\ACH512\system\system_ach512.c)(0x5A015170)(-c --cpu Cortex-M3 --li -g -O0 -Otime --apcs=interwork -I.\ACH512\driver -I.\ACH512\system -I.\APP -I.\CMSIS\Include -I.\COMMON-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC13xx-o .\out_files\system_ach512.o --omf_browse .\out_files\system_ach512.crf --depend .\out_files\system_ach512.d)
+I (ACH512\system\system_ach512.h)(0x5A015177)
+I (.\COMMON\common.h)(0x5984295C)
+I (.\COMMON\stdio.h)(0x4F7D3BF7)
+I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
+I (.\COMMON\types.h)(0x562060CD)
+I (.\COMMON\config.h)(0x599CFE98)
+I (.\ACH512\system\ach512.h)(0x5993F406)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E1)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015177)
+I (.\ACH512\driver\uart.h)(0x58EEEB61)
+F (.\ACH512\driver\uart.c)(0x59BA3CEF)(-c --cpu Cortex-M3 --li -g -O0 -Otime --apcs=interwork -I.\ACH512\driver -I.\ACH512\system -I.\APP -I.\CMSIS\Include -I.\COMMON-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC13xx-o .\out_files\uart.o --omf_browse .\out_files\uart.crf --depend .\out_files\uart.d)
+I (ACH512\driver\uart.h)(0x58EEEB61)
+I (.\COMMON\common.h)(0x5984295C)
+I (.\COMMON\stdio.h)(0x4F7D3BF7)
+I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
+I (.\COMMON\types.h)(0x562060CD)
+I (.\COMMON\config.h)(0x599CFE98)
+I (.\ACH512\system\ach512.h)(0x5993F406)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E1)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015177)
+I (.\ACH512\driver\uart.h)(0x58EEEB61)
+F (.\ACH512\driver\hrng_20171106.lib)(0x5A001BAE)()
+F (.\COMMON\common.c)(0x5984294A)(-c --cpu Cortex-M3 --li -g -O0 -Otime --apcs=interwork -I.\ACH512\driver -I.\ACH512\system -I.\APP -I.\CMSIS\Include -I.\COMMON-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC13xx-o .\out_files\common.o --omf_browse .\out_files\common.crf --depend .\out_files\common.d)
+I (COMMON\common.h)(0x5984295C)
+I (COMMON\stdio.h)(0x4F7D3BF7)
+I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
+I (COMMON\types.h)(0x562060CD)
+I (COMMON\config.h)(0x599CFE98)
+I (.\ACH512\system\ach512.h)(0x5993F406)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E1)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015177)
+I (.\COMMON\common.h)(0x5984295C)
+I (.\ACH512\driver\uart.h)(0x58EEEB61)
+F (.\APP\app.c)(0x5A01482D)(-c --cpu Cortex-M3 --li -g -O0 -Otime --apcs=interwork -I.\ACH512\driver -I.\ACH512\system -I.\APP -I.\CMSIS\Include -I.\COMMON-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC13xx-o .\out_files\app.o --omf_browse .\out_files\app.crf --depend .\out_files\app.d)
+I (.\COMMON\common.h)(0x5984295C)
+I (.\COMMON\stdio.h)(0x4F7D3BF7)
+I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
+I (.\COMMON\types.h)(0x562060CD)
+I (.\COMMON\config.h)(0x599CFE98)
+I (.\ACH512\system\ach512.h)(0x5993F406)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E1)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015177)
+I (.\ACH512\driver\uart.h)(0x58EEEB61)
+I (APP\app.h)(0x5984354A)
+I (.\ACH512\driver\hrng.h)(0x59FFFDF1)
+F (.\APP\main.c)(0x5A011406)(-c --cpu Cortex-M3 --li -g -O0 -Otime --apcs=interwork -I.\ACH512\driver -I.\ACH512\system -I.\APP -I.\CMSIS\Include -I.\COMMON-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC13xx-o .\out_files\main.o --omf_browse .\out_files\main.crf --depend .\out_files\main.d)
+I (.\COMMON\common.h)(0x5984295C)
+I (.\COMMON\stdio.h)(0x4F7D3BF7)
+I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C7C554)
+I (.\COMMON\types.h)(0x562060CD)
+I (.\COMMON\config.h)(0x599CFE98)
+I (.\ACH512\system\ach512.h)(0x5993F406)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E1)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7C554)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015177)
+I (.\ACH512\driver\uart.h)(0x58EEEB61)
+I (APP\app.h)(0x5984354A)
+F (.\Abstratct.txt)(0x56F3BA0C)()

@@ -1,0 +1,315 @@
+Dependencies for Project 'ACH512', Target 'project': (DO NOT MODIFY !)
+F (.\ACH512\system\startup.s)(0x5AED680C)(--cpu Cortex-M3 --li -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx--pd "__UVISION_VERSION SETA 518"--list .\startup.lst --xref -o .\out_files\startup.o --depend .\out_files\startup.d)
+F (.\ACH512\system\system_ach512.c)(0x5A015172)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\system_ach512.o --omf_browse .\out_files\system_ach512.crf --depend .\out_files\system_ach512.d)
+I (ACH512\system\system_ach512.h)(0x5A015178)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+F (.\ACH512\driver\uart.c)(0x5AE9B499)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\uart.o --omf_browse .\out_files\uart.crf --depend .\out_files\uart.d)
+I (ACH512\driver\uart.h)(0x58EEEB62)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+F (.\ACH512\driver\hrng_20171106.lib)(0x5A001BB0)()
+F (.\ACH512\driver\ecdsa_20171106.lib)(0x5A00204E)()
+F (.\ACH512\driver\pki_20170406.lib)(0x58E61294)()
+F (.\ACH512\driver\rsa_20171106.lib)(0x5A001C5C)()
+F (.\ACH512\driver\sha1_20171106.lib)(0x5A003740)()
+F (.\ACH512\driver\sha256_20171106.lib)(0x5A003752)()
+F (.\ACH512\driver\sha384_20171106.lib)(0x5A003768)()
+F (.\ACH512\driver\sm3_20171106.lib)(0x5A003782)()
+F (.\COMMON\common.c)(0x5984294C)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\common.o --omf_browse .\out_files\common.crf --depend .\out_files\common.d)
+I (COMMON\common.h)(0x5984295E)
+I (COMMON\stdio.h)(0x4F7D3BF8)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (COMMON\types.h)(0x562060CE)
+I (COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+F (.\APP\app.c)(0x5AF6AD84)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\app.o --omf_browse .\out_files\app.crf --depend .\out_files\app.d)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (APP\app.h)(0x5AE2BC71)
+I (.\ACH512\driver\hrng.h)(0x59FFFDF2)
+I (.\ACH512\driver\sha256.h)(0x58BF6196)
+I (APP\hmac_sha2.h)(0x5AE032EE)
+I (APP\sha2.h)(0x5AF2E8D1)
+I (APP\b64.h)(0x5AD9B2D8)
+I (APP\wally_bip32.h)(0x5AE29662)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (APP\wally_bip39.h)(0x5AF14C44)
+I (APP\wally_crypto.h)(0x5AF69B28)
+I (APP\hex.h)(0x5AF6A3D2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+F (.\APP\main.c)(0x5AE2B7AC)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\main.o --omf_browse .\out_files\main.crf --depend .\out_files\main.d)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (APP\app.h)(0x5AE2BC71)
+F (.\APP\blake2b.c)(0x5AE13FC1)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\blake2b.o --omf_browse .\out_files\blake2b.crf --depend .\out_files\blake2b.d)
+I (APP\blake2b.h)(0x5AE13FC1)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+F (.\APP\blake2s.c)(0x5AE13FC1)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\blake2s.o --omf_browse .\out_files\blake2s.crf --depend .\out_files\blake2s.d)
+I (APP\blake2s.h)(0x5AE13FC1)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+F (.\APP\decode.c)(0x5ADFEA01)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\decode.o --omf_browse .\out_files\decode.crf --depend .\out_files\decode.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x569DEA38)
+I (APP\b64.h)(0x5AD9B2D8)
+F (.\APP\encode.c)(0x5ADFE855)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\encode.o --omf_browse .\out_files\encode.crf --depend .\out_files\encode.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (APP\b64.h)(0x5AD9B2D8)
+F (.\APP\hmac_sha2.c)(0x5AE03A82)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\hmac_sha2.o --omf_browse .\out_files\hmac_sha2.crf --depend .\out_files\hmac_sha2.d)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (APP\hmac_sha2.h)(0x5AE032EE)
+I (APP\sha2.h)(0x5AF2E8D1)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+F (.\APP\sha2.c)(0x5AF6A9E6)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\sha2.o --omf_browse .\out_files\sha2.crf --depend .\out_files\sha2.d)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (APP\sha2.h)(0x5AF2E8D1)
+F (.\APP\bip32.c)(0x5AF686DE)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\bip32.o --omf_browse .\out_files\bip32.crf --depend .\out_files\bip32.d)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\hmac.h)(0x5AE9AD8E)
+I (APP\wally_bip32.h)(0x5AE29662)
+I (APP\wally_crypto.h)(0x5AF69B28)
+I (APP\bip32_int.h)(0x5AE29662)
+I (APP\endian.h)(0x5AEA7E01)
+I (APP\basic-config.h)(0x5AED45D0)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+F (.\APP\hmac.c)(0x5AE9AE59)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\hmac.o --omf_browse .\out_files\hmac.crf --depend .\out_files\hmac.d)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\hmac.h)(0x5AE9AD8E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+I (APP\sha2.h)(0x5AF2E8D1)
+I (APP\hmac_sha2.h)(0x5AE032EE)
+F (.\APP\internal.c)(0x5AF68D1D)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\internal.o --omf_browse .\out_files\internal.crf --depend .\out_files\internal.d)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\wally_crypto.h)(0x5AF69B28)
+I (APP\ripemd160.h)(0x5AE97A0D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+I (APP\hmac.h)(0x5AE9AD8E)
+F (.\APP\ripemd160.c)(0x5AEA8552)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\ripemd160.o --omf_browse .\out_files\ripemd160.crf --depend .\out_files\ripemd160.d)
+I (APP\ripemd160.h)(0x5AE97A0D)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (APP\endian.h)(0x5AEA7E01)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (APP\basic-config.h)(0x5AED45D0)
+I (APP\compiler.h)(0x5AE29662)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+F (.\APP\secp256k1.c)(0x5AF6A804)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\secp256k1.o --omf_browse .\out_files\secp256k1.crf --depend .\out_files\secp256k1.d)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\util.h)(0x5AEA7DA6)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (APP\field_impl.h)(0x5AE9B14C)
+I (APP\basic-config.h)(0x5AED45D0)
+I (APP\field_10x26_impl.h)(0x5AE97DEC)
+I (APP\field.h)(0x5AE29662)
+I (APP\field_10x26.h)(0x5AE29662)
+I (APP\scalar_impl.h)(0x5AE29662)
+I (APP\group.h)(0x5AE97DDF)
+I (APP\scalar.h)(0x5AE97E81)
+I (APP\scalar_8x32.h)(0x5AE29662)
+I (APP\scalar_8x32_impl.h)(0x5AE29662)
+I (APP\group_impl.h)(0x5AE97DDA)
+I (APP\hash_impl.h)(0x5AE29662)
+I (APP\hash.h)(0x5AE29662)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\wally_crypto.h)(0x5AF69B28)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (.\ACH512\driver\ecdsa.h)(0x5A001E9E)
+I (.\ACH512\driver\ecc.h)(0x599540AE)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (.\ACH512\driver\rsa_keygen.h)(0x586DB32C)
+I (.\ACH512\driver\divider.h)(0x586DE0EC)
+I (.\ACH512\driver\hrng.h)(0x59FFFDF2)
+I (APP\ecc_byte.h)(0x5AED5A7B)
+I (APP\eckey_impl.h)(0x5AF6930C)
+I (APP\eckey.h)(0x5AF69321)
+F (.\APP\sign.c)(0x5AF6ABAD)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\sign.o --omf_browse .\out_files\sign.crf --depend .\out_files\sign.d)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\wally_crypto.h)(0x5AF69B28)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+I (.\ACH512\driver\rsa_keygen.h)(0x586DB32C)
+I (.\COMMON\common.h)(0x5984295E)
+I (.\COMMON\stdio.h)(0x4F7D3BF8)
+I (.\COMMON\types.h)(0x562060CE)
+I (.\COMMON\config.h)(0x599CFE9A)
+I (.\ACH512\system\ach512.h)(0x5993F408)
+I (.\CMSIS\Include\core_cm3.h)(0x56F8E4E2)
+I (.\CMSIS\Include\core_cmInstr.h)(0x562F12FA)
+I (.\CMSIS\Include\cmsis_armcc.h)(0x562F12FA)
+I (.\CMSIS\Include\core_cmFunc.h)(0x562F12FA)
+I (.\ACH512\system\system_ach512.h)(0x5A015178)
+I (.\ACH512\driver\uart.h)(0x58EEEB62)
+I (.\ACH512\driver\divider.h)(0x586DE0EC)
+I (.\ACH512\driver\ecc.h)(0x599540AE)
+I (.\ACH512\driver\hrng.h)(0x59FFFDF2)
+F (.\APP\hex.c)(0x5AF6A3D7)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\hex.o --omf_browse .\out_files\hex.crf --depend .\out_files\hex.d)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\hex.h)(0x5AF6A3D2)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569DEA3A)
+F (.\APP\pbkdf2.c)(0x5AF532CA)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\pbkdf2.o --omf_browse .\out_files\pbkdf2.crf --depend .\out_files\pbkdf2.d)
+I (APP\pbkdf2.h)(0x5AF531E4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\sha2.h)(0x5AF2E8D1)
+I (APP\hmac_sha2.h)(0x5AE032EE)
+F (.\APP\bip39.c)(0x5AF531C6)(-c --cpu Cortex-M3 -D__MICROLIB --li -g -O0 -Otime --apcs=interwork -I .\ACH512\driver -I .\ACH512\system -I .\APP -I .\CMSIS\Include -I .\COMMON-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\CMSIS\Include-I C:\Keil_v5\ARM\Inc\NXP\LPC13xx-D__UVISION_VERSION="518"-o .\out_files\bip39.o --omf_browse .\out_files\bip39.crf --depend .\out_files\bip39.d)
+I (APP\internal.h)(0x5AF68C9E)
+I (APP\wally_core.h)(0x5AF6A3C4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569DEA3A)
+I (APP\secp256k1.h)(0x5AF6A443)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x569DEA3A)
+I (APP\app_config.h)(0x5AEA7DE4)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569DEA3A)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x569DEA3A)
+I (APP\hmac.h)(0x5AE9AD8E)
+I (APP\wally_bip39.h)(0x5AF14C44)
+I (APP\wally_crypto.h)(0x5AF69B28)
+F (.\Abstratct.txt)(0x56F3BA0C)()
