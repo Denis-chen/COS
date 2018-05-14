@@ -59,9 +59,6 @@
 	 | (((uint64_t)(val) & 0x00ff000000000000ULL) >> 40)	\
 	 | (((uint64_t)(val) & 0xff00000000000000ULL) >> 56))
 
-#if HAVE_BYTESWAP_H
-#include <byteswap.h>
-#else
 /**
  * bswap_16 - reverse bytes in a uint16_t value.
  * @val: value whose bytes to swap.
@@ -87,9 +84,7 @@ static SECP256K1_INLINE uint32_t bswap_32(uint32_t val)
 {
 	return BSWAP_32(val);
 }
-#endif /* !HAVE_BYTESWAP_H */
 
-#if !HAVE_BSWAP_64
 /**
  * bswap_64 - reverse bytes in a uint64_t value.
  * @val: value whose bytes to swap.
@@ -103,7 +98,6 @@ static SECP256K1_INLINE uint64_t bswap_64(uint64_t val)
 {
 	return BSWAP_64(val);
 }
-#endif
 
 /* Sanity check the defines.  We don't handle weird endianness. */
 #if !HAVE_LITTLE_ENDIAN && !HAVE_BIG_ENDIAN
@@ -328,21 +322,4 @@ static SECP256K1_INLINE uint16_t be16_to_cpu(beint16_t be_val)
 {
 	return BE16_TO_CPU(be_val);
 }
-
-/* Whichever they include first, they get these definitions. */
-#ifdef CCAN_SHORT_TYPES_H
-/**
- * be64/be32/be16 - 64/32/16 bit big-endian representation.
- */
-typedef beint64_t be64;
-typedef beint32_t be32;
-typedef beint16_t be16;
-
-/**
- * le64/le32/le16 - 64/32/16 bit little-endian representation.
- */
-typedef leint64_t le64;
-typedef leint32_t le32;
-typedef leint16_t le16;
-#endif
 #endif /* CCAN_ENDIAN_H */

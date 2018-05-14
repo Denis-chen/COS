@@ -5,13 +5,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-/* Uncomment this to use openssl's RIPEMD160 routines (and link with -lcrypto) */
-/*#define CCAN_CRYPTO_RIPEMD160_USE_OPENSSL 1*/
-
-#ifdef CCAN_CRYPTO_RIPEMD160_USE_OPENSSL
-#include <openssl/ripemd.h>
-#endif
-
 /**
  * struct ripemd160 - structure representing a completed RIPEMD160.
  * @u.u8: an unsigned char array.
@@ -43,16 +36,12 @@ void ripemd160(struct ripemd160 *ripemd, const void *p, size_t size);
  * struct ripemd160_ctx - structure to store running context for ripemd160
  */
 struct ripemd160_ctx {
-#ifdef CCAN_CRYPTO_RIPEMD160_USE_OPENSSL
-	RIPEMD160_CTX c;
-#else
 	uint32_t s[5];
 	uint64_t bytes;
 	union {
 		uint32_t u32[16];
 		unsigned char u8[64];
 	} buf;
-#endif
 };
 
 /**

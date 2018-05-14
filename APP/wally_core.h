@@ -124,7 +124,7 @@ WALLY_CORE_API int wally_hex_to_bytes(
 
 WALLY_CORE_API void print_hexstr_key(
 	char *tag, 
-	unsigned char *in, 
+	const unsigned char *in, 
 	uint16_t len);
 
 /* For ``wally_base58_from_bytes``, indicates that a checksum should

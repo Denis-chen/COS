@@ -42,13 +42,6 @@ Section Cross References
     blake2b.o(.text) refers to llushr.o(.text) for __aeabi_llsr
     blake2s.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy4
     blake2s.o(.text) refers to blake2s.o(.constdata) for .constdata
-    decode.o(.text) refers to mallocr.o(i.__malloc$realloc) for malloc
-    decode.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    decode.o(.text) refers to mallocr.o(i.realloc) for realloc
-    decode.o(.text) refers to decode.o(.constdata) for b64_table
-    encode.o(.text) refers to mallocr.o(i.__malloc$realloc) for malloc
-    encode.o(.text) refers to mallocr.o(i.realloc) for realloc
-    encode.o(.text) refers to encode.o(.constdata) for b64_table
     hmac_sha2.o(.text) refers to sha2.o(.text) for sha224
     hmac_sha2.o(.text) refers to memseta.o(.text) for __aeabi_memset
     hmac_sha2.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy4
@@ -70,23 +63,24 @@ Section Cross References
     internal.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy
     internal.o(.text) refers to ripemd160.o(.text) for ripemd160
     internal.o(.text) refers to memseta.o(.text) for __aeabi_memclr
-    internal.o(.text) refers to mallocr.o(i.__malloc$realloc) for malloc
-    internal.o(.text) refers to mallocr.o(i.__free$realloc) for free
+    internal.o(.text) refers to malloc.o(i.malloc) for malloc
+    internal.o(.text) refers to malloc.o(i.free) for free
     internal.o(.text) refers to internal.o(.data) for _ops
     internal.o(.data) refers to internal.o(.text) for wally_internal_malloc
     ripemd160.o(.text) refers to uldiv.o(.text) for __aeabi_uldivmod
     ripemd160.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy
     ripemd160.o(.text) refers to internal.o(.text) for wally_clear
     ripemd160.o(.text) refers to ripemd160.o(.constdata) for .constdata
-    secp256k1.o(.text) refers to mallocr.o(i.__malloc$realloc) for malloc
+    secp256k1.o(.text) refers to malloc.o(i.malloc) for malloc
     secp256k1.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy4
-    secp256k1.o(.text) refers to mallocr.o(i.__free$realloc) for free
-    secp256k1.o(.text) refers to secp256k1.o(.constdata) for fe_1
+    secp256k1.o(.text) refers to malloc.o(i.free) for free
     secp256k1.o(.text) refers to memseta.o(.text) for __aeabi_memclr
+    secp256k1.o(.text) refers to secp256k1.o(.constdata) for fe_1
+    secp256k1.o(.text) refers to hex.o(.text) for print_hexstr_key
     secp256k1.o(.text) refers to ecc.o(.text) for ECC_para_initial
     secp256k1.o(.text) refers to ecdsa.o(.text) for ECDSA_verify
-    secp256k1.o(.text) refers to secp256k1.o(.bss) for ecc_glb_str
-    sign.o(.text) refers to secp256k1.o(.text) for secp256k1_ecdsa_init
+    secp256k1.o(.text) refers to system_ach512.o(.text) for enable_module
+    sign.o(.text) refers to secp256k1.o(.text) for secp256k1_ec_pubkey_create
     sign.o(.text) refers to internal.o(.text) for wally_clear
     sign.o(.text) refers to memcpya.o(.text) for __aeabi_memcpy
     sign.o(.text) refers to sign.o(.constdata) for MSG_PREFIX
@@ -116,20 +110,6 @@ Section Cross References
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry2.o(.ARM.Collect$$$$00000001) for _main_stk
     uldiv.o(.text) refers to llushr.o(.text) for __aeabi_llsr
     uldiv.o(.text) refers to llshl.o(.text) for __aeabi_llsl
-    ctype_o.o(.text) refers to ctype_o.o(.constdata) for .constdata
-    ctype_o.o(.constdata) refers to ctype_o.o(.constdata) for __ctype_table
-    isalnum_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isalpha_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isblank_o.o(.text) refers to ctype_o.o(.constdata) for __ctype_table
-    iscntrl_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isdigit_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isgraph_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    islower_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isprint_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    ispunct_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isspace_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isupper_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
-    isxdigit_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
     strtok.o(.text) refers to strtok.o(.data) for .data
     strtok_r.o(.text) refers to strtok_r.o(.data) for .data
     printfb.o(i.__0fprintf$bare) refers to printfb.o(i._printf_core) for _printf_core
@@ -379,9 +359,9 @@ Section Cross References
     mallocr.o(i.__malloc$realloc) refers to mvars.o(.data) for __microlib_freelist
     mallocr.o(i.internal_alloc) refers to memcpya.o(.text) for __aeabi_memcpy
     mallocr.o(i.internal_alloc) refers to mvars.o(.data) for __microlib_freelist
-    mallocr.o(i.realloc) refers to mallocr.o(i.__free$realloc) for free
+    mallocr.o(i.realloc) refers to mallocr.o(i.__free$realloc) for __free$realloc
     mallocr.o(i.realloc) refers to mallocr.o(i.internal_alloc) for internal_alloc
-    mallocr.o(i.realloc) refers to mallocr.o(i.__malloc$realloc) for malloc
+    mallocr.o(i.realloc) refers to mallocr.o(i.__malloc$realloc) for __malloc$realloc
     mallocr.o(i.realloc) refers to mvars.o(.data) for __microlib_freelist
     malloca.o(i.__aligned_malloc) refers to mvars.o(.data) for __microlib_freelist_initialised
     malloca.o(i.__aligned_malloc) refers to mvars.o(.data) for __microlib_freelist
@@ -423,6 +403,20 @@ Section Cross References
     dfixul.o(.text) refers to llushr.o(.text) for __aeabi_llsr
     dfixul.o(.text) refers to llshl.o(.text) for __aeabi_llsl
     init.o(.text) refers to entry5.o(.ARM.Collect$$$$00000004) for __main_after_scatterload
+    ctype_o.o(.text) refers to ctype_o.o(.constdata) for .constdata
+    ctype_o.o(.constdata) refers to ctype_o.o(.constdata) for __ctype_table
+    isalnum_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isalpha_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isblank_o.o(.text) refers to ctype_o.o(.constdata) for __ctype_table
+    iscntrl_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isdigit_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isgraph_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    islower_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isprint_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    ispunct_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isspace_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isupper_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
+    isxdigit_o.o(.text) refers to ctype_o.o(.text) for __rt_ctype_table
     _strtoul.o(.text) refers to _chval.o(.text) for _chval
     _strtoul.o(.text) refers to errno.o(i.__aeabi_errno_addr) for __aeabi_errno_addr
     depilogue.o(.text) refers to llshl.o(.text) for __aeabi_llsl
@@ -445,7 +439,6 @@ Removing Unused input sections from the image.
     Removing app.o(.rev16_text), (4 bytes).
     Removing app.o(.revsh_text), (4 bytes).
     Removing app.o(.rrx_text), (6 bytes).
-    Removing app.o(.constdata), (64 bytes).
     Removing main.o(.rev16_text), (4 bytes).
     Removing main.o(.revsh_text), (4 bytes).
     Removing main.o(.rrx_text), (6 bytes).
@@ -453,10 +446,6 @@ Removing Unused input sections from the image.
     Removing blake2b.o(.constdata), (256 bytes).
     Removing blake2s.o(.text), (1676 bytes).
     Removing blake2s.o(.constdata), (192 bytes).
-    Removing decode.o(.text), (496 bytes).
-    Removing decode.o(.constdata), (64 bytes).
-    Removing encode.o(.text), (328 bytes).
-    Removing encode.o(.constdata), (64 bytes).
     Removing hmac_sha2.o(.rev16_text), (4 bytes).
     Removing hmac_sha2.o(.revsh_text), (4 bytes).
     Removing hmac_sha2.o(.rrx_text), (6 bytes).
@@ -491,7 +480,7 @@ Removing Unused input sections from the image.
     Removing cdrcmple.o(.text), (48 bytes).
     Removing depilogue.o(.text), (186 bytes).
 
-57 unused section(s) (total 7250 bytes) removed from the image.
+52 unused section(s) (total 6234 bytes) removed from the image.
 
 ==============================================================================
 
@@ -503,54 +492,54 @@ Image Symbol Table
 
     RESET                                    0x00000000   Section      192  startup.o(RESET)
     ../clib/../cmprslib/lz77c.c              0x00000000   Number         0  __dclz77c.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isdigit_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isspace_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  ispunct_o.o ABSOLUTE
     ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isgraph_o.o ABSOLUTE
     ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isprint_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  ctype_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isalnum_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isalpha_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isblank_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  islower_o.o ABSOLUTE
-    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  iscntrl_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  ispunct_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isspace_o.o ABSOLUTE
     ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isupper_o.o ABSOLUTE
     ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isxdigit_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isalnum_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  ctype_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isalpha_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isblank_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  isdigit_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  iscntrl_o.o ABSOLUTE
+    ../clib/microlib/ctype/ctype.c           0x00000000   Number         0  islower_o.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
     ../clib/microlib/errno.c                 0x00000000   Number         0  errno.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
-    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocra.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
     ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocr.o ABSOLUTE
-    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloc.o ABSOLUTE
     ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloca.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocra.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloc.o ABSOLUTE
     ../clib/microlib/malloc/mvars.c          0x00000000   Number         0  mvars.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf8.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
     ../clib/microlib/printf/stubs.s          0x00000000   Number         0  stubs.o ABSOLUTE
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
     ../clib/microlib/stdlib/abort.c          0x00000000   Number         0  abort.o ABSOLUTE
@@ -561,13 +550,13 @@ Image Symbol Table
     ../clib/microlib/string/strlen.c         0x00000000   Number         0  strlen.o ABSOLUTE
     ../clib/microlib/string/strncpy.c        0x00000000   Number         0  strncpy.o ABSOLUTE
     ../clib/microlib/string/strstr.c         0x00000000   Number         0  strstr.o ABSOLUTE
-    ../clib/microlib/string/strtok.c         0x00000000   Number         0  strtok_r.o ABSOLUTE
     ../clib/microlib/string/strtok.c         0x00000000   Number         0  strtok.o ABSOLUTE
+    ../clib/microlib/string/strtok.c         0x00000000   Number         0  strtok_r.o ABSOLUTE
     ../clib/microlib/stubs.s                 0x00000000   Number         0  iusefp.o ABSOLUTE
     ../clib/scanf.c                          0x00000000   Number         0  _strtoul.o ABSOLUTE
-    ../clib/scanf.c                          0x00000000   Number         0  strtol.o ABSOLUTE
     ../clib/scanf.c                          0x00000000   Number         0  _chval.o ABSOLUTE
     ../clib/scanf.c                          0x00000000   Number         0  atoi.o ABSOLUTE
+    ../clib/scanf.c                          0x00000000   Number         0  strtol.o ABSOLUTE
     ../fplib/microlib/fpadd.c                0x00000000   Number         0  dadd.o ABSOLUTE
     ../fplib/microlib/fpdiv.c                0x00000000   Number         0  ddiv.o ABSOLUTE
     ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  depilogue.o ABSOLUTE
@@ -599,8 +588,6 @@ Image Symbol Table
     APP\bip39.c                              0x00000000   Number         0  bip39.o ABSOLUTE
     APP\blake2b.c                            0x00000000   Number         0  blake2b.o ABSOLUTE
     APP\blake2s.c                            0x00000000   Number         0  blake2s.o ABSOLUTE
-    APP\decode.c                             0x00000000   Number         0  decode.o ABSOLUTE
-    APP\encode.c                             0x00000000   Number         0  encode.o ABSOLUTE
     APP\hex.c                                0x00000000   Number         0  hex.o ABSOLUTE
     APP\hmac.c                               0x00000000   Number         0  hmac.o ABSOLUTE
     APP\hmac_sha2.c                          0x00000000   Number         0  hmac_sha2.o ABSOLUTE
@@ -636,262 +623,246 @@ Image Symbol Table
     .text                                    0x00000a7c   Section        0  app.o(.text)
     hex_str_size                             0x00000a7d   Thumb Code     8  app.o(.text)
     hex_data_size                            0x00000a85   Thumb Code     6  app.o(.text)
-    .text                                    0x00000f08   Section        0  main.o(.text)
-    .text                                    0x00000f20   Section        0  hmac_sha2.o(.text)
-    .text                                    0x00001548   Section        0  sha2.o(.text)
-    .text                                    0x000022d4   Section        0  bip32.o(.text)
-    bswap_16                                 0x000022d5   Thumb Code    12  bip32.o(.text)
-    bswap_32                                 0x000022e1   Thumb Code    26  bip32.o(.text)
-    bswap_64                                 0x000022fb   Thumb Code   132  bip32.o(.text)
-    cpu_to_le64                              0x0000237f   Thumb Code     2  bip32.o(.text)
-    cpu_to_le32                              0x00002381   Thumb Code     2  bip32.o(.text)
-    cpu_to_le16                              0x00002383   Thumb Code     2  bip32.o(.text)
-    le64_to_cpu                              0x00002385   Thumb Code     2  bip32.o(.text)
-    le32_to_cpu                              0x00002387   Thumb Code     2  bip32.o(.text)
-    le16_to_cpu                              0x00002389   Thumb Code     2  bip32.o(.text)
-    cpu_to_be64                              0x0000238b   Thumb Code   132  bip32.o(.text)
-    cpu_to_be32                              0x0000240f   Thumb Code    26  bip32.o(.text)
-    cpu_to_be16                              0x00002429   Thumb Code    12  bip32.o(.text)
-    be64_to_cpu                              0x00002435   Thumb Code   132  bip32.o(.text)
-    be32_to_cpu                              0x000024b9   Thumb Code    26  bip32.o(.text)
-    be16_to_cpu                              0x000024d3   Thumb Code    12  bip32.o(.text)
-    mem_is_zero                              0x000024df   Thumb Code    26  bip32.o(.text)
-    child_is_hardened                        0x000024f9   Thumb Code    16  bip32.o(.text)
-    version_is_valid                         0x00002509   Thumb Code    42  bip32.o(.text)
-    version_is_mainnet                       0x00002533   Thumb Code    22  bip32.o(.text)
-    key_is_private                           0x00002549   Thumb Code    16  bip32.o(.text)
-    key_strip_private_key                    0x00002559   Thumb Code    22  bip32.o(.text)
-    key_compute_pub_key                      0x0000256f   Thumb Code    22  bip32.o(.text)
-    key_compute_hash160                      0x00002585   Thumb Code    22  bip32.o(.text)
-    is_valid_seed_len                        0x000025b1   Thumb Code    22  bip32.o(.text)
-    copy_out                                 0x000026bf   Thumb Code    22  bip32.o(.text)
-    key_is_valid                             0x000026d5   Thumb Code   156  bip32.o(.text)
-    copy_in                                  0x00002843   Thumb Code    22  bip32.o(.text)
-    wipe_key_fail                            0x00002859   Thumb Code    18  bip32.o(.text)
-    .text                                    0x00002e74   Section        0  hmac.o(.text)
-    .text                                    0x00002ec0   Section        0  internal.o(.text)
-    wally_internal_bzero                     0x000030c3   Thumb Code    16  internal.o(.text)
-    wally_internal_malloc                    0x000030d3   Thumb Code    12  internal.o(.text)
-    wally_internal_free                      0x000030df   Thumb Code    14  internal.o(.text)
-    .text                                    0x000032d4   Section        0  ripemd160.o(.text)
-    bswap_16                                 0x000032d5   Thumb Code    12  ripemd160.o(.text)
-    bswap_32                                 0x000032e1   Thumb Code    26  ripemd160.o(.text)
-    bswap_64                                 0x000032fb   Thumb Code   132  ripemd160.o(.text)
-    cpu_to_le64                              0x0000337f   Thumb Code     2  ripemd160.o(.text)
-    cpu_to_le32                              0x00003381   Thumb Code     2  ripemd160.o(.text)
-    cpu_to_le16                              0x00003383   Thumb Code     2  ripemd160.o(.text)
-    le64_to_cpu                              0x00003385   Thumb Code     2  ripemd160.o(.text)
-    le32_to_cpu                              0x00003387   Thumb Code     2  ripemd160.o(.text)
-    le16_to_cpu                              0x00003389   Thumb Code     2  ripemd160.o(.text)
-    cpu_to_be64                              0x0000338b   Thumb Code   132  ripemd160.o(.text)
-    cpu_to_be32                              0x0000340f   Thumb Code    26  ripemd160.o(.text)
-    cpu_to_be16                              0x00003429   Thumb Code    12  ripemd160.o(.text)
-    be64_to_cpu                              0x00003435   Thumb Code   132  ripemd160.o(.text)
-    be32_to_cpu                              0x000034b9   Thumb Code    26  ripemd160.o(.text)
-    be16_to_cpu                              0x000034d3   Thumb Code    12  ripemd160.o(.text)
-    invalidate_ripemd160                     0x000034df   Thumb Code    10  ripemd160.o(.text)
-    check_ripemd160                          0x000034e9   Thumb Code     2  ripemd160.o(.text)
-    f1                                       0x000034eb   Thumb Code    10  ripemd160.o(.text)
-    f2                                       0x000034f5   Thumb Code    16  ripemd160.o(.text)
-    f3                                       0x00003505   Thumb Code    12  ripemd160.o(.text)
-    f4                                       0x00003511   Thumb Code    16  ripemd160.o(.text)
-    f5                                       0x00003521   Thumb Code    12  ripemd160.o(.text)
-    Initialize                               0x0000352d   Thumb Code    26  ripemd160.o(.text)
-    rol                                      0x00003547   Thumb Code    18  ripemd160.o(.text)
-    Round                                    0x00003559   Thumb Code    50  ripemd160.o(.text)
-    R11                                      0x0000358b   Thumb Code    66  ripemd160.o(.text)
-    R21                                      0x000035cd   Thumb Code    66  ripemd160.o(.text)
-    R31                                      0x0000360f   Thumb Code    66  ripemd160.o(.text)
-    R41                                      0x00003651   Thumb Code    66  ripemd160.o(.text)
-    R51                                      0x00003693   Thumb Code    66  ripemd160.o(.text)
-    R12                                      0x000036d5   Thumb Code    66  ripemd160.o(.text)
-    R22                                      0x00003717   Thumb Code    66  ripemd160.o(.text)
-    R32                                      0x00003759   Thumb Code    66  ripemd160.o(.text)
-    R42                                      0x0000379b   Thumb Code    66  ripemd160.o(.text)
-    R52                                      0x000037dd   Thumb Code    66  ripemd160.o(.text)
-    Transform                                0x0000381f   Thumb Code  4220  ripemd160.o(.text)
-    add                                      0x0000489b   Thumb Code   190  ripemd160.o(.text)
-    .text                                    0x00004b30   Section        0  secp256k1.o(.text)
-    secp256k1_callback_call                  0x00004b31   Thumb Code    16  secp256k1.o(.text)
-    checked_malloc                           0x00004b41   Thumb Code    28  secp256k1.o(.text)
-    secp256k1_sign_and_abs64                 0x00004b5d   Thumb Code   118  secp256k1.o(.text)
-    secp256k1_clz64_var                      0x00004bd3   Thumb Code    54  secp256k1.o(.text)
-    secp256k1_fe_normalize                   0x00004c09   Thumb Code   424  secp256k1.o(.text)
-    secp256k1_fe_normalize_weak              0x00004db1   Thumb Code   156  secp256k1.o(.text)
-    secp256k1_fe_normalize_var               0x00004e4d   Thumb Code   448  secp256k1.o(.text)
-    secp256k1_fe_normalizes_to_zero          0x0000500d   Thumb Code   256  secp256k1.o(.text)
-    secp256k1_fe_normalizes_to_zero_var      0x0000510d   Thumb Code   288  secp256k1.o(.text)
-    secp256k1_fe_set_int                     0x0000522d   Thumb Code    24  secp256k1.o(.text)
-    secp256k1_fe_is_zero                     0x00005245   Thumb Code    52  secp256k1.o(.text)
-    secp256k1_fe_is_odd                      0x00005279   Thumb Code    10  secp256k1.o(.text)
-    secp256k1_fe_clear                       0x00005283   Thumb Code    20  secp256k1.o(.text)
-    secp256k1_fe_cmp_var                     0x00005297   Thumb Code    54  secp256k1.o(.text)
-    secp256k1_fe_set_b32                     0x000052cd   Thumb Code   176  secp256k1.o(.text)
-    secp256k1_fe_get_b32                     0x0000537d   Thumb Code   100  secp256k1.o(.text)
-    secp256k1_fe_negate                      0x000053e1   Thumb Code   146  secp256k1.o(.text)
-    secp256k1_fe_mul_int                     0x00005473   Thumb Code    62  secp256k1.o(.text)
-    secp256k1_fe_add                         0x000054b1   Thumb Code    82  secp256k1.o(.text)
-    secp256k1_fe_mul_inner                   0x00005503   Thumb Code  3688  secp256k1.o(.text)
-    secp256k1_fe_sqr_inner                   0x0000636b   Thumb Code  2836  secp256k1.o(.text)
-    secp256k1_fe_mul                         0x00006e7f   Thumb Code    20  secp256k1.o(.text)
-    secp256k1_fe_sqr                         0x00006e93   Thumb Code    16  secp256k1.o(.text)
-    secp256k1_fe_cmov                        0x00006ea3   Thumb Code   130  secp256k1.o(.text)
-    secp256k1_fe_storage_cmov                0x00006f25   Thumb Code   106  secp256k1.o(.text)
-    secp256k1_fe_to_storage                  0x00006f8f   Thumb Code   102  secp256k1.o(.text)
-    secp256k1_fe_from_storage                0x00006ff5   Thumb Code   150  secp256k1.o(.text)
-    secp256k1_fe_equal                       0x0000708b   Thumb Code    36  secp256k1.o(.text)
-    secp256k1_fe_equal_var                   0x000070af   Thumb Code    36  secp256k1.o(.text)
-    secp256k1_fe_sqrt                        0x000070d3   Thumb Code   494  secp256k1.o(.text)
-    secp256k1_fe_inv                         0x000072c1   Thumb Code   512  secp256k1.o(.text)
-    secp256k1_fe_inv_var                     0x000074c1   Thumb Code    16  secp256k1.o(.text)
-    secp256k1_fe_inv_all_var                 0x000074d1   Thumb Code   158  secp256k1.o(.text)
-    secp256k1_fe_is_quad_var                 0x0000756f   Thumb Code    18  secp256k1.o(.text)
-    secp256k1_scalar_clear                   0x00007581   Thumb Code    20  secp256k1.o(.text)
-    secp256k1_scalar_set_int                 0x00007595   Thumb Code    20  secp256k1.o(.text)
-    secp256k1_scalar_set_u64                 0x000075a9   Thumb Code    20  secp256k1.o(.text)
-    secp256k1_scalar_get_bits                0x000075bd   Thumb Code    30  secp256k1.o(.text)
-    secp256k1_scalar_get_bits_var            0x000075db   Thumb Code    88  secp256k1.o(.text)
-    secp256k1_scalar_check_overflow          0x00007633   Thumb Code   212  secp256k1.o(.text)
-    secp256k1_scalar_reduce                  0x00007707   Thumb Code   172  secp256k1.o(.text)
-    secp256k1_scalar_add                     0x000077b3   Thumb Code   212  secp256k1.o(.text)
-    secp256k1_scalar_cadd_bit                0x00007887   Thumb Code   334  secp256k1.o(.text)
-    secp256k1_scalar_set_b32                 0x000079d5   Thumb Code   232  secp256k1.o(.text)
-    secp256k1_scalar_get_b32                 0x00007abd   Thumb Code   178  secp256k1.o(.text)
-    secp256k1_scalar_is_zero                 0x00007b6f   Thumb Code    42  secp256k1.o(.text)
-    secp256k1_scalar_negate                  0x00007b99   Thumb Code   236  secp256k1.o(.text)
-    secp256k1_scalar_is_one                  0x00007c85   Thumb Code    46  secp256k1.o(.text)
-    secp256k1_scalar_is_high                 0x00007cb3   Thumb Code   220  secp256k1.o(.text)
-    secp256k1_scalar_cond_negate             0x00007d8f   Thumb Code   292  secp256k1.o(.text)
-    secp256k1_scalar_reduce_512              0x00007eb3   Thumb Code  6240  secp256k1.o(.text)
-    secp256k1_scalar_mul_512                 0x00009713   Thumb Code  5650  secp256k1.o(.text)
-    secp256k1_scalar_sqr_512                 0x0000ad25   Thumb Code  5768  secp256k1.o(.text)
-    secp256k1_scalar_mul                     0x0000c3ad   Thumb Code    32  secp256k1.o(.text)
-    secp256k1_scalar_shr_int                 0x0000c3cd   Thumb Code   144  secp256k1.o(.text)
-    secp256k1_scalar_sqr                     0x0000c45d   Thumb Code    28  secp256k1.o(.text)
-    secp256k1_scalar_eq                      0x0000c479   Thumb Code    76  secp256k1.o(.text)
-    secp256k1_scalar_mul_shift_var           0x0000c4c5   Thumb Code   398  secp256k1.o(.text)
-    secp256k1_scalar_inverse                 0x0000c653   Thumb Code  1234  secp256k1.o(.text)
-    secp256k1_scalar_is_even                 0x0000cb25   Thumb Code    14  secp256k1.o(.text)
-    secp256k1_scalar_inverse_var             0x0000cb33   Thumb Code    16  secp256k1.o(.text)
-    secp256k1_ge_set_gej_zinv                0x0000cb43   Thumb Code    60  secp256k1.o(.text)
-    secp256k1_ge_set_xy                      0x0000cb7f   Thumb Code    36  secp256k1.o(.text)
-    secp256k1_ge_is_infinity                 0x0000cba3   Thumb Code     6  secp256k1.o(.text)
-    secp256k1_ge_neg                         0x0000cba9   Thumb Code    38  secp256k1.o(.text)
-    secp256k1_ge_set_gej                     0x0000cbcf   Thumb Code   104  secp256k1.o(.text)
-    secp256k1_ge_set_gej_var                 0x0000cc37   Thumb Code   112  secp256k1.o(.text)
-    secp256k1_ge_set_all_gej_var             0x0000cca7   Thumb Code   204  secp256k1.o(.text)
-    secp256k1_ge_set_table_gej_var           0x0000cd73   Thumb Code   118  secp256k1.o(.text)
-    secp256k1_ge_globalz_set_table_gej       0x0000cde9   Thumb Code   198  secp256k1.o(.text)
-    secp256k1_gej_set_infinity               0x0000ceaf   Thumb Code    32  secp256k1.o(.text)
-    secp256k1_gej_clear                      0x0000cecf   Thumb Code    32  secp256k1.o(.text)
-    secp256k1_ge_clear                       0x0000ceef   Thumb Code    24  secp256k1.o(.text)
-    secp256k1_ge_set_xquad                   0x0000cf07   Thumb Code    70  secp256k1.o(.text)
-    secp256k1_ge_set_xo_var                  0x0000cf4d   Thumb Code    58  secp256k1.o(.text)
-    secp256k1_gej_set_ge                     0x0000cf87   Thumb Code    46  secp256k1.o(.text)
-    secp256k1_gej_eq_x_var                   0x0000cfb5   Thumb Code    60  secp256k1.o(.text)
-    secp256k1_gej_neg                        0x0000cff1   Thumb Code    70  secp256k1.o(.text)
-    secp256k1_gej_is_infinity                0x0000d037   Thumb Code     6  secp256k1.o(.text)
-    secp256k1_gej_is_valid_var               0x0000d03d   Thumb Code   104  secp256k1.o(.text)
-    secp256k1_ge_is_valid_var                0x0000d0a5   Thumb Code    76  secp256k1.o(.text)
-    secp256k1_gej_double_var                 0x0000d0f1   Thumb Code   252  secp256k1.o(.text)
-    secp256k1_gej_double_nonzero             0x0000d1ed   Thumb Code    30  secp256k1.o(.text)
-    secp256k1_gej_add_var                    0x0000d20b   Thumb Code   418  secp256k1.o(.text)
-    secp256k1_gej_add_ge_var                 0x0000d3ad   Thumb Code   394  secp256k1.o(.text)
-    secp256k1_gej_add_zinv_var               0x0000d537   Thumb Code   430  secp256k1.o(.text)
-    secp256k1_gej_add_ge                     0x0000d6e5   Thumb Code   492  secp256k1.o(.text)
-    secp256k1_gej_rescale                    0x0000d8d1   Thumb Code    76  secp256k1.o(.text)
-    secp256k1_ge_to_storage                  0x0000d91d   Thumb Code    68  secp256k1.o(.text)
-    secp256k1_ge_from_storage                0x0000d961   Thumb Code    32  secp256k1.o(.text)
-    secp256k1_ge_storage_cmov                0x0000d981   Thumb Code    34  secp256k1.o(.text)
-    secp256k1_gej_has_quad_y_var             0x0000d9a3   Thumb Code    38  secp256k1.o(.text)
-    secp256k1_sha256_initialize              0x0000d9c9   Thumb Code    38  secp256k1.o(.text)
-    secp256k1_sha256_transform               0x0000d9ef   Thumb Code 12136  secp256k1.o(.text)
-    secp256k1_sha256_write                   0x00010957   Thumb Code   114  secp256k1.o(.text)
-    secp256k1_sha256_finalize                0x000109c9   Thumb Code   172  secp256k1.o(.text)
-    secp256k1_hmac_sha256_initialize         0x00010a75   Thumb Code   164  secp256k1.o(.text)
-    secp256k1_hmac_sha256_write              0x00010b19   Thumb Code    20  secp256k1.o(.text)
-    secp256k1_hmac_sha256_finalize           0x00010b2d   Thumb Code    50  secp256k1.o(.text)
-    secp256k1_rfc6979_hmac_sha256_initialize 0x00010b5f   Thumb Code   202  secp256k1.o(.text)
-    secp256k1_rfc6979_hmac_sha256_generate   0x00010c29   Thumb Code   156  secp256k1.o(.text)
-    secp256k1_rfc6979_hmac_sha256_finalize   0x00010cc5   Thumb Code    28  secp256k1.o(.text)
-    secp256k1_eckey_pubkey_parse             0x00010e57   Thumb Code   178  secp256k1.o(.text)
-    secp256k1_eckey_pubkey_serialize         0x00010f09   Thumb Code   102  secp256k1.o(.text)
-    secp256k1_pubkey_load                    0x00010f93   Thumb Code    32  secp256k1.o(.text)
-    secp256k1_pubkey_save                    0x00010fb3   Thumb Code    30  secp256k1.o(.text)
-    secp256k1_ecdsa_signature_load           0x00011055   Thumb Code    32  secp256k1.o(.text)
-    secp256k1_ecdsa_signature_save           0x00011075   Thumb Code    32  secp256k1.o(.text)
-    .text                                    0x000112d4   Section        0  sign.o(.text)
-    is_valid_ec_type                         0x000112dd   Thumb Code    26  sign.o(.text)
-    varint_len                               0x00011463   Thumb Code    14  sign.o(.text)
-    .text                                    0x0001155c   Section        0  hex.o(.text)
-    hex_str_size                             0x0001155d   Thumb Code     8  hex.o(.text)
-    hex_data_size                            0x00011565   Thumb Code     6  hex.o(.text)
-    hexchar                                  0x000115f7   Thumb Code    32  hex.o(.text)
-    .text                                    0x0001174c   Section        0  pbkdf2.o(.text)
-    write32_be                               0x0001174d   Thumb Code    16  pbkdf2.o(.text)
-    write64_be                               0x0001175d   Thumb Code    26  pbkdf2.o(.text)
-    md_pad                                   0x00011777   Thumb Code    42  pbkdf2.o(.text)
-    .text                                    0x000119f0   Section        0  bip39.o(.text)
-    .text                                    0x00011ab4   Section        0  hrng.o(.text)
-    get_inter_hrng8                          0x00011b27   Thumb Code    20  hrng.o(.text)
-    .text                                    0x00011c40   Section        0  ecdsa.o(.text)
-    .text                                    0x00012140   Section        0  ecc.o(.text)
-    .text                                    0x000126b8   Section        0  ecc_rom.o(.text)
-    .text                                    0x000128a8   Section        0  math.o(.text)
-    .text                                    0x0001326c   Section        0  uldiv.o(.text)
-    .text                                    0x000132ce   Section        0  llushr.o(.text)
-    .text                                    0x000132f0   Section        0  ctype_o.o(.text)
-    .text                                    0x000132f8   Section        0  memcpya.o(.text)
-    .text                                    0x0001331c   Section        0  memseta.o(.text)
-    .text                                    0x00013340   Section        0  strstr.o(.text)
-    .text                                    0x00013364   Section        0  strncpy.o(.text)
-    .text                                    0x0001337c   Section        0  strlen.o(.text)
-    .text                                    0x0001338a   Section        0  strcmp.o(.text)
-    .text                                    0x000133a8   Section        0  strtok.o(.text)
-    .text                                    0x000133ec   Section        0  atoi.o(.text)
-    .text                                    0x00013406   Section        0  llshl.o(.text)
-    .text                                    0x00013424   Section        0  strtol.o(.text)
-    .text                                    0x00013494   Section       36  init.o(.text)
-    .text                                    0x000134b8   Section        0  _strtoul.o(.text)
-    .text                                    0x00013556   Section        0  _chval.o(.text)
-    .text                                    0x00013572   Section        0  __dclz77c.o(.text)
-    i.__0printf$8                            0x000135d0   Section        0  printf8.o(i.__0printf$8)
-    i.__0sprintf$8                           0x000135f0   Section        0  printf8.o(i.__0sprintf$8)
-    i.__aeabi_errno_addr                     0x00013618   Section        0  errno.o(i.__aeabi_errno_addr)
-    i.__free$realloc                         0x00013620   Section        0  mallocr.o(i.__free$realloc)
-    i.__malloc$realloc                       0x0001367c   Section        0  mallocr.o(i.__malloc$realloc)
-    i.__scatterload_copy                     0x000136cc   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x000136da   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x000136dc   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i._printf_core                           0x000136ec   Section        0  printf8.o(i._printf_core)
-    _printf_core                             0x000136ed   Thumb Code   996  printf8.o(i._printf_core)
-    i._printf_post_padding                   0x00013afc   Section        0  printf8.o(i._printf_post_padding)
-    _printf_post_padding                     0x00013afd   Thumb Code    36  printf8.o(i._printf_post_padding)
-    i._printf_pre_padding                    0x00013b20   Section        0  printf8.o(i._printf_pre_padding)
-    _printf_pre_padding                      0x00013b21   Thumb Code    46  printf8.o(i._printf_pre_padding)
-    i._sputc                                 0x00013b4e   Section        0  printf8.o(i._sputc)
-    _sputc                                   0x00013b4f   Thumb Code    10  printf8.o(i._sputc)
-    i.internal_alloc                         0x00013b58   Section        0  mallocr.o(i.internal_alloc)
-    internal_alloc                           0x00013b59   Thumb Code    76  mallocr.o(i.internal_alloc)
-    .constdata                               0x00013ba8   Section       12  bip32.o(.constdata)
-    SEED                                     0x00013ba8   Data          12  bip32.o(.constdata)
-    .constdata                               0x00013bb8   Section      160  ripemd160.o(.constdata)
-    pad                                      0x00013c18   Data          64  ripemd160.o(.constdata)
-    .constdata                               0x00013c58   Section      307  secp256k1.o(.constdata)
-    fe_1                                     0x00013d20   Data          40  secp256k1.o(.constdata)
-    pad                                      0x00013d48   Data          64  secp256k1.o(.constdata)
-    zero                                     0x00013d88   Data           1  secp256k1.o(.constdata)
-    one                                      0x00013d89   Data           1  secp256k1.o(.constdata)
-    zero                                     0x00013d8a   Data           1  secp256k1.o(.constdata)
-    .constdata                               0x00013d8b   Section       26  sign.o(.constdata)
-    MSG_PREFIX                               0x00013d8b   Data          26  sign.o(.constdata)
-    .constdata                               0x00013da5   Section      129  ctype_o.o(.constdata)
-    .constdata                               0x00013e28   Section        4  ctype_o.o(.constdata)
-    table                                    0x00013e28   Data           4  ctype_o.o(.constdata)
-    .conststring                             0x00013e2c   Section      606  app.o(.conststring)
+    .text                                    0x00000f8c   Section        0  main.o(.text)
+    .text                                    0x00000fa4   Section        0  hmac_sha2.o(.text)
+    .text                                    0x000015cc   Section        0  sha2.o(.text)
+    .text                                    0x00002358   Section        0  bip32.o(.text)
+    bswap_16                                 0x00002359   Thumb Code    12  bip32.o(.text)
+    bswap_32                                 0x00002365   Thumb Code    26  bip32.o(.text)
+    bswap_64                                 0x0000237f   Thumb Code   132  bip32.o(.text)
+    cpu_to_le64                              0x00002403   Thumb Code     2  bip32.o(.text)
+    cpu_to_le32                              0x00002405   Thumb Code     2  bip32.o(.text)
+    cpu_to_le16                              0x00002407   Thumb Code     2  bip32.o(.text)
+    le64_to_cpu                              0x00002409   Thumb Code     2  bip32.o(.text)
+    le32_to_cpu                              0x0000240b   Thumb Code     2  bip32.o(.text)
+    le16_to_cpu                              0x0000240d   Thumb Code     2  bip32.o(.text)
+    cpu_to_be64                              0x0000240f   Thumb Code   132  bip32.o(.text)
+    cpu_to_be32                              0x00002493   Thumb Code    26  bip32.o(.text)
+    cpu_to_be16                              0x000024ad   Thumb Code    12  bip32.o(.text)
+    be64_to_cpu                              0x000024b9   Thumb Code   132  bip32.o(.text)
+    be32_to_cpu                              0x0000253d   Thumb Code    26  bip32.o(.text)
+    be16_to_cpu                              0x00002557   Thumb Code    12  bip32.o(.text)
+    mem_is_zero                              0x00002563   Thumb Code    26  bip32.o(.text)
+    child_is_hardened                        0x0000257d   Thumb Code    16  bip32.o(.text)
+    version_is_valid                         0x0000258d   Thumb Code    42  bip32.o(.text)
+    version_is_mainnet                       0x000025b7   Thumb Code    22  bip32.o(.text)
+    key_is_private                           0x000025cd   Thumb Code    16  bip32.o(.text)
+    key_strip_private_key                    0x000025dd   Thumb Code    22  bip32.o(.text)
+    key_compute_pub_key                      0x000025f3   Thumb Code    22  bip32.o(.text)
+    key_compute_hash160                      0x00002609   Thumb Code    22  bip32.o(.text)
+    is_valid_seed_len                        0x00002635   Thumb Code    22  bip32.o(.text)
+    copy_out                                 0x00002743   Thumb Code    22  bip32.o(.text)
+    key_is_valid                             0x00002759   Thumb Code   156  bip32.o(.text)
+    copy_in                                  0x000028c7   Thumb Code    22  bip32.o(.text)
+    wipe_key_fail                            0x000028dd   Thumb Code    18  bip32.o(.text)
+    .text                                    0x00002ef8   Section        0  hmac.o(.text)
+    .text                                    0x00002f44   Section        0  internal.o(.text)
+    wally_internal_bzero                     0x00003147   Thumb Code    16  internal.o(.text)
+    wally_internal_malloc                    0x00003157   Thumb Code    12  internal.o(.text)
+    wally_internal_free                      0x00003163   Thumb Code    14  internal.o(.text)
+    .text                                    0x00003358   Section        0  ripemd160.o(.text)
+    bswap_16                                 0x00003359   Thumb Code    12  ripemd160.o(.text)
+    bswap_32                                 0x00003365   Thumb Code    26  ripemd160.o(.text)
+    bswap_64                                 0x0000337f   Thumb Code   132  ripemd160.o(.text)
+    cpu_to_le64                              0x00003403   Thumb Code     2  ripemd160.o(.text)
+    cpu_to_le32                              0x00003405   Thumb Code     2  ripemd160.o(.text)
+    cpu_to_le16                              0x00003407   Thumb Code     2  ripemd160.o(.text)
+    le64_to_cpu                              0x00003409   Thumb Code     2  ripemd160.o(.text)
+    le32_to_cpu                              0x0000340b   Thumb Code     2  ripemd160.o(.text)
+    le16_to_cpu                              0x0000340d   Thumb Code     2  ripemd160.o(.text)
+    cpu_to_be64                              0x0000340f   Thumb Code   132  ripemd160.o(.text)
+    cpu_to_be32                              0x00003493   Thumb Code    26  ripemd160.o(.text)
+    cpu_to_be16                              0x000034ad   Thumb Code    12  ripemd160.o(.text)
+    be64_to_cpu                              0x000034b9   Thumb Code   132  ripemd160.o(.text)
+    be32_to_cpu                              0x0000353d   Thumb Code    26  ripemd160.o(.text)
+    be16_to_cpu                              0x00003557   Thumb Code    12  ripemd160.o(.text)
+    invalidate_ripemd160                     0x00003563   Thumb Code    10  ripemd160.o(.text)
+    f1                                       0x0000356d   Thumb Code    10  ripemd160.o(.text)
+    f2                                       0x00003577   Thumb Code    16  ripemd160.o(.text)
+    f3                                       0x00003587   Thumb Code    12  ripemd160.o(.text)
+    f4                                       0x00003593   Thumb Code    16  ripemd160.o(.text)
+    f5                                       0x000035a3   Thumb Code    12  ripemd160.o(.text)
+    Initialize                               0x000035af   Thumb Code    26  ripemd160.o(.text)
+    rol                                      0x000035c9   Thumb Code    18  ripemd160.o(.text)
+    Round                                    0x000035db   Thumb Code    50  ripemd160.o(.text)
+    R11                                      0x0000360d   Thumb Code    66  ripemd160.o(.text)
+    R21                                      0x0000364f   Thumb Code    66  ripemd160.o(.text)
+    R31                                      0x00003691   Thumb Code    66  ripemd160.o(.text)
+    R41                                      0x000036d3   Thumb Code    66  ripemd160.o(.text)
+    R51                                      0x00003715   Thumb Code    66  ripemd160.o(.text)
+    R12                                      0x00003757   Thumb Code    66  ripemd160.o(.text)
+    R22                                      0x00003799   Thumb Code    66  ripemd160.o(.text)
+    R32                                      0x000037db   Thumb Code    66  ripemd160.o(.text)
+    R42                                      0x0000381d   Thumb Code    66  ripemd160.o(.text)
+    R52                                      0x0000385f   Thumb Code    66  ripemd160.o(.text)
+    Transform                                0x000038a1   Thumb Code  4220  ripemd160.o(.text)
+    add                                      0x0000491d   Thumb Code   190  ripemd160.o(.text)
+    .text                                    0x00004bac   Section        0  secp256k1.o(.text)
+    secp256k1_callback_call                  0x00004bad   Thumb Code    16  secp256k1.o(.text)
+    checked_malloc                           0x00004bbd   Thumb Code    28  secp256k1.o(.text)
+    secp256k1_sign_and_abs64                 0x00004bd9   Thumb Code   118  secp256k1.o(.text)
+    secp256k1_clz64_var                      0x00004c4f   Thumb Code    54  secp256k1.o(.text)
+    secp256k1_fe_normalize                   0x00004c85   Thumb Code   424  secp256k1.o(.text)
+    secp256k1_fe_normalize_weak              0x00004e2d   Thumb Code   156  secp256k1.o(.text)
+    secp256k1_fe_normalize_var               0x00004ec9   Thumb Code   448  secp256k1.o(.text)
+    secp256k1_fe_normalizes_to_zero          0x00005089   Thumb Code   256  secp256k1.o(.text)
+    secp256k1_fe_normalizes_to_zero_var      0x00005189   Thumb Code   288  secp256k1.o(.text)
+    secp256k1_fe_set_int                     0x000052a9   Thumb Code    24  secp256k1.o(.text)
+    secp256k1_fe_is_zero                     0x000052c1   Thumb Code    52  secp256k1.o(.text)
+    secp256k1_fe_is_odd                      0x000052f5   Thumb Code    10  secp256k1.o(.text)
+    secp256k1_fe_clear                       0x000052ff   Thumb Code    20  secp256k1.o(.text)
+    secp256k1_fe_cmp_var                     0x00005313   Thumb Code    54  secp256k1.o(.text)
+    secp256k1_fe_set_b32                     0x00005349   Thumb Code   176  secp256k1.o(.text)
+    secp256k1_fe_get_b32                     0x000053f9   Thumb Code   100  secp256k1.o(.text)
+    secp256k1_fe_negate                      0x0000545d   Thumb Code   146  secp256k1.o(.text)
+    secp256k1_fe_mul_int                     0x000054ef   Thumb Code    62  secp256k1.o(.text)
+    secp256k1_fe_add                         0x0000552d   Thumb Code    82  secp256k1.o(.text)
+    secp256k1_fe_mul_inner                   0x0000557f   Thumb Code  3688  secp256k1.o(.text)
+    secp256k1_fe_sqr_inner                   0x000063e7   Thumb Code  2836  secp256k1.o(.text)
+    secp256k1_fe_mul                         0x00006efb   Thumb Code    20  secp256k1.o(.text)
+    secp256k1_fe_sqr                         0x00006f0f   Thumb Code    16  secp256k1.o(.text)
+    secp256k1_fe_cmov                        0x00006f1f   Thumb Code   130  secp256k1.o(.text)
+    secp256k1_fe_storage_cmov                0x00006fa1   Thumb Code   106  secp256k1.o(.text)
+    secp256k1_fe_to_storage                  0x0000700b   Thumb Code   102  secp256k1.o(.text)
+    secp256k1_fe_from_storage                0x00007071   Thumb Code   150  secp256k1.o(.text)
+    secp256k1_fe_equal                       0x00007107   Thumb Code    36  secp256k1.o(.text)
+    secp256k1_fe_equal_var                   0x0000712b   Thumb Code    36  secp256k1.o(.text)
+    secp256k1_fe_sqrt                        0x0000714f   Thumb Code   494  secp256k1.o(.text)
+    secp256k1_fe_inv                         0x0000733d   Thumb Code   512  secp256k1.o(.text)
+    secp256k1_fe_inv_var                     0x0000753d   Thumb Code    16  secp256k1.o(.text)
+    secp256k1_fe_inv_all_var                 0x0000754d   Thumb Code   158  secp256k1.o(.text)
+    secp256k1_fe_is_quad_var                 0x000075eb   Thumb Code    18  secp256k1.o(.text)
+    secp256k1_scalar_clear                   0x000075fd   Thumb Code    20  secp256k1.o(.text)
+    secp256k1_scalar_set_int                 0x00007611   Thumb Code    20  secp256k1.o(.text)
+    secp256k1_scalar_set_u64                 0x00007625   Thumb Code    20  secp256k1.o(.text)
+    secp256k1_scalar_get_bits                0x00007639   Thumb Code    30  secp256k1.o(.text)
+    secp256k1_scalar_get_bits_var            0x00007657   Thumb Code    88  secp256k1.o(.text)
+    secp256k1_scalar_check_overflow          0x000076af   Thumb Code   212  secp256k1.o(.text)
+    secp256k1_scalar_reduce                  0x00007783   Thumb Code   172  secp256k1.o(.text)
+    secp256k1_scalar_add                     0x0000782f   Thumb Code   212  secp256k1.o(.text)
+    secp256k1_scalar_cadd_bit                0x00007903   Thumb Code   334  secp256k1.o(.text)
+    secp256k1_scalar_set_b32                 0x00007a51   Thumb Code   232  secp256k1.o(.text)
+    secp256k1_scalar_get_b32                 0x00007b39   Thumb Code   178  secp256k1.o(.text)
+    secp256k1_scalar_is_zero                 0x00007beb   Thumb Code    42  secp256k1.o(.text)
+    secp256k1_scalar_negate                  0x00007c15   Thumb Code   236  secp256k1.o(.text)
+    secp256k1_scalar_is_one                  0x00007d01   Thumb Code    46  secp256k1.o(.text)
+    secp256k1_scalar_is_high                 0x00007d2f   Thumb Code   220  secp256k1.o(.text)
+    secp256k1_scalar_cond_negate             0x00007e0b   Thumb Code   292  secp256k1.o(.text)
+    secp256k1_scalar_reduce_512              0x00007f2f   Thumb Code  6240  secp256k1.o(.text)
+    secp256k1_scalar_mul_512                 0x0000978f   Thumb Code  5650  secp256k1.o(.text)
+    secp256k1_scalar_sqr_512                 0x0000ada1   Thumb Code  5768  secp256k1.o(.text)
+    secp256k1_scalar_mul                     0x0000c429   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_scalar_shr_int                 0x0000c449   Thumb Code   144  secp256k1.o(.text)
+    secp256k1_scalar_sqr                     0x0000c4d9   Thumb Code    28  secp256k1.o(.text)
+    secp256k1_scalar_eq                      0x0000c4f5   Thumb Code    76  secp256k1.o(.text)
+    secp256k1_scalar_mul_shift_var           0x0000c541   Thumb Code   398  secp256k1.o(.text)
+    secp256k1_scalar_inverse                 0x0000c6cf   Thumb Code  1234  secp256k1.o(.text)
+    secp256k1_scalar_is_even                 0x0000cba1   Thumb Code    14  secp256k1.o(.text)
+    secp256k1_scalar_inverse_var             0x0000cbaf   Thumb Code    16  secp256k1.o(.text)
+    secp256k1_ge_set_gej_zinv                0x0000cbbf   Thumb Code    60  secp256k1.o(.text)
+    secp256k1_ge_set_xy                      0x0000cbfb   Thumb Code    36  secp256k1.o(.text)
+    secp256k1_ge_is_infinity                 0x0000cc1f   Thumb Code     6  secp256k1.o(.text)
+    secp256k1_ge_neg                         0x0000cc25   Thumb Code    38  secp256k1.o(.text)
+    secp256k1_ge_set_gej                     0x0000cc4b   Thumb Code   104  secp256k1.o(.text)
+    secp256k1_ge_set_gej_var                 0x0000ccb3   Thumb Code   112  secp256k1.o(.text)
+    secp256k1_ge_set_all_gej_var             0x0000cd23   Thumb Code   204  secp256k1.o(.text)
+    secp256k1_ge_set_table_gej_var           0x0000cdef   Thumb Code   118  secp256k1.o(.text)
+    secp256k1_ge_globalz_set_table_gej       0x0000ce65   Thumb Code   198  secp256k1.o(.text)
+    secp256k1_gej_set_infinity               0x0000cf2b   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_gej_clear                      0x0000cf4b   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_ge_clear                       0x0000cf6b   Thumb Code    24  secp256k1.o(.text)
+    secp256k1_ge_set_xquad                   0x0000cf83   Thumb Code    70  secp256k1.o(.text)
+    secp256k1_ge_set_xo_var                  0x0000cfc9   Thumb Code    58  secp256k1.o(.text)
+    secp256k1_gej_set_ge                     0x0000d003   Thumb Code    46  secp256k1.o(.text)
+    secp256k1_gej_eq_x_var                   0x0000d031   Thumb Code    60  secp256k1.o(.text)
+    secp256k1_gej_neg                        0x0000d06d   Thumb Code    70  secp256k1.o(.text)
+    secp256k1_gej_is_infinity                0x0000d0b3   Thumb Code     6  secp256k1.o(.text)
+    secp256k1_gej_is_valid_var               0x0000d0b9   Thumb Code   104  secp256k1.o(.text)
+    secp256k1_ge_is_valid_var                0x0000d121   Thumb Code    76  secp256k1.o(.text)
+    secp256k1_gej_double_var                 0x0000d16d   Thumb Code   252  secp256k1.o(.text)
+    secp256k1_gej_double_nonzero             0x0000d269   Thumb Code    30  secp256k1.o(.text)
+    secp256k1_gej_add_var                    0x0000d287   Thumb Code   418  secp256k1.o(.text)
+    secp256k1_gej_add_ge_var                 0x0000d429   Thumb Code   394  secp256k1.o(.text)
+    secp256k1_gej_add_zinv_var               0x0000d5b3   Thumb Code   430  secp256k1.o(.text)
+    secp256k1_gej_add_ge                     0x0000d761   Thumb Code   492  secp256k1.o(.text)
+    secp256k1_gej_rescale                    0x0000d94d   Thumb Code    76  secp256k1.o(.text)
+    secp256k1_ge_to_storage                  0x0000d999   Thumb Code    68  secp256k1.o(.text)
+    secp256k1_ge_from_storage                0x0000d9dd   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_ge_storage_cmov                0x0000d9fd   Thumb Code    34  secp256k1.o(.text)
+    secp256k1_gej_has_quad_y_var             0x0000da1f   Thumb Code    38  secp256k1.o(.text)
+    secp256k1_eckey_pubkey_parse             0x0000dba9   Thumb Code   178  secp256k1.o(.text)
+    secp256k1_eckey_pubkey_serialize         0x0000dc5b   Thumb Code   102  secp256k1.o(.text)
+    secp256k1_pubkey_load                    0x0000dcc1   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_pubkey_save                    0x0000dce1   Thumb Code    30  secp256k1.o(.text)
+    secp256k1_ecdsa_signature_load           0x0000dd89   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_ecdsa_signature_save           0x0000dda9   Thumb Code    32  secp256k1.o(.text)
+    secp256k1_fe_get                         0x0000de4b   Thumb Code    48  secp256k1.o(.text)
+    .text                                    0x0000e108   Section        0  sign.o(.text)
+    is_valid_ec_type                         0x0000e109   Thumb Code    26  sign.o(.text)
+    varint_len                               0x0000e2ab   Thumb Code    14  sign.o(.text)
+    .text                                    0x0000e3a4   Section        0  hex.o(.text)
+    hex_str_size                             0x0000e3a5   Thumb Code     8  hex.o(.text)
+    hex_data_size                            0x0000e3ad   Thumb Code     6  hex.o(.text)
+    hexchar                                  0x0000e43f   Thumb Code    32  hex.o(.text)
+    .text                                    0x0000e594   Section        0  pbkdf2.o(.text)
+    write32_be                               0x0000e595   Thumb Code    16  pbkdf2.o(.text)
+    write64_be                               0x0000e5a5   Thumb Code    26  pbkdf2.o(.text)
+    md_pad                                   0x0000e5bf   Thumb Code    42  pbkdf2.o(.text)
+    .text                                    0x0000e838   Section        0  bip39.o(.text)
+    .text                                    0x0000e8fc   Section        0  hrng.o(.text)
+    get_inter_hrng8                          0x0000e96f   Thumb Code    20  hrng.o(.text)
+    .text                                    0x0000ea88   Section        0  ecdsa.o(.text)
+    .text                                    0x0000ef88   Section        0  ecc.o(.text)
+    .text                                    0x0000f500   Section        0  ecc_rom.o(.text)
+    .text                                    0x0000f6f0   Section        0  math.o(.text)
+    .text                                    0x000100b4   Section        0  uldiv.o(.text)
+    .text                                    0x00010116   Section        0  llushr.o(.text)
+    .text                                    0x00010136   Section        0  memcpya.o(.text)
+    .text                                    0x0001015a   Section        0  memseta.o(.text)
+    .text                                    0x0001017e   Section        0  strstr.o(.text)
+    .text                                    0x000101a2   Section        0  strncpy.o(.text)
+    .text                                    0x000101ba   Section        0  strlen.o(.text)
+    .text                                    0x000101c8   Section        0  strcmp.o(.text)
+    .text                                    0x000101e4   Section        0  strtok.o(.text)
+    .text                                    0x00010228   Section        0  atoi.o(.text)
+    .text                                    0x00010242   Section        0  llshl.o(.text)
+    .text                                    0x00010260   Section        0  strtol.o(.text)
+    .text                                    0x000102d0   Section       36  init.o(.text)
+    .text                                    0x000102f4   Section        0  ctype_o.o(.text)
+    .text                                    0x000102fc   Section        0  _strtoul.o(.text)
+    .text                                    0x0001039a   Section        0  _chval.o(.text)
+    .text                                    0x000103b6   Section        0  __dclz77c.o(.text)
+    i.__0printf$8                            0x00010414   Section        0  printf8.o(i.__0printf$8)
+    i.__0sprintf$8                           0x00010434   Section        0  printf8.o(i.__0sprintf$8)
+    i.__aeabi_errno_addr                     0x0001045c   Section        0  errno.o(i.__aeabi_errno_addr)
+    i.__scatterload_copy                     0x00010464   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x00010472   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x00010474   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i._printf_core                           0x00010484   Section        0  printf8.o(i._printf_core)
+    _printf_core                             0x00010485   Thumb Code   996  printf8.o(i._printf_core)
+    i._printf_post_padding                   0x00010894   Section        0  printf8.o(i._printf_post_padding)
+    _printf_post_padding                     0x00010895   Thumb Code    36  printf8.o(i._printf_post_padding)
+    i._printf_pre_padding                    0x000108b8   Section        0  printf8.o(i._printf_pre_padding)
+    _printf_pre_padding                      0x000108b9   Thumb Code    46  printf8.o(i._printf_pre_padding)
+    i._sputc                                 0x000108e6   Section        0  printf8.o(i._sputc)
+    _sputc                                   0x000108e7   Thumb Code    10  printf8.o(i._sputc)
+    i.free                                   0x000108f0   Section        0  malloc.o(i.free)
+    i.malloc                                 0x00010940   Section        0  malloc.o(i.malloc)
+    .constdata                               0x000109ac   Section       12  bip32.o(.constdata)
+    SEED                                     0x000109ac   Data          12  bip32.o(.constdata)
+    .constdata                               0x000109b8   Section      160  ripemd160.o(.constdata)
+    pad                                      0x00010a18   Data          64  ripemd160.o(.constdata)
+    .constdata                               0x00010a58   Section      240  secp256k1.o(.constdata)
+    fe_1                                     0x00010b20   Data          40  secp256k1.o(.constdata)
+    .constdata                               0x00010b48   Section       26  sign.o(.constdata)
+    MSG_PREFIX                               0x00010b48   Data          26  sign.o(.constdata)
+    .constdata                               0x00010b62   Section      129  ctype_o.o(.constdata)
+    .constdata                               0x00010be4   Section        4  ctype_o.o(.constdata)
+    table                                    0x00010be4   Data           4  ctype_o.o(.constdata)
+    .conststring                             0x00010be8   Section      474  app.o(.conststring)
     .data                                    0x20000040   Section       12  system_ach512.o(.data)
     .data                                    0x2000004c   Section        3  uart.o(.data)
-    .data                                    0x20000050   Section        8  app.o(.data)
+    .data                                    0x20000050   Section        4  app.o(.data)
     .data                                    0x20000058   Section     1088  sha2.o(.data)
     .data                                    0x20000498   Section       17  internal.o(.data)
     _ops                                     0x20000498   Data          16  internal.o(.data)
@@ -904,10 +875,9 @@ Image Symbol Table
     .data                                    0x200004bc   Section        4  errno.o(.data)
     _errno                                   0x200004bc   Data           4  errno.o(.data)
     .bss                                     0x200004c0   Section       32  uart.o(.bss)
-    .bss                                     0x200004e0   Section     1184  app.o(.bss)
-    .bss                                     0x20000980   Section       72  secp256k1.o(.bss)
-    HEAP                                     0x200009c8   Section     2560  startup.o(HEAP)
-    STACK                                    0x200013c8   Section     2048  startup.o(STACK)
+    .bss                                     0x200004e0   Section     1248  app.o(.bss)
+    HEAP                                     0x200009c0   Section     2560  startup.o(HEAP)
+    STACK                                    0x200013c0   Section     2048  startup.o(STACK)
 
     Global Symbols
 
@@ -1027,235 +997,234 @@ Image Symbol Table
     hrng_entropy                             0x00000a8b   Thumb Code    60  app.o(.text)
     child_path_split                         0x00000ac7   Thumb Code   120  app.o(.text)
     derived                                  0x00000b3f   Thumb Code   358  app.o(.text)
-    keysign                                  0x00000ca5   Thumb Code    80  app.o(.text)
-    init_boot                                0x00000cf5   Thumb Code   118  app.o(.text)
-    main                                     0x00000f09   Thumb Code    22  main.o(.text)
-    hmac_sha224_init                         0x00000f21   Thumb Code   190  hmac_sha2.o(.text)
-    hmac_sha224_reinit                       0x00000fdf   Thumb Code    32  hmac_sha2.o(.text)
-    hmac_sha224_update                       0x00000fff   Thumb Code    20  hmac_sha2.o(.text)
-    hmac_sha224_final                        0x00001013   Thumb Code    54  hmac_sha2.o(.text)
-    hmac_sha224                              0x00001049   Thumb Code    62  hmac_sha2.o(.text)
-    hmac_sha256_init                         0x00001087   Thumb Code   188  hmac_sha2.o(.text)
-    hmac_sha256_reinit                       0x00001143   Thumb Code    32  hmac_sha2.o(.text)
-    hmac_sha256_update                       0x00001163   Thumb Code    20  hmac_sha2.o(.text)
-    hmac_sha256_final                        0x00001177   Thumb Code    54  hmac_sha2.o(.text)
-    hmac_sha256                              0x000011ad   Thumb Code    62  hmac_sha2.o(.text)
-    hmac_sha384_init                         0x000011eb   Thumb Code   192  hmac_sha2.o(.text)
-    hmac_sha384_reinit                       0x000012ab   Thumb Code    36  hmac_sha2.o(.text)
-    hmac_sha384_update                       0x000012cf   Thumb Code    20  hmac_sha2.o(.text)
-    hmac_sha384_final                        0x000012e3   Thumb Code    54  hmac_sha2.o(.text)
-    hmac_sha384                              0x00001319   Thumb Code    62  hmac_sha2.o(.text)
-    hmac_sha512_init                         0x00001357   Thumb Code   192  hmac_sha2.o(.text)
-    hmac_sha512_reinit                       0x00001417   Thumb Code    36  hmac_sha2.o(.text)
-    hmac_sha512_update                       0x0000143b   Thumb Code    20  hmac_sha2.o(.text)
-    hmac_sha512_final                        0x0000144f   Thumb Code    54  hmac_sha2.o(.text)
-    hmac_sha512                              0x00001485   Thumb Code    62  hmac_sha2.o(.text)
-    test                                     0x000014c3   Thumb Code    78  hmac_sha2.o(.text)
-    sha256_transf                            0x00001549   Thumb Code   598  sha2.o(.text)
-    sha256_final                             0x0000179f   Thumb Code   202  sha2.o(.text)
-    sha256_update                            0x00001869   Thumb Code   130  sha2.o(.text)
-    sha256_init                              0x000018eb   Thumb Code    34  sha2.o(.text)
-    sha256                                   0x0000190d   Thumb Code    38  sha2.o(.text)
-    sha512_transf                            0x00001933   Thumb Code  1034  sha2.o(.text)
-    sha512_final                             0x00001d3d   Thumb Code   296  sha2.o(.text)
-    sha512_update                            0x00001e65   Thumb Code   130  sha2.o(.text)
-    sha512_init                              0x00001ee7   Thumb Code    44  sha2.o(.text)
-    sha512                                   0x00001f13   Thumb Code    38  sha2.o(.text)
-    sha384_final                             0x00001f39   Thumb Code   296  sha2.o(.text)
-    sha384_update                            0x00002061   Thumb Code   130  sha2.o(.text)
-    sha384_init                              0x000020e3   Thumb Code    44  sha2.o(.text)
-    sha384                                   0x0000210f   Thumb Code    38  sha2.o(.text)
-    sha224_final                             0x00002135   Thumb Code   202  sha2.o(.text)
-    sha224_update                            0x000021ff   Thumb Code   130  sha2.o(.text)
-    sha224_init                              0x00002281   Thumb Code    34  sha2.o(.text)
-    sha224                                   0x000022a3   Thumb Code    50  sha2.o(.text)
-    bip32_key_free                           0x0000259b   Thumb Code    22  bip32.o(.text)
-    bip32_key_from_seed                      0x000025c7   Thumb Code   164  bip32.o(.text)
-    bip32_key_from_seed_alloc                0x0000266b   Thumb Code    84  bip32.o(.text)
-    bip32_key_serialize                      0x00002771   Thumb Code   210  bip32.o(.text)
-    bip32_key_unserialize                    0x0000286b   Thumb Code   262  bip32.o(.text)
-    bip32_key_unserialize_alloc              0x00002971   Thumb Code    74  bip32.o(.text)
-    bip32_key_from_parent                    0x000029bb   Thumb Code   442  bip32.o(.text)
-    bip32_key_from_parent_alloc              0x00002b75   Thumb Code    78  bip32.o(.text)
-    bip32_key_from_parent_path               0x00002bc3   Thumb Code   162  bip32.o(.text)
-    bip32_key_from_parent_path_alloc         0x00002c65   Thumb Code    84  bip32.o(.text)
-    bip32_key_init_alloc                     0x00002cb9   Thumb Code   428  bip32.o(.text)
-    hmac_sha256_impl                         0x00002e75   Thumb Code    38  hmac.o(.text)
-    hmac_sha512_impl                         0x00002e9b   Thumb Code    38  hmac.o(.text)
-    wally_free                               0x00002ec1   Thumb Code    14  internal.o(.text)
-    wally_clear                              0x00002ecf   Thumb Code    18  internal.o(.text)
-    wally_free_string                        0x00002ee1   Thumb Code    38  internal.o(.text)
-    wally_bzero                              0x00002f07   Thumb Code    26  internal.o(.text)
-    wally_sha256                             0x00002f21   Thumb Code    96  internal.o(.text)
-    wally_sha256d                            0x00002f81   Thumb Code   114  internal.o(.text)
-    wally_sha512                             0x00002ff3   Thumb Code    96  internal.o(.text)
-    wally_hash160                            0x00003053   Thumb Code   112  internal.o(.text)
-    wally_malloc                             0x000030ed   Thumb Code    14  internal.o(.text)
-    wally_strdup                             0x000030fb   Thumb Code    36  internal.o(.text)
-    wally_ops                                0x0000311f   Thumb Code     4  internal.o(.text)
-    wally_get_operations                     0x00003123   Thumb Code    24  internal.o(.text)
-    wally_set_operations                     0x0000313b   Thumb Code    54  internal.o(.text)
-    wally_clear_2                            0x00003171   Thumb Code    36  internal.o(.text)
-    wally_clear_3                            0x00003195   Thumb Code    50  internal.o(.text)
-    wally_clear_4                            0x000031c7   Thumb Code    64  internal.o(.text)
-    wally_clear_5                            0x00003207   Thumb Code    74  internal.o(.text)
-    wally_clear_6                            0x00003251   Thumb Code    88  internal.o(.text)
-    wally_init                               0x000032a9   Thumb Code    26  internal.o(.text)
-    wally_cleanup                            0x000032c3   Thumb Code    14  internal.o(.text)
-    ripemd160_init                           0x00004959   Thumb Code    30  ripemd160.o(.text)
-    ripemd160_update                         0x00004977   Thumb Code    26  ripemd160.o(.text)
-    ripemd160_done                           0x00004991   Thumb Code   128  ripemd160.o(.text)
-    ripemd160                                0x00004a11   Thumb Code    46  ripemd160.o(.text)
-    ripemd160_u8                             0x00004a3f   Thumb Code    16  ripemd160.o(.text)
-    ripemd160_u16                            0x00004a4f   Thumb Code    16  ripemd160.o(.text)
-    ripemd160_u32                            0x00004a5f   Thumb Code    16  ripemd160.o(.text)
-    ripemd160_u64                            0x00004a6f   Thumb Code    16  ripemd160.o(.text)
-    ripemd160_le16                           0x00004a7f   Thumb Code    26  ripemd160.o(.text)
-    ripemd160_le32                           0x00004a99   Thumb Code    26  ripemd160.o(.text)
-    ripemd160_le64                           0x00004ab3   Thumb Code    32  ripemd160.o(.text)
-    ripemd160_be16                           0x00004ad3   Thumb Code    26  ripemd160.o(.text)
-    ripemd160_be32                           0x00004aed   Thumb Code    26  ripemd160.o(.text)
-    ripemd160_be64                           0x00004b07   Thumb Code    32  ripemd160.o(.text)
-    scalar_set_b32                           0x00010ce1   Thumb Code   178  secp256k1.o(.text)
-    scalar_get_b32                           0x00010d93   Thumb Code   196  secp256k1.o(.text)
-    secp256k1_ecdsa_init                     0x00010f6f   Thumb Code    36  secp256k1.o(.text)
-    secp256k1_ec_pubkey_parse                0x00010fd1   Thumb Code    54  secp256k1.o(.text)
-    secp256k1_ec_pubkey_serialize            0x00011007   Thumb Code    78  secp256k1.o(.text)
-    secp256k1_ecdsa_signature_serialize_compact 0x00011095   Thumb Code    42  secp256k1.o(.text)
-    secp256k1_ecdsa_verify                   0x000110bf   Thumb Code   116  secp256k1.o(.text)
-    secp256k1_ecdsa_sign                     0x00011133   Thumb Code   120  secp256k1.o(.text)
-    secp256k1_ec_pubkey_create               0x000111ab   Thumb Code   110  secp256k1.o(.text)
-    secp256k1_ec_privkey_tweak_add           0x00011219   Thumb Code    80  secp256k1.o(.text)
-    secp256k1_ec_pubkey_tweak_add            0x00011269   Thumb Code    76  secp256k1.o(.text)
-    wally_ec_init                            0x000112d5   Thumb Code     8  sign.o(.text)
-    wally_ec_public_key_from_private_key     0x000112f7   Thumb Code   106  sign.o(.text)
-    wally_ec_sig_from_bytes                  0x00011361   Thumb Code   130  sign.o(.text)
-    wally_ec_sig_verify                      0x000113e3   Thumb Code   128  sign.o(.text)
-    wally_format_bitcoin_message             0x00011471   Thumb Code   232  sign.o(.text)
-    char_to_hex                              0x0001156b   Thumb Code    60  hex.o(.text)
-    hex_decode                               0x000115a7   Thumb Code    80  hex.o(.text)
-    hex_encode                               0x00011617   Thumb Code    74  hex.o(.text)
-    wally_hex_from_bytes                     0x00011661   Thumb Code    76  hex.o(.text)
-    wally_hex_to_bytes                       0x000116ad   Thumb Code   102  hex.o(.text)
-    print_hexstr_key                         0x00011713   Thumb Code    44  hex.o(.text)
-    pbkdf2_sha256                            0x000117a1   Thumb Code   240  pbkdf2.o(.text)
-    pbkdf2_hmac_sha256                       0x00011891   Thumb Code    40  pbkdf2.o(.text)
-    pbkdf2_sha512                            0x000118b9   Thumb Code   270  pbkdf2.o(.text)
-    pbkdf2_hmac_sha512                       0x000119c7   Thumb Code    40  pbkdf2.o(.text)
-    bip39_mnemonic_to_seed                   0x000119f1   Thumb Code   184  bip39.o(.text)
-    get_hrng_16bytes                         0x00011ab5   Thumb Code    34  hrng.o(.text)
-    hrng_initial                             0x00011ad7   Thumb Code    32  hrng.o(.text)
-    hrng_source_disable                      0x00011af7   Thumb Code    12  hrng.o(.text)
-    get_hrng8                                0x00011b03   Thumb Code    36  hrng.o(.text)
-    get_hrng32                               0x00011b3b   Thumb Code    48  hrng.o(.text)
-    hrng_poker_test                          0x00011b6b   Thumb Code   146  hrng.o(.text)
-    get_hrng                                 0x00011bfd   Thumb Code    54  hrng.o(.text)
-    CalLength_B                              0x00011c41   Thumb Code    24  ecdsa.o(.text)
-    Updatek                                  0x00011c59   Thumb Code   110  ecdsa.o(.text)
-    ECDSA_keypair                            0x00011cc7   Thumb Code   206  ecdsa.o(.text)
-    ECDSA_sign                               0x00011d95   Thumb Code   470  ecdsa.o(.text)
-    ECDSA_verify                             0x00011f6b   Thumb Code   464  ecdsa.o(.text)
-    ECC_mod_sqr                              0x00012141   Thumb Code   116  ecc.o(.text)
-    ECC_mod_inv                              0x000121b5   Thumb Code   116  ecc.o(.text)
-    ECC_mod_add_sub                          0x00012229   Thumb Code   118  ecc.o(.text)
-    ECC_para_initial                         0x0001229f   Thumb Code    18  ecc.o(.text)
-    ECC_PM                                   0x000122b1   Thumb Code   198  ecc.o(.text)
-    ECC_PA_PS                                0x00012377   Thumb Code   212  ecc.o(.text)
-    ECC_PD                                   0x0001244b   Thumb Code   184  ecc.o(.text)
-    ECC_PJ                                   0x00012503   Thumb Code   138  ecc.o(.text)
-    ecc_swap_qarray                          0x0001258d   Thumb Code    64  ecc.o(.text)
-    ECC_red_dvm                              0x000125cd   Thumb Code   150  ecc.o(.text)
-    clear_sram                               0x00012663   Thumb Code    76  ecc.o(.text)
-    ecc_memcpy                               0x000126b9   Thumb Code    20  ecc_rom.o(.text)
-    ECC_write_SRAM                           0x000126cd   Thumb Code    32  ecc_rom.o(.text)
-    ECC_write0_SRAM                          0x000126ed   Thumb Code    28  ecc_rom.o(.text)
-    ECC_read_SRAM                            0x00012709   Thumb Code    38  ecc_rom.o(.text)
-    ECC_precal                               0x0001272f   Thumb Code    54  ecc_rom.o(.text)
-    ECC_rsa_enhance_mm_me                    0x00012765   Thumb Code    72  ecc_rom.o(.text)
-    ECC_NN_Digits                            0x000127ad   Thumb Code    24  ecc_rom.o(.text)
-    ECC_mul_me                               0x000127c5   Thumb Code   140  ecc_rom.o(.text)
-    ECC_NN_AssignZero                        0x00012851   Thumb Code    14  ecc_rom.o(.text)
-    ecc_swap_array                           0x0001285f   Thumb Code    38  ecc_rom.o(.text)
-    alg2nor_sram                             0x00012885   Thumb Code    26  ecc_rom.o(.text)
-    NN_ModInv_variable_initial               0x000128a9   Thumb Code    68  math.o(.text)
-    NNModMult_variable_initial               0x000128ed   Thumb Code    28  math.o(.text)
-    NN_Gcd_variable_initial                  0x00012909   Thumb Code    32  math.o(.text)
-    NN_Mod_variable_initial                  0x00012929   Thumb Code    24  math.o(.text)
-    NN_Assign                                0x00012941   Thumb Code    20  math.o(.text)
-    NN_RShift                                0x00012955   Thumb Code    60  math.o(.text)
-    NN_AssignZero                            0x00012991   Thumb Code    18  math.o(.text)
-    NN_Sub                                   0x000129a3   Thumb Code    80  math.o(.text)
-    NN_Cmp                                   0x000129f3   Thumb Code    40  math.o(.text)
-    NN_LShift                                0x00012a1b   Thumb Code    52  math.o(.text)
-    NN_Digits                                0x00012a4f   Thumb Code    26  math.o(.text)
-    NN_Div                                   0x00012a69   Thumb Code   896  math.o(.text)
-    NN_Mod                                   0x00012de9   Thumb Code    68  math.o(.text)
-    NN_Zero                                  0x00012e2d   Thumb Code    20  math.o(.text)
-    NN_Gcd                                   0x00012e41   Thumb Code   272  math.o(.text)
-    NN_Add                                   0x00012f51   Thumb Code    56  math.o(.text)
-    NN_Mult                                  0x00012f89   Thumb Code   344  math.o(.text)
-    NN_ModInv                                0x000130e1   Thumb Code   396  math.o(.text)
-    __aeabi_uldivmod                         0x0001326d   Thumb Code    98  uldiv.o(.text)
-    __aeabi_llsr                             0x000132cf   Thumb Code    32  llushr.o(.text)
-    _ll_ushift_r                             0x000132cf   Thumb Code     0  llushr.o(.text)
-    __rt_ctype_table                         0x000132f1   Thumb Code     4  ctype_o.o(.text)
-    __aeabi_memcpy                           0x000132f9   Thumb Code    36  memcpya.o(.text)
-    __aeabi_memcpy4                          0x000132f9   Thumb Code     0  memcpya.o(.text)
-    __aeabi_memcpy8                          0x000132f9   Thumb Code     0  memcpya.o(.text)
-    __aeabi_memset                           0x0001331d   Thumb Code    14  memseta.o(.text)
-    __aeabi_memset4                          0x0001331d   Thumb Code     0  memseta.o(.text)
-    __aeabi_memset8                          0x0001331d   Thumb Code     0  memseta.o(.text)
-    __aeabi_memclr                           0x0001332b   Thumb Code     4  memseta.o(.text)
-    __aeabi_memclr4                          0x0001332b   Thumb Code     0  memseta.o(.text)
-    __aeabi_memclr8                          0x0001332b   Thumb Code     0  memseta.o(.text)
-    _memset$wrapper                          0x0001332f   Thumb Code    18  memseta.o(.text)
-    strstr                                   0x00013341   Thumb Code    36  strstr.o(.text)
-    strncpy                                  0x00013365   Thumb Code    24  strncpy.o(.text)
-    strlen                                   0x0001337d   Thumb Code    14  strlen.o(.text)
-    strcmp                                   0x0001338b   Thumb Code    28  strcmp.o(.text)
-    strtok                                   0x000133a9   Thumb Code    62  strtok.o(.text)
-    atoi                                     0x000133ed   Thumb Code    26  atoi.o(.text)
-    __aeabi_llsl                             0x00013407   Thumb Code    30  llshl.o(.text)
-    _ll_shift_l                              0x00013407   Thumb Code     0  llshl.o(.text)
-    strtol                                   0x00013425   Thumb Code   112  strtol.o(.text)
-    __scatterload                            0x00013495   Thumb Code    28  init.o(.text)
-    __scatterload_rt2                        0x00013495   Thumb Code     0  init.o(.text)
-    _strtoul                                 0x000134b9   Thumb Code   158  _strtoul.o(.text)
-    _chval                                   0x00013557   Thumb Code    28  _chval.o(.text)
-    __decompress                             0x00013573   Thumb Code     0  __dclz77c.o(.text)
-    __decompress2                            0x00013573   Thumb Code    94  __dclz77c.o(.text)
-    __0printf$8                              0x000135d1   Thumb Code    22  printf8.o(i.__0printf$8)
-    __1printf$8                              0x000135d1   Thumb Code     0  printf8.o(i.__0printf$8)
-    __2printf                                0x000135d1   Thumb Code     0  printf8.o(i.__0printf$8)
-    __0sprintf$8                             0x000135f1   Thumb Code    34  printf8.o(i.__0sprintf$8)
-    __1sprintf$8                             0x000135f1   Thumb Code     0  printf8.o(i.__0sprintf$8)
-    __2sprintf                               0x000135f1   Thumb Code     0  printf8.o(i.__0sprintf$8)
-    __aeabi_errno_addr                       0x00013619   Thumb Code     4  errno.o(i.__aeabi_errno_addr)
-    __rt_errno_addr                          0x00013619   Thumb Code     0  errno.o(i.__aeabi_errno_addr)
-    free                                     0x00013621   Thumb Code    88  mallocr.o(i.__free$realloc)
-    malloc                                   0x0001367d   Thumb Code    64  mallocr.o(i.__malloc$realloc)
-    __scatterload_copy                       0x000136cd   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x000136db   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x000136dd   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    CURVE_B                                  0x00013c58   Data           4  secp256k1.o(.constdata)
-    CurveLength                              0x00013c5c   Data           4  secp256k1.o(.constdata)
-    P_Array                                  0x00013c60   Data          32  secp256k1.o(.constdata)
-    a_Array                                  0x00013c80   Data          32  secp256k1.o(.constdata)
-    b_Array                                  0x00013ca0   Data          32  secp256k1.o(.constdata)
-    N_Array                                  0x00013cc0   Data          32  secp256k1.o(.constdata)
-    BaseX_Array                              0x00013ce0   Data          32  secp256k1.o(.constdata)
-    BaseY_Array                              0x00013d00   Data          32  secp256k1.o(.constdata)
-    __ctype_table                            0x00013da5   Data         129  ctype_o.o(.constdata)
-    Region$$Table$$Base                      0x0001408c   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x000140ac   Number         0  anon$$obj.o(Region$$Table)
+    keysign                                  0x00000ca5   Thumb Code    68  app.o(.text)
+    keyverify                                0x00000ce9   Thumb Code    58  app.o(.text)
+    init_boot                                0x00000d23   Thumb Code   156  app.o(.text)
+    main                                     0x00000f8d   Thumb Code    22  main.o(.text)
+    hmac_sha224_init                         0x00000fa5   Thumb Code   190  hmac_sha2.o(.text)
+    hmac_sha224_reinit                       0x00001063   Thumb Code    32  hmac_sha2.o(.text)
+    hmac_sha224_update                       0x00001083   Thumb Code    20  hmac_sha2.o(.text)
+    hmac_sha224_final                        0x00001097   Thumb Code    54  hmac_sha2.o(.text)
+    hmac_sha224                              0x000010cd   Thumb Code    62  hmac_sha2.o(.text)
+    hmac_sha256_init                         0x0000110b   Thumb Code   188  hmac_sha2.o(.text)
+    hmac_sha256_reinit                       0x000011c7   Thumb Code    32  hmac_sha2.o(.text)
+    hmac_sha256_update                       0x000011e7   Thumb Code    20  hmac_sha2.o(.text)
+    hmac_sha256_final                        0x000011fb   Thumb Code    54  hmac_sha2.o(.text)
+    hmac_sha256                              0x00001231   Thumb Code    62  hmac_sha2.o(.text)
+    hmac_sha384_init                         0x0000126f   Thumb Code   192  hmac_sha2.o(.text)
+    hmac_sha384_reinit                       0x0000132f   Thumb Code    36  hmac_sha2.o(.text)
+    hmac_sha384_update                       0x00001353   Thumb Code    20  hmac_sha2.o(.text)
+    hmac_sha384_final                        0x00001367   Thumb Code    54  hmac_sha2.o(.text)
+    hmac_sha384                              0x0000139d   Thumb Code    62  hmac_sha2.o(.text)
+    hmac_sha512_init                         0x000013db   Thumb Code   192  hmac_sha2.o(.text)
+    hmac_sha512_reinit                       0x0000149b   Thumb Code    36  hmac_sha2.o(.text)
+    hmac_sha512_update                       0x000014bf   Thumb Code    20  hmac_sha2.o(.text)
+    hmac_sha512_final                        0x000014d3   Thumb Code    54  hmac_sha2.o(.text)
+    hmac_sha512                              0x00001509   Thumb Code    62  hmac_sha2.o(.text)
+    test                                     0x00001547   Thumb Code    78  hmac_sha2.o(.text)
+    sha256_transf                            0x000015cd   Thumb Code   598  sha2.o(.text)
+    sha256_final                             0x00001823   Thumb Code   202  sha2.o(.text)
+    sha256_update                            0x000018ed   Thumb Code   130  sha2.o(.text)
+    sha256_init                              0x0000196f   Thumb Code    34  sha2.o(.text)
+    sha256                                   0x00001991   Thumb Code    38  sha2.o(.text)
+    sha512_transf                            0x000019b7   Thumb Code  1034  sha2.o(.text)
+    sha512_final                             0x00001dc1   Thumb Code   296  sha2.o(.text)
+    sha512_update                            0x00001ee9   Thumb Code   130  sha2.o(.text)
+    sha512_init                              0x00001f6b   Thumb Code    44  sha2.o(.text)
+    sha512                                   0x00001f97   Thumb Code    38  sha2.o(.text)
+    sha384_final                             0x00001fbd   Thumb Code   296  sha2.o(.text)
+    sha384_update                            0x000020e5   Thumb Code   130  sha2.o(.text)
+    sha384_init                              0x00002167   Thumb Code    44  sha2.o(.text)
+    sha384                                   0x00002193   Thumb Code    38  sha2.o(.text)
+    sha224_final                             0x000021b9   Thumb Code   202  sha2.o(.text)
+    sha224_update                            0x00002283   Thumb Code   130  sha2.o(.text)
+    sha224_init                              0x00002305   Thumb Code    34  sha2.o(.text)
+    sha224                                   0x00002327   Thumb Code    50  sha2.o(.text)
+    bip32_key_free                           0x0000261f   Thumb Code    22  bip32.o(.text)
+    bip32_key_from_seed                      0x0000264b   Thumb Code   164  bip32.o(.text)
+    bip32_key_from_seed_alloc                0x000026ef   Thumb Code    84  bip32.o(.text)
+    bip32_key_serialize                      0x000027f5   Thumb Code   210  bip32.o(.text)
+    bip32_key_unserialize                    0x000028ef   Thumb Code   262  bip32.o(.text)
+    bip32_key_unserialize_alloc              0x000029f5   Thumb Code    74  bip32.o(.text)
+    bip32_key_from_parent                    0x00002a3f   Thumb Code   442  bip32.o(.text)
+    bip32_key_from_parent_alloc              0x00002bf9   Thumb Code    78  bip32.o(.text)
+    bip32_key_from_parent_path               0x00002c47   Thumb Code   162  bip32.o(.text)
+    bip32_key_from_parent_path_alloc         0x00002ce9   Thumb Code    84  bip32.o(.text)
+    bip32_key_init_alloc                     0x00002d3d   Thumb Code   428  bip32.o(.text)
+    hmac_sha256_impl                         0x00002ef9   Thumb Code    38  hmac.o(.text)
+    hmac_sha512_impl                         0x00002f1f   Thumb Code    38  hmac.o(.text)
+    wally_free                               0x00002f45   Thumb Code    14  internal.o(.text)
+    wally_clear                              0x00002f53   Thumb Code    18  internal.o(.text)
+    wally_free_string                        0x00002f65   Thumb Code    38  internal.o(.text)
+    wally_bzero                              0x00002f8b   Thumb Code    26  internal.o(.text)
+    wally_sha256                             0x00002fa5   Thumb Code    96  internal.o(.text)
+    wally_sha256d                            0x00003005   Thumb Code   114  internal.o(.text)
+    wally_sha512                             0x00003077   Thumb Code    96  internal.o(.text)
+    wally_hash160                            0x000030d7   Thumb Code   112  internal.o(.text)
+    wally_malloc                             0x00003171   Thumb Code    14  internal.o(.text)
+    wally_strdup                             0x0000317f   Thumb Code    36  internal.o(.text)
+    wally_ops                                0x000031a3   Thumb Code     4  internal.o(.text)
+    wally_get_operations                     0x000031a7   Thumb Code    24  internal.o(.text)
+    wally_set_operations                     0x000031bf   Thumb Code    54  internal.o(.text)
+    wally_clear_2                            0x000031f5   Thumb Code    36  internal.o(.text)
+    wally_clear_3                            0x00003219   Thumb Code    50  internal.o(.text)
+    wally_clear_4                            0x0000324b   Thumb Code    64  internal.o(.text)
+    wally_clear_5                            0x0000328b   Thumb Code    74  internal.o(.text)
+    wally_clear_6                            0x000032d5   Thumb Code    88  internal.o(.text)
+    wally_init                               0x0000332d   Thumb Code    26  internal.o(.text)
+    wally_cleanup                            0x00003347   Thumb Code    14  internal.o(.text)
+    ripemd160_init                           0x000049db   Thumb Code    30  ripemd160.o(.text)
+    ripemd160_update                         0x000049f9   Thumb Code    20  ripemd160.o(.text)
+    ripemd160_done                           0x00004a0d   Thumb Code   128  ripemd160.o(.text)
+    ripemd160                                0x00004a8d   Thumb Code    46  ripemd160.o(.text)
+    ripemd160_u8                             0x00004abb   Thumb Code    16  ripemd160.o(.text)
+    ripemd160_u16                            0x00004acb   Thumb Code    16  ripemd160.o(.text)
+    ripemd160_u32                            0x00004adb   Thumb Code    16  ripemd160.o(.text)
+    ripemd160_u64                            0x00004aeb   Thumb Code    16  ripemd160.o(.text)
+    ripemd160_le16                           0x00004afb   Thumb Code    26  ripemd160.o(.text)
+    ripemd160_le32                           0x00004b15   Thumb Code    26  ripemd160.o(.text)
+    ripemd160_le64                           0x00004b2f   Thumb Code    32  ripemd160.o(.text)
+    ripemd160_be16                           0x00004b4f   Thumb Code    26  ripemd160.o(.text)
+    ripemd160_be32                           0x00004b69   Thumb Code    26  ripemd160.o(.text)
+    ripemd160_be64                           0x00004b83   Thumb Code    32  ripemd160.o(.text)
+    scalar_set_b32                           0x0000da45   Thumb Code   178  secp256k1.o(.text)
+    scalar_get_b32                           0x0000daf7   Thumb Code   178  secp256k1.o(.text)
+    secp256k1_ec_pubkey_parse                0x0000dcff   Thumb Code    60  secp256k1.o(.text)
+    secp256k1_ec_pubkey_serialize            0x0000dd3b   Thumb Code    78  secp256k1.o(.text)
+    secp256k1_ecdsa_signature_parse_compact  0x0000ddc9   Thumb Code    88  secp256k1.o(.text)
+    secp256k1_ecdsa_signature_serialize_compact 0x0000de21   Thumb Code    42  secp256k1.o(.text)
+    secp256k1_ecdsa_verify                   0x0000de7b   Thumb Code   150  secp256k1.o(.text)
+    secp256k1_ecdsa_sign                     0x0000df11   Thumb Code   180  secp256k1.o(.text)
+    secp256k1_ec_pubkey_create               0x0000dfc5   Thumb Code   116  secp256k1.o(.text)
+    secp256k1_ec_privkey_tweak_add           0x0000e039   Thumb Code    80  secp256k1.o(.text)
+    secp256k1_ec_pubkey_tweak_add            0x0000e089   Thumb Code    76  secp256k1.o(.text)
+    wally_ec_public_key_from_private_key     0x0000e123   Thumb Code   106  sign.o(.text)
+    wally_ec_sig_from_bytes                  0x0000e18d   Thumb Code   130  sign.o(.text)
+    wally_ec_sig_verify                      0x0000e20f   Thumb Code   156  sign.o(.text)
+    wally_format_bitcoin_message             0x0000e2b9   Thumb Code   232  sign.o(.text)
+    char_to_hex                              0x0000e3b3   Thumb Code    60  hex.o(.text)
+    hex_decode                               0x0000e3ef   Thumb Code    80  hex.o(.text)
+    hex_encode                               0x0000e45f   Thumb Code    74  hex.o(.text)
+    wally_hex_from_bytes                     0x0000e4a9   Thumb Code    76  hex.o(.text)
+    wally_hex_to_bytes                       0x0000e4f5   Thumb Code   102  hex.o(.text)
+    print_hexstr_key                         0x0000e55b   Thumb Code    44  hex.o(.text)
+    pbkdf2_sha256                            0x0000e5e9   Thumb Code   240  pbkdf2.o(.text)
+    pbkdf2_hmac_sha256                       0x0000e6d9   Thumb Code    40  pbkdf2.o(.text)
+    pbkdf2_sha512                            0x0000e701   Thumb Code   270  pbkdf2.o(.text)
+    pbkdf2_hmac_sha512                       0x0000e80f   Thumb Code    40  pbkdf2.o(.text)
+    bip39_mnemonic_to_seed                   0x0000e839   Thumb Code   184  bip39.o(.text)
+    get_hrng_16bytes                         0x0000e8fd   Thumb Code    34  hrng.o(.text)
+    hrng_initial                             0x0000e91f   Thumb Code    32  hrng.o(.text)
+    hrng_source_disable                      0x0000e93f   Thumb Code    12  hrng.o(.text)
+    get_hrng8                                0x0000e94b   Thumb Code    36  hrng.o(.text)
+    get_hrng32                               0x0000e983   Thumb Code    48  hrng.o(.text)
+    hrng_poker_test                          0x0000e9b3   Thumb Code   146  hrng.o(.text)
+    get_hrng                                 0x0000ea45   Thumb Code    54  hrng.o(.text)
+    CalLength_B                              0x0000ea89   Thumb Code    24  ecdsa.o(.text)
+    Updatek                                  0x0000eaa1   Thumb Code   110  ecdsa.o(.text)
+    ECDSA_keypair                            0x0000eb0f   Thumb Code   206  ecdsa.o(.text)
+    ECDSA_sign                               0x0000ebdd   Thumb Code   470  ecdsa.o(.text)
+    ECDSA_verify                             0x0000edb3   Thumb Code   464  ecdsa.o(.text)
+    ECC_mod_sqr                              0x0000ef89   Thumb Code   116  ecc.o(.text)
+    ECC_mod_inv                              0x0000effd   Thumb Code   116  ecc.o(.text)
+    ECC_mod_add_sub                          0x0000f071   Thumb Code   118  ecc.o(.text)
+    ECC_para_initial                         0x0000f0e7   Thumb Code    18  ecc.o(.text)
+    ECC_PM                                   0x0000f0f9   Thumb Code   198  ecc.o(.text)
+    ECC_PA_PS                                0x0000f1bf   Thumb Code   212  ecc.o(.text)
+    ECC_PD                                   0x0000f293   Thumb Code   184  ecc.o(.text)
+    ECC_PJ                                   0x0000f34b   Thumb Code   138  ecc.o(.text)
+    ecc_swap_qarray                          0x0000f3d5   Thumb Code    64  ecc.o(.text)
+    ECC_red_dvm                              0x0000f415   Thumb Code   150  ecc.o(.text)
+    clear_sram                               0x0000f4ab   Thumb Code    76  ecc.o(.text)
+    ecc_memcpy                               0x0000f501   Thumb Code    20  ecc_rom.o(.text)
+    ECC_write_SRAM                           0x0000f515   Thumb Code    32  ecc_rom.o(.text)
+    ECC_write0_SRAM                          0x0000f535   Thumb Code    28  ecc_rom.o(.text)
+    ECC_read_SRAM                            0x0000f551   Thumb Code    38  ecc_rom.o(.text)
+    ECC_precal                               0x0000f577   Thumb Code    54  ecc_rom.o(.text)
+    ECC_rsa_enhance_mm_me                    0x0000f5ad   Thumb Code    72  ecc_rom.o(.text)
+    ECC_NN_Digits                            0x0000f5f5   Thumb Code    24  ecc_rom.o(.text)
+    ECC_mul_me                               0x0000f60d   Thumb Code   140  ecc_rom.o(.text)
+    ECC_NN_AssignZero                        0x0000f699   Thumb Code    14  ecc_rom.o(.text)
+    ecc_swap_array                           0x0000f6a7   Thumb Code    38  ecc_rom.o(.text)
+    alg2nor_sram                             0x0000f6cd   Thumb Code    26  ecc_rom.o(.text)
+    NN_ModInv_variable_initial               0x0000f6f1   Thumb Code    68  math.o(.text)
+    NNModMult_variable_initial               0x0000f735   Thumb Code    28  math.o(.text)
+    NN_Gcd_variable_initial                  0x0000f751   Thumb Code    32  math.o(.text)
+    NN_Mod_variable_initial                  0x0000f771   Thumb Code    24  math.o(.text)
+    NN_Assign                                0x0000f789   Thumb Code    20  math.o(.text)
+    NN_RShift                                0x0000f79d   Thumb Code    60  math.o(.text)
+    NN_AssignZero                            0x0000f7d9   Thumb Code    18  math.o(.text)
+    NN_Sub                                   0x0000f7eb   Thumb Code    80  math.o(.text)
+    NN_Cmp                                   0x0000f83b   Thumb Code    40  math.o(.text)
+    NN_LShift                                0x0000f863   Thumb Code    52  math.o(.text)
+    NN_Digits                                0x0000f897   Thumb Code    26  math.o(.text)
+    NN_Div                                   0x0000f8b1   Thumb Code   896  math.o(.text)
+    NN_Mod                                   0x0000fc31   Thumb Code    68  math.o(.text)
+    NN_Zero                                  0x0000fc75   Thumb Code    20  math.o(.text)
+    NN_Gcd                                   0x0000fc89   Thumb Code   272  math.o(.text)
+    NN_Add                                   0x0000fd99   Thumb Code    56  math.o(.text)
+    NN_Mult                                  0x0000fdd1   Thumb Code   344  math.o(.text)
+    NN_ModInv                                0x0000ff29   Thumb Code   396  math.o(.text)
+    __aeabi_uldivmod                         0x000100b5   Thumb Code    98  uldiv.o(.text)
+    __aeabi_llsr                             0x00010117   Thumb Code    32  llushr.o(.text)
+    _ll_ushift_r                             0x00010117   Thumb Code     0  llushr.o(.text)
+    __aeabi_memcpy                           0x00010137   Thumb Code    36  memcpya.o(.text)
+    __aeabi_memcpy4                          0x00010137   Thumb Code     0  memcpya.o(.text)
+    __aeabi_memcpy8                          0x00010137   Thumb Code     0  memcpya.o(.text)
+    __aeabi_memset                           0x0001015b   Thumb Code    14  memseta.o(.text)
+    __aeabi_memset4                          0x0001015b   Thumb Code     0  memseta.o(.text)
+    __aeabi_memset8                          0x0001015b   Thumb Code     0  memseta.o(.text)
+    __aeabi_memclr                           0x00010169   Thumb Code     4  memseta.o(.text)
+    __aeabi_memclr4                          0x00010169   Thumb Code     0  memseta.o(.text)
+    __aeabi_memclr8                          0x00010169   Thumb Code     0  memseta.o(.text)
+    _memset$wrapper                          0x0001016d   Thumb Code    18  memseta.o(.text)
+    strstr                                   0x0001017f   Thumb Code    36  strstr.o(.text)
+    strncpy                                  0x000101a3   Thumb Code    24  strncpy.o(.text)
+    strlen                                   0x000101bb   Thumb Code    14  strlen.o(.text)
+    strcmp                                   0x000101c9   Thumb Code    28  strcmp.o(.text)
+    strtok                                   0x000101e5   Thumb Code    62  strtok.o(.text)
+    atoi                                     0x00010229   Thumb Code    26  atoi.o(.text)
+    __aeabi_llsl                             0x00010243   Thumb Code    30  llshl.o(.text)
+    _ll_shift_l                              0x00010243   Thumb Code     0  llshl.o(.text)
+    strtol                                   0x00010261   Thumb Code   112  strtol.o(.text)
+    __scatterload                            0x000102d1   Thumb Code    28  init.o(.text)
+    __scatterload_rt2                        0x000102d1   Thumb Code     0  init.o(.text)
+    __rt_ctype_table                         0x000102f5   Thumb Code     4  ctype_o.o(.text)
+    _strtoul                                 0x000102fd   Thumb Code   158  _strtoul.o(.text)
+    _chval                                   0x0001039b   Thumb Code    28  _chval.o(.text)
+    __decompress                             0x000103b7   Thumb Code     0  __dclz77c.o(.text)
+    __decompress2                            0x000103b7   Thumb Code    94  __dclz77c.o(.text)
+    __0printf$8                              0x00010415   Thumb Code    22  printf8.o(i.__0printf$8)
+    __1printf$8                              0x00010415   Thumb Code     0  printf8.o(i.__0printf$8)
+    __2printf                                0x00010415   Thumb Code     0  printf8.o(i.__0printf$8)
+    __0sprintf$8                             0x00010435   Thumb Code    34  printf8.o(i.__0sprintf$8)
+    __1sprintf$8                             0x00010435   Thumb Code     0  printf8.o(i.__0sprintf$8)
+    __2sprintf                               0x00010435   Thumb Code     0  printf8.o(i.__0sprintf$8)
+    __aeabi_errno_addr                       0x0001045d   Thumb Code     4  errno.o(i.__aeabi_errno_addr)
+    __rt_errno_addr                          0x0001045d   Thumb Code     0  errno.o(i.__aeabi_errno_addr)
+    __scatterload_copy                       0x00010465   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x00010473   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x00010475   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    free                                     0x000108f1   Thumb Code    76  malloc.o(i.free)
+    malloc                                   0x00010941   Thumb Code    92  malloc.o(i.malloc)
+    CURVE_B                                  0x00010a58   Data           4  secp256k1.o(.constdata)
+    CurveLength                              0x00010a5c   Data           4  secp256k1.o(.constdata)
+    P_Array                                  0x00010a60   Data          32  secp256k1.o(.constdata)
+    a_Array                                  0x00010a80   Data          32  secp256k1.o(.constdata)
+    b_Array                                  0x00010aa0   Data          32  secp256k1.o(.constdata)
+    N_Array                                  0x00010ac0   Data          32  secp256k1.o(.constdata)
+    BaseX_Array                              0x00010ae0   Data          32  secp256k1.o(.constdata)
+    BaseY_Array                              0x00010b00   Data          32  secp256k1.o(.constdata)
+    __ctype_table                            0x00010b62   Data         129  ctype_o.o(.constdata)
+    Region$$Table$$Base                      0x00010dc4   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x00010de4   Number         0  anon$$obj.o(Region$$Table)
     SystemCoreClock                          0x20000040   Data           4  system_ach512.o(.data)
     SRCClock                                 0x20000044   Data           4  system_ach512.o(.data)
     PClock                                   0x20000048   Data           4  system_ach512.o(.data)
     tx_flag                                  0x2000004c   Data           1  uart.o(.data)
     rx_flag                                  0x2000004d   Data           1  uart.o(.data)
     rx_count                                 0x2000004e   Data           1  uart.o(.data)
-    SEED                                     0x20000050   Data           4  app.o(.data)
-    MNEMONIC                                 0x20000054   Data           4  app.o(.data)
+    MNEMONIC                                 0x20000050   Data           4  app.o(.data)
     sha224_h0                                0x20000058   Data          32  sha2.o(.data)
     sha256_h0                                0x20000078   Data          32  sha2.o(.data)
     sha384_h0                                0x20000098   Data          64  sha2.o(.data)
@@ -1268,11 +1237,10 @@ Image Symbol Table
     uart_rx_buf                              0x200004c0   Data          32  uart.o(.bss)
     g_data_buf                               0x200004e0   Data        1024  app.o(.bss)
     key_out                                  0x200008e0   Data         160  app.o(.bss)
-    ecc_glb_str                              0x20000980   Data          28  secp256k1.o(.bss)
-    math_glb_str                             0x2000099c   Data          44  secp256k1.o(.bss)
-    __heap_base                              0x200009c8   Data           0  startup.o(HEAP)
-    __heap_limit                             0x200013c8   Data           0  startup.o(HEAP)
-    __initial_sp                             0x20001bc8   Data           0  startup.o(STACK)
+    sign_out                                 0x20000980   Data          64  app.o(.bss)
+    __heap_base                              0x200009c0   Data           0  startup.o(HEAP)
+    __heap_limit                             0x200013c0   Data           0  startup.o(HEAP)
+    __initial_sp                             0x20001bc0   Data           0  startup.o(STACK)
 
 
 
@@ -1282,113 +1250,109 @@ Memory Map of the image
 
   Image Entry point : 0x000000c1
 
-  Load Region LR_IROM1 (Base: 0x00000000, Size: 0x0001452c, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x000144bc])
+  Load Region LR_IROM1 (Base: 0x00000000, Size: 0x00011264, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x000111f0])
 
-    Execution Region ER_IROM1 (Base: 0x00000000, Size: 0x000140ac, Max: 0x00080000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x00000000, Size: 0x00010de4, Max: 0x00080000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x00000000   0x000000c0   Data   RO            3    RESET               startup.o
-    0x000000c0   0x00000000   Code   RO          999  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x000000c0   0x00000004   Code   RO         1347    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x000000c4   0x00000004   Code   RO         1350    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x000000c8   0x00000000   Code   RO         1352    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x000000c8   0x00000000   Code   RO         1354    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x000000c8   0x00000008   Code   RO         1355    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x000000d0   0x00000000   Code   RO         1357    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x000000d0   0x00000000   Code   RO         1359    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x000000d0   0x00000004   Code   RO         1348    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x000000c0   0x00000000   Code   RO          949  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x000000c0   0x00000004   Code   RO         1269    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x000000c4   0x00000004   Code   RO         1272    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x000000c8   0x00000000   Code   RO         1274    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x000000c8   0x00000000   Code   RO         1276    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x000000c8   0x00000008   Code   RO         1277    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x000000d0   0x00000000   Code   RO         1279    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x000000d0   0x00000000   Code   RO         1281    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x000000d0   0x00000004   Code   RO         1270    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
     0x000000d4   0x0000001c   Code   RO            4    .text               startup.o
     0x000000f0   0x00000620   Code   RO           13    .text               system_ach512.o
     0x00000710   0x000002d4   Code   RO           83    .text               uart.o
     0x000009e4   0x00000098   Code   RO          129    .text               common.o
-    0x00000a7c   0x0000048c   Code   RO          173    .text               app.o
-    0x00000f08   0x00000016   Code   RO          255    .text               main.o
-    0x00000f1e   0x00000002   PAD
-    0x00000f20   0x00000628   Code   RO          359    .text               hmac_sha2.o
-    0x00001548   0x00000d8c   Code   RO          393    .text               sha2.o
-    0x000022d4   0x00000ba0   Code   RO          417    .text               bip32.o
-    0x00002e74   0x0000004c   Code   RO          459    .text               hmac.o
-    0x00002ec0   0x00000414   Code   RO          471    .text               internal.o
-    0x000032d4   0x0000185c   Code   RO          488    .text               ripemd160.o
-    0x00004b30   0x0000c7a4   Code   RO          529    .text               secp256k1.o
-    0x000112d4   0x00000288   Code   RO          620    .text               sign.o
-    0x0001155c   0x000001f0   Code   RO          643    .text               hex.o
-    0x0001174c   0x000002a2   Code   RO          655    .text               pbkdf2.o
-    0x000119ee   0x00000002   PAD
-    0x000119f0   0x000000c4   Code   RO          670    .text               bip39.o
-    0x00011ab4   0x0000018c   Code   RO          685    .text               hrng_20171106.lib(hrng.o)
-    0x00011c40   0x00000500   Code   RO          756    .text               ecdsa_20171106.lib(ecdsa.o)
-    0x00012140   0x00000578   Code   RO          834    .text               pki_20170406.lib(ecc.o)
-    0x000126b8   0x000001f0   Code   RO          902    .text               pki_20170406.lib(ecc_rom.o)
-    0x000128a8   0x000009c4   Code   RO          927    .text               rsa_20171106.lib(math.o)
-    0x0001326c   0x00000062   Code   RO         1002    .text               mc_w.l(uldiv.o)
-    0x000132ce   0x00000020   Code   RO         1004    .text               mc_w.l(llushr.o)
-    0x000132ee   0x00000002   PAD
-    0x000132f0   0x00000008   Code   RO         1006    .text               mc_w.l(ctype_o.o)
-    0x000132f8   0x00000024   Code   RO         1036    .text               mc_w.l(memcpya.o)
-    0x0001331c   0x00000024   Code   RO         1038    .text               mc_w.l(memseta.o)
-    0x00013340   0x00000024   Code   RO         1040    .text               mc_w.l(strstr.o)
-    0x00013364   0x00000018   Code   RO         1042    .text               mc_w.l(strncpy.o)
-    0x0001337c   0x0000000e   Code   RO         1044    .text               mc_w.l(strlen.o)
-    0x0001338a   0x0000001c   Code   RO         1046    .text               mc_w.l(strcmp.o)
-    0x000133a6   0x00000002   PAD
-    0x000133a8   0x00000044   Code   RO         1048    .text               mc_w.l(strtok.o)
-    0x000133ec   0x0000001a   Code   RO         1345    .text               mc_w.l(atoi.o)
-    0x00013406   0x0000001e   Code   RO         1364    .text               mc_w.l(llshl.o)
-    0x00013424   0x00000070   Code   RO         1375    .text               mc_w.l(strtol.o)
-    0x00013494   0x00000024   Code   RO         1388    .text               mc_w.l(init.o)
-    0x000134b8   0x0000009e   Code   RO         1392    .text               mc_w.l(_strtoul.o)
-    0x00013556   0x0000001c   Code   RO         1396    .text               mc_w.l(_chval.o)
-    0x00013572   0x0000005e   Code   RO         1406    .text               mc_w.l(__dclz77c.o)
-    0x000135d0   0x00000020   Code   RO         1263    i.__0printf$8       mc_w.l(printf8.o)
-    0x000135f0   0x00000028   Code   RO         1265    i.__0sprintf$8      mc_w.l(printf8.o)
-    0x00013618   0x00000008   Code   RO         1368    i.__aeabi_errno_addr  mc_w.l(errno.o)
-    0x00013620   0x0000005c   Code   RO         1321    i.__free$realloc    mc_w.l(mallocr.o)
-    0x0001367c   0x00000050   Code   RO         1322    i.__malloc$realloc  mc_w.l(mallocr.o)
-    0x000136cc   0x0000000e   Code   RO         1400    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x000136da   0x00000002   Code   RO         1401    i.__scatterload_null  mc_w.l(handlers.o)
-    0x000136dc   0x0000000e   Code   RO         1402    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x000136ea   0x00000002   PAD
-    0x000136ec   0x00000410   Code   RO         1270    i._printf_core      mc_w.l(printf8.o)
-    0x00013afc   0x00000024   Code   RO         1271    i._printf_post_padding  mc_w.l(printf8.o)
-    0x00013b20   0x0000002e   Code   RO         1272    i._printf_pre_padding  mc_w.l(printf8.o)
-    0x00013b4e   0x0000000a   Code   RO         1274    i._sputc            mc_w.l(printf8.o)
-    0x00013b58   0x00000050   Code   RO         1323    i.internal_alloc    mc_w.l(mallocr.o)
-    0x00013ba8   0x0000000c   Data   RO          418    .constdata          bip32.o
-    0x00013bb4   0x00000004   PAD
-    0x00013bb8   0x000000a0   Data   RO          489    .constdata          ripemd160.o
-    0x00013c58   0x00000133   Data   RO          531    .constdata          secp256k1.o
-    0x00013d8b   0x0000001a   Data   RO          621    .constdata          sign.o
-    0x00013da5   0x00000081   Data   RO         1007    .constdata          mc_w.l(ctype_o.o)
-    0x00013e26   0x00000002   PAD
-    0x00013e28   0x00000004   Data   RO         1008    .constdata          mc_w.l(ctype_o.o)
-    0x00013e2c   0x0000025e   Data   RO          176    .conststring        app.o
-    0x0001408a   0x00000002   PAD
-    0x0001408c   0x00000020   Data   RO         1398    Region$$Table       anon$$obj.o
+    0x00000a7c   0x00000510   Code   RO          173    .text               app.o
+    0x00000f8c   0x00000016   Code   RO          251    .text               main.o
+    0x00000fa2   0x00000002   PAD
+    0x00000fa4   0x00000628   Code   RO          316    .text               hmac_sha2.o
+    0x000015cc   0x00000d8c   Code   RO          350    .text               sha2.o
+    0x00002358   0x00000ba0   Code   RO          374    .text               bip32.o
+    0x00002ef8   0x0000004c   Code   RO          416    .text               hmac.o
+    0x00002f44   0x00000414   Code   RO          428    .text               internal.o
+    0x00003358   0x00001854   Code   RO          445    .text               ripemd160.o
+    0x00004bac   0x0000955c   Code   RO          486    .text               secp256k1.o
+    0x0000e108   0x0000029c   Code   RO          570    .text               sign.o
+    0x0000e3a4   0x000001f0   Code   RO          593    .text               hex.o
+    0x0000e594   0x000002a2   Code   RO          605    .text               pbkdf2.o
+    0x0000e836   0x00000002   PAD
+    0x0000e838   0x000000c4   Code   RO          620    .text               bip39.o
+    0x0000e8fc   0x0000018c   Code   RO          635    .text               hrng_20171106.lib(hrng.o)
+    0x0000ea88   0x00000500   Code   RO          706    .text               ecdsa_20171106.lib(ecdsa.o)
+    0x0000ef88   0x00000578   Code   RO          784    .text               pki_20170406.lib(ecc.o)
+    0x0000f500   0x000001f0   Code   RO          852    .text               pki_20170406.lib(ecc_rom.o)
+    0x0000f6f0   0x000009c4   Code   RO          877    .text               rsa_20171106.lib(math.o)
+    0x000100b4   0x00000062   Code   RO          952    .text               mc_w.l(uldiv.o)
+    0x00010116   0x00000020   Code   RO          954    .text               mc_w.l(llushr.o)
+    0x00010136   0x00000024   Code   RO          958    .text               mc_w.l(memcpya.o)
+    0x0001015a   0x00000024   Code   RO          960    .text               mc_w.l(memseta.o)
+    0x0001017e   0x00000024   Code   RO          962    .text               mc_w.l(strstr.o)
+    0x000101a2   0x00000018   Code   RO          964    .text               mc_w.l(strncpy.o)
+    0x000101ba   0x0000000e   Code   RO          966    .text               mc_w.l(strlen.o)
+    0x000101c8   0x0000001c   Code   RO          968    .text               mc_w.l(strcmp.o)
+    0x000101e4   0x00000044   Code   RO          970    .text               mc_w.l(strtok.o)
+    0x00010228   0x0000001a   Code   RO         1267    .text               mc_w.l(atoi.o)
+    0x00010242   0x0000001e   Code   RO         1286    .text               mc_w.l(llshl.o)
+    0x00010260   0x00000070   Code   RO         1297    .text               mc_w.l(strtol.o)
+    0x000102d0   0x00000024   Code   RO         1310    .text               mc_w.l(init.o)
+    0x000102f4   0x00000008   Code   RO         1314    .text               mc_w.l(ctype_o.o)
+    0x000102fc   0x0000009e   Code   RO         1342    .text               mc_w.l(_strtoul.o)
+    0x0001039a   0x0000001c   Code   RO         1346    .text               mc_w.l(_chval.o)
+    0x000103b6   0x0000005e   Code   RO         1356    .text               mc_w.l(__dclz77c.o)
+    0x00010414   0x00000020   Code   RO         1185    i.__0printf$8       mc_w.l(printf8.o)
+    0x00010434   0x00000028   Code   RO         1187    i.__0sprintf$8      mc_w.l(printf8.o)
+    0x0001045c   0x00000008   Code   RO         1290    i.__aeabi_errno_addr  mc_w.l(errno.o)
+    0x00010464   0x0000000e   Code   RO         1350    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x00010472   0x00000002   Code   RO         1351    i.__scatterload_null  mc_w.l(handlers.o)
+    0x00010474   0x0000000e   Code   RO         1352    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x00010482   0x00000002   PAD
+    0x00010484   0x00000410   Code   RO         1192    i._printf_core      mc_w.l(printf8.o)
+    0x00010894   0x00000024   Code   RO         1193    i._printf_post_padding  mc_w.l(printf8.o)
+    0x000108b8   0x0000002e   Code   RO         1194    i._printf_pre_padding  mc_w.l(printf8.o)
+    0x000108e6   0x0000000a   Code   RO         1196    i._sputc            mc_w.l(printf8.o)
+    0x000108f0   0x00000050   Code   RO         1239    i.free              mc_w.l(malloc.o)
+    0x00010940   0x0000006c   Code   RO         1240    i.malloc            mc_w.l(malloc.o)
+    0x000109ac   0x0000000c   Data   RO          375    .constdata          bip32.o
+    0x000109b8   0x000000a0   Data   RO          446    .constdata          ripemd160.o
+    0x00010a58   0x000000f0   Data   RO          487    .constdata          secp256k1.o
+    0x00010b48   0x0000001a   Data   RO          571    .constdata          sign.o
+    0x00010b62   0x00000081   Data   RO         1315    .constdata          mc_w.l(ctype_o.o)
+    0x00010be3   0x00000001   PAD
+    0x00010be4   0x00000004   Data   RO         1316    .constdata          mc_w.l(ctype_o.o)
+    0x00010be8   0x000001da   Data   RO          175    .conststring        app.o
+    0x00010dc2   0x00000002   PAD
+    0x00010dc4   0x00000020   Data   RO         1348    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Base: 0x20000040, Size: 0x00001b88, Max: 0x0001ffc0, ABSOLUTE, COMPRESSED[0x00000410])
+    Execution Region RW_IRAM1 (Base: 0x20000040, Size: 0x00001b80, Max: 0x0001ffc0, ABSOLUTE, COMPRESSED[0x0000040c])
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x20000040   0x0000000c   Data   RW           14    .data               system_ach512.o
     0x2000004c   0x00000003   Data   RW           85    .data               uart.o
     0x2000004f   0x00000001   PAD
-    0x20000050   0x00000008   Data   RW          177    .data               app.o
-    0x20000058   0x00000440   Data   RW          394    .data               sha2.o
-    0x20000498   0x00000011   Data   RW          472    .data               internal.o
+    0x20000050   0x00000004   Data   RW          176    .data               app.o
+    0x20000054   0x00000004   PAD
+    0x20000058   0x00000440   Data   RW          351    .data               sha2.o
+    0x20000498   0x00000011   Data   RW          429    .data               internal.o
     0x200004a9   0x00000003   PAD
-    0x200004ac   0x00000004   Data   RW         1049    .data               mc_w.l(strtok.o)
-    0x200004b0   0x00000004   Data   RW         1361    .data               mc_w.l(stdout.o)
-    0x200004b4   0x00000004   Data   RW         1366    .data               mc_w.l(mvars.o)
-    0x200004b8   0x00000004   Data   RW         1367    .data               mc_w.l(mvars.o)
-    0x200004bc   0x00000004   Data   RW         1371    .data               mc_w.l(errno.o)
+    0x200004ac   0x00000004   Data   RW          971    .data               mc_w.l(strtok.o)
+    0x200004b0   0x00000004   Data   RW         1283    .data               mc_w.l(stdout.o)
+    0x200004b4   0x00000004   Data   RW         1288    .data               mc_w.l(mvars.o)
+    0x200004b8   0x00000004   Data   RW         1289    .data               mc_w.l(mvars.o)
+    0x200004bc   0x00000004   Data   RW         1293    .data               mc_w.l(errno.o)
     0x200004c0   0x00000020   Zero   RW           84    .bss                uart.o
-    0x200004e0   0x000004a0   Zero   RW          174    .bss                app.o
-    0x20000980   0x00000048   Zero   RW          530    .bss                secp256k1.o
-    0x200009c8   0x00000a00   Zero   RW            2    HEAP                startup.o
-    0x200013c8   0x00000800   Zero   RW            1    STACK               startup.o
+    0x200004e0   0x000004e0   Zero   RW          174    .bss                app.o
+    0x200009c0   0x00000a00   Zero   RW            2    HEAP                startup.o
+    0x200013c0   0x00000800   Zero   RW            1    STACK               startup.o
 
 
 ==============================================================================
@@ -1398,8 +1362,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-      1164        414        606          8       1184       7173   app.o
-      2976         56         12          0          0      17580   bip32.o
+      1296        462        474          4       1248       7275   app.o
+      2976         56         12          0          0      17576   bip32.o
        196         12          0          0          0       1473   bip39.o
          0          0          0          0          0        520   blake2b.o
        152         22          0          0          0       2111   common.o
@@ -1409,18 +1373,18 @@ Image component sizes
       1044          8          0         17          0       8958   internal.o
         22          0          0          0          0        375   main.o
        674          0          0          0          0       3988   pbkdf2.o
-      6236         54        160          0          0      16968   ripemd160.o
-     51108        532        307          0         72      95876   secp256k1.o
+      6228         54        160          0          0      16856   ripemd160.o
+     38236        246        240          0          0      84706   secp256k1.o
       3468         26          0       1088          0       9990   sha2.o
-       648          4         26          0          0       4290   sign.o
+       668          4         26          0          0       4164   sign.o
         28          4        192          0       4608        760   startup.o
       1568         88          0         12          0      26128   system_ach512.o
        724        102          0          3         32      27773   uart.o
 
     ----------------------------------------------------------------------
-     72160       1392       1341       1132       5896     237131   Object Totals
+     59432       1154       1138       1132       5888     225821   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-         4          0          6          4          0          0   (incl. Padding)
+         4          0          2          8          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -1446,7 +1410,7 @@ Image component sizes
         36          8          0          0          0         68   init.o
         30          0          0          0          0         68   llshl.o
         32          0          0          0          0         68   llushr.o
-       252         24          0          0          0        252   mallocr.o
+       188         20          0          0          0        160   malloc.o
         36          0          0          0          0         68   memcpya.o
         36          0          0          0          0        108   memseta.o
          0          0          0          8          0          0   mvars.o
@@ -1464,8 +1428,8 @@ Image component sizes
       2500         14          0          0          0      12588   math.o
 
     ----------------------------------------------------------------------
-      8456        178        135         20          0      33137   Library Totals
-         6          0          2          0          0          0   (incl. Padding)
+      8388        174        134         20          0      33045   Library Totals
+         2          0          1          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -1473,12 +1437,12 @@ Image component sizes
 
       1280          6          0          0          0       6738   ecdsa_20171106.lib
        396         14          0          0          0       3086   hrng_20171106.lib
-      2378        114        133         20          0       2072   mc_w.l
+      2314        110        133         20          0       1980   mc_w.l
       1896         30          0          0          0       8653   pki_20170406.lib
       2500         14          0          0          0      12588   rsa_20171106.lib
 
     ----------------------------------------------------------------------
-      8456        178        135         20          0      33137   Library Totals
+      8388        174        134         20          0      33045   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -1487,15 +1451,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     80616       1570       1476       1152       5896     267692   Grand Totals
-     80616       1570       1476       1040       5896     267692   ELF Image Totals (compressed)
-     80616       1570       1476       1040          0          0   ROM Totals
+     67820       1328       1272       1152       5888     256342   Grand Totals
+     67820       1328       1272       1036       5888     256342   ELF Image Totals (compressed)
+     67820       1328       1272       1036          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                82092 (  80.17kB)
-    Total RW  Size (RW Data + ZI Data)              7048 (   6.88kB)
-    Total ROM Size (Code + RO Data + RW Data)      83132 (  81.18kB)
+    Total RO  Size (Code + RO Data)                69092 (  67.47kB)
+    Total RW  Size (RW Data + ZI Data)              7040 (   6.88kB)
+    Total ROM Size (Code + RO Data + RW Data)      70128 (  68.48kB)
 
 ==============================================================================
 

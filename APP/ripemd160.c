@@ -15,40 +15,9 @@
 
 static void invalidate_ripemd160(struct ripemd160_ctx *ctx)
 {
-#ifdef CCAN_CRYPTO_RIPEMD160_USE_OPENSSL
-	ctx->c.num = -1U;
-#else
 	ctx->bytes = -1ULL;
-#endif
 }
 
-static void check_ripemd160(struct ripemd160_ctx *ctx UNUSED)
-{
-//#ifdef CCAN_CRYPTO_RIPEMD160_USE_OPENSSL
-//	assert(ctx->c.num != -1U);
-//#else
-//	assert(ctx->bytes != -1ULL);
-//#endif
-}
-
-#ifdef CCAN_CRYPTO_RIPEMD160_USE_OPENSSL
-void ripemd160_init(struct ripemd160_ctx *ctx)
-{
-	RIPEMD160_Init(&ctx->c);
-}
-
-void ripemd160_update(struct ripemd160_ctx *ctx, const void *p, size_t size)
-{
-	check_ripemd160(ctx);
-	RIPEMD160_Update(&ctx->c, p, size);
-}
-
-void ripemd160_done(struct ripemd160_ctx *ctx, struct ripemd160 *res)
-{
-	RIPEMD160_Final(res->u.u8, &ctx->c);
-	invalidate_ripemd160(ctx);
-}
-#else
 SECP256K1_INLINE static uint32_t f1(uint32_t x, uint32_t y, uint32_t z) { return x ^ y ^ z; }
 SECP256K1_INLINE static uint32_t f2(uint32_t x, uint32_t y, uint32_t z) { return (x & y) | (~x & z); }
 SECP256K1_INLINE static uint32_t f3(uint32_t x, uint32_t y, uint32_t z) { return (x | ~y) ^ z; }
@@ -312,7 +281,6 @@ void ripemd160_init(struct ripemd160_ctx *ctx)
 
 void ripemd160_update(struct ripemd160_ctx *ctx, const void *p, size_t size)
 {
-	check_ripemd160(ctx);
 	add(ctx, p, size);
 }
 
@@ -331,7 +299,6 @@ void ripemd160_done(struct ripemd160_ctx *ctx, struct ripemd160 *res)
 		res->u.u32[i] = cpu_to_le32(ctx->s[i]);
 	invalidate_ripemd160(ctx);
 }
-#endif
 
 void ripemd160(struct ripemd160 *ripemd, const void *p, size_t size)
 {

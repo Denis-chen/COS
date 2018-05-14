@@ -13,7 +13,6 @@
 #include "sha256.h"
 #include "uart.h"
 #include "hmac_sha2.h"
-#include "b64.h"
 #include "wally_bip32.h"
 #include "wally_bip39.h"
 #include "wally_crypto.h"
@@ -24,10 +23,9 @@
 UINT32 g_data_buf[256];
 extern volatile UINT8 rx_flag;
 extern volatile UINT8 uart_rx_buf[32];
-char *SEED = "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542";
 char *MNEMONIC = "amazing crew job journey drop country subject melody false layer output elite task wrap dish elite example mixed group body aerobic since custom cash";
 struct ext_key key_out;
-
+unsigned char sign_out[EC_SIGNATURE_LEN] = {0};
 void hrng_entropy(){
 	UINT32 i;
 	hrng_initial();
@@ -112,9 +110,8 @@ void derived(char *key_path){
 	}
 }
 
-void keysign(unsigned char *message, int len){
+void keysign(unsigned char *message, size_t len){
 	int ret = 0;
-	unsigned char sign_out[EC_SIGNATURE_LEN] = {0};
 	printf("keysign start !!!\r\n");
 	wally_ec_sig_from_bytes(key_out.priv_key+1, sizeof(key_out.priv_key)-1, message, len, EC_FLAG_ECDSA, sign_out, sizeof(sign_out));
 	//debug log
@@ -122,9 +119,21 @@ void keysign(unsigned char *message, int len){
 	print_hexstr_key("message", message, len);
 	print_hexstr_key("signed", sign_out, sizeof(sign_out));
 }
+
+int keyverify(unsigned char *pub_key, size_t pub_key_len, 
+				unsigned char *bytes, size_t bytes_len, 
+				unsigned char *sig, size_t sig_len){
+	int ret;
+	ret = wally_ec_sig_verify(pub_key, pub_key_len, bytes, bytes_len, EC_FLAG_ECDSA, sig, sig_len);
+	if(ret == WALLY_OK){
+		printf("key verify ok!!!\r\n");
+	}else{
+		printf("key verify fail!!!\r\n");
+	}
+	return ret;
+}
 void init_boot(void){
 	unsigned char message[EC_MESSAGE_HASH_LEN];
-	printfS("init_boot\r\n");
 	while(1){
 		if(rx_flag == 1){
 			printfS("rx_flag = %d, uart_rx_buf = %s\r\n", rx_flag, uart_rx_buf);
@@ -136,6 +145,9 @@ void init_boot(void){
 				derived("m/44H/0H/0H/0");
 				sha256("1234567890", strlen("1234567890"), message);
 				keysign(message, sizeof(message));
+			}else if(strstr((char *)(uart_rx_buf), "keyverify")){
+				sha256("1234567890", strlen("1234567890"), message);
+				keyverify(key_out.pub_key, sizeof(key_out.pub_key), message, sizeof(message), sign_out, sizeof(sign_out));
 			}
 			rx_flag = 0;
 			rx_count = 0;

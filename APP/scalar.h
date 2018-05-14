@@ -7,15 +7,8 @@
 #ifndef _SECP256K1_SCALAR_
 #define _SECP256K1_SCALAR_
 #include "basic-config.h"
-#if defined HAVE_CONFIG_H
-#include "libsecp256k1-config.h"
-#endif
 
-#if defined(EXHAUSTIVE_TEST_ORDER)
-#include "scalar_low.h"
-#elif defined(USE_SCALAR_4X64)
-#include "scalar_4x64.h"
-#elif defined(USE_SCALAR_8X32)
+#if defined(USE_SCALAR_8X32)
 #include "scalar_8x32.h"
 #else
 #error "Please select scalar implementation"

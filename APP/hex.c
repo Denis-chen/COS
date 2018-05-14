@@ -107,7 +107,7 @@ int wally_hex_to_bytes(const char *hex,
     return WALLY_OK;
 }
 
-void print_hexstr_key(char *tag, unsigned char *in, uint16_t len){
+void print_hexstr_key(char *tag, const unsigned char *in, uint16_t len){
    char *out;
    wally_hex_from_bytes(in, len, &out);
    printf("%s : %s\r\n", tag, out);

@@ -74,6 +74,6 @@ static SECP256K1_INLINE size_t hex_data_size(size_t strlen)
 bool char_to_hex(unsigned char *val, char c);
 int wally_hex_from_bytes(const unsigned char *bytes, size_t bytes_len, char **output);
 int wally_hex_to_bytes(const char *hex, unsigned char *bytes_out, size_t len, size_t *written);
-void print_hexstr_key(char *tag, unsigned char *in, uint16_t len);
+void print_hexstr_key(char *tag, const unsigned char *in, uint16_t len);
 
 #endif /* CCAN_HEX_H */

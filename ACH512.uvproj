@@ -469,16 +469,6 @@
               <FilePath>.\APP\blake2s.c</FilePath>
             </File>
             <File>
-              <FileName>decode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\decode.c</FilePath>
-            </File>
-            <File>
-              <FileName>encode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\encode.c</FilePath>
-            </File>
-            <File>
               <FileName>hmac_sha2.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\hmac_sha2.c</FilePath>

@@ -114,11 +114,9 @@ typedef struct {
 #define SECP256K1_EC_COMPRESSED (SECP256K1_FLAGS_TYPE_COMPRESSION | SECP256K1_FLAGS_BIT_COMPRESSION)
 #define SECP256K1_EC_UNCOMPRESSED (SECP256K1_FLAGS_TYPE_COMPRESSION)
 
-SECP256K1_API int secp256k1_ecdsa_init(void);
 /** Serialize a pubkey object into a serialized byte sequence.
  *
  *  Returns: 1 always.
- *  Args:   ctx:        a secp256k1 context object.
  *  Out:    output:     a pointer to a 65-byte (if compressed==0) or 33-byte (if
  *                      compressed==1) byte array to place the serialized key
  *                      in.
@@ -137,10 +135,29 @@ SECP256K1_API int secp256k1_ec_pubkey_serialize(
     unsigned int flags
 );
 
+/** Parse an ECDSA signature in compact (64 bytes) format.
+ *
+ *  Returns: 1 when the signature could be parsed, 0 otherwise.
+ *  Out:  sig:      a pointer to a signature object
+ *  In:   input64:  a pointer to the 64-byte array to parse
+ *
+ *  The signature must consist of a 32-byte big endian R value, followed by a
+ *  32-byte big endian S value. If R or S fall outside of [0..order-1], the
+ *  encoding is invalid. R and S with value 0 are allowed in the encoding.
+ *
+ *  After the call, sig will always be initialized. If parsing failed or R or
+ *  S are zero, the resulting sig value is guaranteed to fail validation for any
+ *  message and public key.
+ */
+ 
+SECP256K1_API int secp256k1_ecdsa_signature_parse_compact(
+    secp256k1_ecdsa_signature* sig,
+    const unsigned char *input64
+);
+
 /** Serialize an ECDSA signature in compact (64 byte) format.
  *
  *  Returns: 1
- *  Args:   ctx:       a secp256k1 context object
  *  Out:    output64:  a pointer to a 64-byte array to store the compact serialization
  *  In:     sig:       a pointer to an initialized signature object
  *
@@ -155,7 +172,6 @@ SECP256K1_API int secp256k1_ecdsa_signature_serialize_compact(
  *
  *  Returns: 1: correct signature
  *           0: incorrect or unparseable signature
- *  Args:    ctx:       a secp256k1 context object, initialized for verification.
  *  In:      sig:       the signature being verified (cannot be NULL)
  *           msg32:     the 32-byte message hash being verified (cannot be NULL)
  *           pubkey:    pointer to an initialized public key to verify with (cannot be NULL)
@@ -170,7 +186,7 @@ SECP256K1_API int secp256k1_ecdsa_signature_serialize_compact(
  * For details, see the comments for that function.
  */
 SECP256K1_API int secp256k1_ecdsa_verify(
-    const secp256k1_ecdsa_signature *sig,
+    const unsigned char *sig,
     const unsigned char *msg32,
     const secp256k1_pubkey *pubkey
 );
@@ -179,7 +195,6 @@ SECP256K1_API int secp256k1_ecdsa_verify(
  *
  *  Returns: 1: signature created
  *           0: the nonce generation function failed, or the private key was invalid.
- *  Args:    ctx:    pointer to a context object, initialized for signing (cannot be NULL)
  *  Out:     sig:    pointer to an array where the signature will be placed (cannot be NULL)
  *  In:      msg32:  the 32-byte message hash being signed (cannot be NULL)
  *           seckey: pointer to a 32-byte secret key (cannot be NULL)
@@ -199,7 +214,6 @@ SECP256K1_API int secp256k1_ecdsa_sign(
  *
  *  Returns: 1: secret was valid, public key stores
  *           0: secret was invalid, try again
- *  Args:   ctx:        pointer to a context object, initialized for signing (cannot be NULL)
  *  Out:    pubkey:     pointer to the created public key (cannot be NULL)
  *  In:     seckey:     pointer to a 32-byte private key (cannot be NULL)
  */
@@ -213,7 +227,6 @@ SECP256K1_API int secp256k1_ec_pubkey_create(
  *          uniformly random 32-byte arrays, or if the resulting private key
  *          would be invalid (only when the tweak is the complement of the
  *          private key). 1 otherwise.
- * Args:    ctx:    pointer to a context object (cannot be NULL).
  * In/Out:  seckey: pointer to a 32-byte private key.
  * In:      tweak:  pointer to a 32-byte tweak.
  */
@@ -227,7 +240,6 @@ SECP256K1_API int secp256k1_ec_privkey_tweak_add(
  *          uniformly random 32-byte arrays, or if the resulting public key
  *          would be invalid (only when the tweak is the complement of the
  *          corresponding private key). 1 otherwise.
- * Args:    ctx:    pointer to a context object initialized for validation
  *                  (cannot be NULL).
  * In/Out:  pubkey: pointer to a public key object.
  * In:      tweak:  pointer to a 32-byte tweak.

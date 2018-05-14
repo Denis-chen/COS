@@ -11,10 +11,6 @@
 
 static const char MSG_PREFIX[] = "\x18" "Bitcoin Signed Message:\n";
 
-int wally_ec_init(void)
-{
-	return secp256k1_ecdsa_init();
-}
 static bool is_valid_ec_type(uint32_t flags)
 {
     return ((flags & EC_FLAGS_TYPES) == EC_FLAG_ECDSA) ||
@@ -70,23 +66,25 @@ int wally_ec_sig_verify(const unsigned char *pub_key, size_t pub_key_len,
                         uint32_t flags,
                         const unsigned char *sig, size_t sig_len)
 {
-    secp256k1_pubkey pub;
-    secp256k1_ecdsa_signature sig_secp;
-    bool ok;
+	secp256k1_pubkey pub;
+	secp256k1_ecdsa_signature sig_secp;
+	bool ok;
 
-    if (!pub_key || pub_key_len != EC_PUBLIC_KEY_LEN ||
-        !bytes || bytes_len != EC_MESSAGE_HASH_LEN ||
-        !is_valid_ec_type(flags) || flags & ~EC_FLAGS_ALL ||
-        !sig || sig_len != EC_SIGNATURE_LEN)
-        return WALLY_EINVAL;
+	if (!pub_key || pub_key_len != EC_PUBLIC_KEY_LEN ||
+		!bytes || bytes_len != EC_MESSAGE_HASH_LEN ||
+		!is_valid_ec_type(flags) || flags & ~EC_FLAGS_ALL ||
+		!sig || sig_len != EC_SIGNATURE_LEN)
+	return WALLY_EINVAL;
 
-    if (flags & EC_FLAG_SCHNORR)
-        ok = false;
-    else
-        ok = ok && secp256k1_ecdsa_verify(&sig_secp, bytes, &pub) == 0;
+	ok = pubkey_parse(&pub, pub_key, pub_key_len);
 
-    wally_clear_2(&pub, sizeof(pub), &sig_secp, sizeof(sig_secp));
-    return ok ? WALLY_OK : WALLY_EINVAL;
+	if (flags & EC_FLAG_SCHNORR)
+		ok = false;
+	else
+		ok = ok && secp256k1_ecdsa_verify(sig, bytes, &pub) == 0;
+
+	wally_clear_2(&pub, sizeof(pub), &sig_secp, sizeof(sig_secp));
+	return ok ? WALLY_OK : WALLY_EINVAL;
 }
 
 static SECP256K1_INLINE size_t varint_len(size_t bytes_len) {

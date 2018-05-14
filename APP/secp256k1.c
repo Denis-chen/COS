@@ -10,20 +10,11 @@
 #include "field_impl.h"
 #include "scalar_impl.h"
 #include "group_impl.h"
-#include "hash_impl.h"
 #include "wally_crypto.h"
 #include "ecdsa.h"
 #include "ecc.h"
 #include "ecc_byte.h"
 #include "eckey_impl.h"
-
-ECC_G_STR ecc_glb_str;
-MATH_G_STR math_glb_str;
-
-int secp256k1_ecdsa_init(void){
-	ECC_para_initial((ECC_G_STR *)(&ecc_glb_str), CurveLength, (UINT32 *)P_Array, (UINT32 *)a_Array, (UINT32 *)b_Array, (UINT32 *)N_Array, (UINT32 *)BaseX_Array, (UINT32 *)BaseY_Array);
-	return 1;
-}
 
 static int secp256k1_pubkey_load(secp256k1_ge* ge, const secp256k1_pubkey* pubkey) {
     if (sizeof(secp256k1_ge_storage) == 64) {
@@ -49,9 +40,6 @@ static void secp256k1_pubkey_save(secp256k1_pubkey* pubkey, secp256k1_ge* ge) {
         secp256k1_ge_to_storage(&s, ge);
         memcpy(&pubkey->data[0], &s, 64);
     } else {
-        VERIFY_CHECK(!secp256k1_ge_is_infinity(ge));
-        secp256k1_fe_normalize_var(&ge->x);
-        secp256k1_fe_normalize_var(&ge->y);
         secp256k1_fe_get_b32(pubkey->data, &ge->x);
         secp256k1_fe_get_b32(pubkey->data + 32, &ge->y);
     }
@@ -109,6 +97,23 @@ static void secp256k1_ecdsa_signature_save(secp256k1_ecdsa_signature* sig, const
     }
 }
 
+int secp256k1_ecdsa_signature_parse_compact(secp256k1_ecdsa_signature* sig, const unsigned char *input64) {
+    secp256k1_scalar r, s;
+    int ret = 1;
+    int overflow = 0;
+
+    secp256k1_scalar_set_b32(&r, &input64[0], &overflow);
+    ret &= !overflow;
+    secp256k1_scalar_set_b32(&s, &input64[32], &overflow);
+    ret &= !overflow;
+    if (ret) {
+        secp256k1_ecdsa_signature_save(sig, &r, &s);
+    } else {
+        memset(sig, 0, sizeof(*sig));
+    }
+    return ret;
+}
+
 
 int secp256k1_ecdsa_signature_serialize_compact(unsigned char *output64, const secp256k1_ecdsa_signature* sig) {
     secp256k1_scalar r, s;
@@ -119,8 +124,22 @@ int secp256k1_ecdsa_signature_serialize_compact(unsigned char *output64, const s
     return 1;
 }
 
-int secp256k1_ecdsa_verify(const secp256k1_ecdsa_signature *sig, const unsigned char *msg32, const secp256k1_pubkey *pubkey) {
+static int secp256k1_fe_get(secp256k1_pubkey *tKey, const secp256k1_pubkey *pubkey){
+	secp256k1_ge Q;
+	secp256k1_fe x, y;
+	secp256k1_fe_set_b32(&x, pubkey->data);
+	secp256k1_fe_set_b32(&y, pubkey->data + 32);
+	secp256k1_ge_set_xy(&Q, &x, &y);
+
+	secp256k1_pubkey_save(tKey, &Q);
+}
+
+int secp256k1_ecdsa_verify(const unsigned char *sig, const unsigned char *msg32, const secp256k1_pubkey *pubkey) {
 	int ret = 1;
+	int overflow = 0;
+	secp256k1_pubkey tKey;
+	ECC_G_STR ecc_glb_str;
+	MATH_G_STR math_glb_str;
 	UINT32 Signr[CurveLength];
 	UINT32 Signs[CurveLength];
 	UINT32 QxKey[CurveLength];
@@ -128,10 +147,13 @@ int secp256k1_ecdsa_verify(const secp256k1_ecdsa_signature *sig, const unsigned 
 	UINT32 digest[CurveLength];
 
 	scalar_set_b32(digest, msg32);
-	scalar_set_b32(QxKey, pubkey->data);
-	scalar_set_b32(QyKey, pubkey->data+32);
-	scalar_set_b32(Signr, sig->data);
-	scalar_set_b32(Signs, sig->data+32);
+	scalar_set_b32(Signr, sig);
+	scalar_set_b32(Signs, sig+32);
+	secp256k1_fe_get(&tKey, pubkey);
+	print_hexstr_key("pubkey64", tKey.data, sizeof(tKey.data));
+	print_hexstr_key("signdata", sig, 64);
+	scalar_set_b32(QxKey, tKey.data);
+	scalar_set_b32(QyKey, tKey.data+32);
 	ECC_para_initial((ECC_G_STR *)(&ecc_glb_str), CurveLength, (UINT32 *)P_Array, (UINT32 *)a_Array, (UINT32 *)b_Array, (UINT32 *)N_Array, (UINT32 *)BaseX_Array, (UINT32 *)BaseY_Array);
 	ret = ECDSA_verify((ECC_G_STR *)(&ecc_glb_str), (MATH_G_STR *)(&math_glb_str), digest, QxKey, QyKey, Signr, Signs);
 	return ret;
@@ -140,18 +162,31 @@ int secp256k1_ecdsa_verify(const secp256k1_ecdsa_signature *sig, const unsigned 
 
 int secp256k1_ecdsa_sign(secp256k1_ecdsa_signature *signature, const unsigned char *msg32, const unsigned char *seckey) {
 	int ret = 0;
+	int overflow = 0;
+	secp256k1_scalar r, s;
+	ECC_G_STR ecc_glb_str;
+	MATH_G_STR math_glb_str;
+	unsigned char cSignr[CurveLength*4];
+	unsigned char cSigns[CurveLength*4];
 	UINT32 Signr[CurveLength];
 	UINT32 Signs[CurveLength];
-	UINT32 dkey[CurveLength];
 	UINT32 digest[CurveLength];
+	UINT32 dkey[CurveLength];
 
+	memset(Signr, 0, sizeof(Signr));
+	memset(Signs, 0, sizeof(Signs));
 	scalar_set_b32(dkey, seckey);
 	scalar_set_b32(digest, msg32);
 	ECC_para_initial((ECC_G_STR *)(&ecc_glb_str), CurveLength, (UINT32 *)P_Array, (UINT32 *)a_Array, (UINT32 *)b_Array, (UINT32 *)N_Array, (UINT32 *)BaseX_Array, (UINT32 *)BaseY_Array);
 	ret = ECDSA_sign((ECC_G_STR *)(&ecc_glb_str), (MATH_G_STR *)(&math_glb_str), digest, dkey, Signr, Signs);
 	if (!ret) {
-		scalar_get_b32(&signature->data[0], Signr);
-		scalar_get_b32(&signature->data[32], Signs);
+		scalar_get_b32(cSignr, Signr);
+		scalar_get_b32(cSigns, Signs);
+		secp256k1_scalar_set_b32(&r, cSignr, &overflow);
+		secp256k1_scalar_set_b32(&s, cSigns, &overflow);
+		secp256k1_ecdsa_signature_save(signature, &r, &s);
+		secp256k1_scalar_clear(&r);
+		secp256k1_scalar_clear(&s);
 	} else {
 		memset(signature, 0, sizeof(*signature));
 	}
@@ -161,10 +196,13 @@ int secp256k1_ecdsa_sign(secp256k1_ecdsa_signature *signature, const unsigned ch
 
 int secp256k1_ec_pubkey_create(secp256k1_pubkey *pubkey, const unsigned char *seckey) {
 	int ret = 0;
+	ECC_G_STR ecc_glb_str;
+	MATH_G_STR math_glb_str;
 	UINT32 qxKey[CurveLength];
 	UINT32 qyKey[CurveLength];
 	UINT32 key[CurveLength];
 	scalar_set_b32(key, seckey);
+	enable_module(BIT_PKI|BIT_UAC);
 	ECC_para_initial((ECC_G_STR *)(&ecc_glb_str), CurveLength, (UINT32 *)P_Array, (UINT32 *)a_Array, (UINT32 *)b_Array, (UINT32 *)N_Array, (UINT32 *)BaseX_Array, (UINT32 *)BaseY_Array);
 	ret = ECC_PM((ECC_G_STR *)(&ecc_glb_str), key, (UINT32 *)BaseX_Array, (UINT32 *)BaseY_Array, qxKey, qyKey);
 	memset(pubkey, 0, sizeof(*pubkey));
