@@ -45,15 +45,6 @@ WALLY_CORE_API int wally_init(uint32_t flags);
  */
 WALLY_CORE_API int wally_cleanup(uint32_t flags);
 
-#ifndef SWIG
-/**
- * Fetch the wally internal secp256k1 context object.
- *
- * The context is created on demand.
- */
-struct secp256k1_context_struct *wally_get_secp_context(void);
-#endif
-
 /**
  * Securely wipe memory.
  *
@@ -72,28 +63,6 @@ WALLY_CORE_API int wally_bzero(
 WALLY_CORE_API int wally_free_string(
     char *str);
 
-/** Length of entropy required for ``wally_randomize_context`` */
-#define WALLY_SECP_RANDOMISE_LEN 32
-
-/**
- * Provide entropy to randomize the libraries internal libsecp256k1 context.
- *
- * Random data is used in libsecp256k1 to blind the data being processed,
- * making side channel attacks more difficult. Wally uses a single
- * internal context for secp functions that is not initially randomized.
- * The caller should call this function before using any functions that rely on
- * libsecp256k1 (i.e. Anything using public/private keys).
- *
- * As wally is not currently threadsafe, this function should either be
- * called before threads are created or access to wally functions wrapped
- * in an application level mutex.
- *
- * :param bytes: Entropy to use.
- * :param bytes_len: Size of ``bytes`` in bytes. Must be ``WALLY_SECP_RANDOMISE_LEN``.
- */
-WALLY_CORE_API int wally_secp_randomize(
-    const unsigned char *bytes,
-    size_t bytes_len);
 
 /**
  * Convert bytes to a (lower-case) hexadecimal string.
@@ -126,73 +95,6 @@ WALLY_CORE_API void print_hexstr_key(
 	char *tag, 
 	const unsigned char *in, 
 	uint16_t len);
-
-/* For ``wally_base58_from_bytes``, indicates that a checksum should
- * be generated. For ``wally_base58_to_bytes``, indicates that the
- * embedded checksum should be validated and stripped off the returned
- * bytes.
- */
-#define BASE58_FLAG_CHECKSUM 0x1
-
-/** The number of extra bytes required to hold a base58 checksum */
-#define BASE58_CHECKSUM_LEN 4
-
-/**
- * Create a base 58 encoded string representing binary data.
- *
- * :param bytes: Binary data to convert.
- * :param bytes_len: The length of ``bytes`` in bytes.
- * :param flags: Pass ``BASE58_FLAG_CHECKSUM`` if ``bytes`` should have a
- *|    checksum calculated and appended before converting to base 58.
- * :param output: Destination for the base 58 encoded string representing ``bytes``.
- *|    The string returned should be freed using `wally_free_string`.
- */
-WALLY_CORE_API int wally_base58_from_bytes(
-    const unsigned char *bytes,
-    size_t bytes_len,
-    uint32_t flags,
-    char **output);
-
-/**
- * Decode a base 58 encoded string back into into binary data.
- *
- * :param str_in: Base 58 encoded string to decode.
- * :param flags: Pass ``BASE58_FLAG_CHECKSUM`` if ``bytes_out`` should have a
- *|    checksum validated and removed before returning. In this case, ``len``
- *|    must contain an extra ``BASE58_CHECKSUM_LEN`` bytes to calculate the
- *|    checksum into. The returned length will not include the checksum.
- * :param bytes_out: Destination for converted binary data.
- * :param len: The length of ``bytes_out`` in bytes.
- * :param written: Destination for the length of the decoded bytes.
- */
-WALLY_CORE_API int wally_base58_to_bytes(
-    const char *str_in,
-    uint32_t flags,
-    unsigned char *bytes_out,
-    size_t len,
-    size_t *written);
-
-/**
- * Return the length of a base58 encoded string once decoded into bytes.
- *
- * Returns the exact number of bytes that would be required to store ``str_in``
- * as decoded binary, including any embedded checksum. If the string contains
- * invalid characters then WALLY_EINVAL is returned. Note that no checksum
- * validation takes place.
- *
- * In the worst case (an all zero buffer, represented by a string of '1'
- * characters), this function will return strlen(``str_in``). You can therefore
- * safely use the length of ``str_in`` as a buffer size to avoid calling this
- * function in most cases.
- *
- * :param str_in: Base 58 encoded string to find the length of.
- * :param written: Destination for the length of the decoded bytes.
- *
- */
-WALLY_CORE_API int wally_base58_get_length(
-    const char *str_in,
-    size_t *written);
-
 
 #ifndef SWIG
 /** The type of an overridable function to allocate memory */

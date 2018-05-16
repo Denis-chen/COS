@@ -433,6 +433,11 @@
               <FileType>4</FileType>
               <FilePath>.\ACH512\driver\sm3_20171106.lib</FilePath>
             </File>
+            <File>
+              <FileName>eflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ACH512\driver\eflash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
