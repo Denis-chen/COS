@@ -13,11 +13,13 @@
 
 #define  PAGE_ADDRESS_MASK   0xFFFFFE00U
 #define PRIV_KEY_BIT         32
+#define NUM_LEN				 4
 #define DATA_LEN		     256
+#define BUFF_LEN			 512
 typedef struct
 {
-	UINT8   is_ready;     //数据是否就绪， 用于AP模块读取它来判断SE是否已经处理完成
-	UINT8	id;			  //参考命令ID
+	UINT8   is_ready;     //??????, ??AP????????SE????????
+	UINT8	id;			  //????ID
 	UINT16	len;		  //para data len
 }message_header;
 
@@ -28,16 +30,16 @@ typedef struct
 }message_t;
 
 
-//命令ID：
+//??ID:
 typedef enum
 {
-	AT_M2S_GEN_WALLET = 0,  /*创建钱包*/
-	AT_M2S_SET_PWD,			/*用户更改交易密码*/
-	AT_M2S_SAVE_MNEMONIC,   /*保存助记词*/
-	AT_M2S_RECOVER_WALLET,  /*恢复钱包*/
-	AT_M2S_GET_PUBKEY,      /*获取某币种主公钥*/
-	AT_M2S_SIGN_TRANX,		/*签名交易*/
-	AT_M2S_DEL_WALLET,      /*删除钱包*/
+	AT_M2S_GEN_WALLET = 0,  /*????*/
+	AT_M2S_SET_PWD,			/*????????*/
+	AT_M2S_SAVE_MNEMONIC,   /*?????*/
+	AT_M2S_RECOVER_WALLET,  /*????*/
+	AT_M2S_GET_PUBKEY,      /*????????*/
+	AT_M2S_SIGN_TRANX,		/*????*/
+	AT_M2S_DEL_WALLET,      /*????*/
 	AT_M2S_END,
 
 	AT_S2M_GEN_WALLET_RSP,

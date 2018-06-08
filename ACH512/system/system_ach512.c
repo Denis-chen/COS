@@ -214,9 +214,9 @@ void clock_init_ROSC(uint32_t system_clk_mhz)
 void clock_init(uint32_t system_clk_mhz)
 {
 
-    clock_init_XOSC(system_clk_mhz); //PLL使用片外时钟12M
+    //clock_init_XOSC(system_clk_mhz); //PLL使用片外时钟12M
 
-    //clock_init_ROSC(system_clk_mhz); //PLL使用片内时钟RC48/4
+    clock_init_ROSC(system_clk_mhz); //PLL使用片内时钟RC48/4
 }
 void cache_on(void)
 {

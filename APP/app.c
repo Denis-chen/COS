@@ -20,11 +20,14 @@
 #include <string.h>
 #include "internal.h"
 #include "eflash.h"
+#include "spi.h"
 
 extern volatile UINT8 rx_flag;
 extern volatile UINT8 uart_rx_buf[32];
+UINT8 spi_data_buf[BUFF_LEN];
 char *MNEMONIC = "amazing crew job journey drop country subject melody false layer output elite task wrap dish elite example mixed group body aerobic since custom cash";
-extern void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len);
+void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len);
+UINT8 spi_write(message_t message);
 
 void wallet_entropy(){
 	UINT32 i;
@@ -59,7 +62,7 @@ void AC_MemoryWrite(UINT8 *inData, UINT32 inLen, UINT32 dstAddr)
     pageBaseAddr = dstAddr & PAGE_ADDRESS_MASK;
     nextPageBaseAddr = pageBaseAddr + PAGE_SIZE;
 
-    if(inLen > nextPageBaseAddr - dstAddr) //跨页
+    if(inLen > nextPageBaseAddr - dstAddr) //??
         tmpLen = nextPageBaseAddr - dstAddr;
     else
         tmpLen = inLen;
@@ -161,7 +164,7 @@ void child_path_split(char *in, uint32_t *out, size_t *outlen){
 		if(ptr != NULL){
 			memset(str, 0, sizeof(str));
 			strncpy(str, ptr, strlen(ptr)-1);
-			if(strstr(ptr, "H")){
+			if(strstr(ptr, "'")){
 				out[len] = BIP32_INITIAL_HARDENED_CHILD|atoi(str);
 			}else{
 				out[len] = atoi(str);
@@ -228,7 +231,38 @@ int derived(char *pass_pharase, char *key_path, UINT16 path_len,
 int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len, 
 				unsigned char *message, UINT16 len, 
 				UINT16 mne_number){
-	int ret;
+	int ret; 
+	UINT8 serial[BIP32_SERIALIZED_LEN] = {0};
+	UINT8 sign_out[EC_SIGNATURE_LEN] = {0};
+	UINT8 number[NUM_LEN] = {0};
+	UINT8 buff[NUM_LEN*2 + BIP32_SERIALIZED_LEN + EC_SIGNATURE_LEN] = {0};
+	struct ext_key key_out;
+	ret = derived(pass_pharase, key_path, path_len, mne_number, serial, BIP32_SERIALIZED_LEN, &key_out);
+	if(ret == WALLY_OK){
+		printf("keysign start !!!\r\n");
+		ret = wally_ec_sig_from_bytes(key_out.priv_key+1, sizeof(key_out.priv_key)-1, message, len, EC_FLAG_ECDSA, sign_out, sizeof(sign_out));
+		if(ret == WALLY_OK){
+			//debug log
+			printf("================================keysign=====================================\r\n");
+			print_hexstr_key("message", message, len);
+			print_hexstr_key("signed", sign_out, sizeof(sign_out));
+			sprintf(number, "%d", EC_PUBLIC_KEY_LEN);
+			strncpy(buff, number, sizeof(number));
+			memset(number, 0, sizeof(number));
+			sprintf(number, "%d", EC_SIGNATURE_LEN);
+			strncat(buff, number, sizeof(number));
+			strncat(buff, serial, BIP32_SERIALIZED_LEN);
+			strncat(buff, sign_out, EC_SIGNATURE_LEN);
+			wallet_response(AT_S2M_SIGN_TRANX_RSP, buff, sizeof(buff));
+		}
+	}
+	return ret;
+}
+
+int wallet_verify(char *pass_pharase, char *key_path, UINT16 path_len, 
+				unsigned char *message, UINT16 len, 
+				UINT16 mne_number){
+	int ret; 
 	UINT8 serial[BIP32_SERIALIZED_LEN] = {0};
 	UINT8 sign_out[EC_SIGNATURE_LEN] = {0};
 	struct ext_key key_out;
@@ -241,21 +275,14 @@ int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len,
 			printf("================================keysign=====================================\r\n");
 			print_hexstr_key("message", message, len);
 			print_hexstr_key("signed", sign_out, sizeof(sign_out));
-			wallet_response(AT_S2M_SIGN_TRANX_RSP, sign_out, sizeof(sign_out));
+			printf("================================keyverify===================================\r\n");
+			ret = wally_ec_sig_verify(key_out.pub_key, sizeof(key_out.pub_key), message, len, EC_FLAG_ECDSA, sign_out, sizeof(sign_out));
+			if(ret == WALLY_OK){
+				printf("key verify ok!!!\r\n");
+			}else{
+				printf("key verify fail!!!\r\n");
+			}
 		}
-	}
-	return ret;
-}
-
-int wallet_verify(unsigned char *pub_key, size_t pub_key_len, 
-				unsigned char *bytes, size_t bytes_len, 
-				unsigned char *sig, size_t sig_len){
-	int ret;
-	ret = wally_ec_sig_verify(pub_key, pub_key_len, bytes, bytes_len, EC_FLAG_ECDSA, sig, sig_len);
-	if(ret == WALLY_OK){
-		printf("key verify ok!!!\r\n");
-	}else{
-		printf("key verify fail!!!\r\n");
 	}
 	return ret;
 }
@@ -264,9 +291,14 @@ void wallet_pubkey(char *pass_pharase, char *key_path, UINT16 path_len, UINT16 m
 	int ret;
 	struct ext_key key_out;
 	UINT8 serial[BIP32_SERIALIZED_LEN] = {0};
+	UINT8 number[NUM_LEN] = {0};
+	UINT8 buff[NUM_LEN + BIP32_SERIALIZED_LEN] = {0};
 	ret = derived(pass_pharase, key_path, path_len, mne_number, serial, BIP32_SERIALIZED_LEN, &key_out);
 	if(ret == WALLY_OK){
-		wallet_response(AT_S2M_GET_PUBKEY_RSP, serial, sizeof(serial));
+		sprintf(number, "%d", EC_PUBLIC_KEY_LEN);
+		strncpy(buff, number, sizeof(number));
+		strncat(buff, serial, BIP32_SERIALIZED_LEN);
+		wallet_response(AT_S2M_GET_PUBKEY_RSP, buff, sizeof(buff));
 	}
 }
 void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len){
@@ -274,145 +306,152 @@ void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len){
 	message_t message;
 	switch(cmd){
 		case AT_S2M_GEN_WALLET_RSP:
-			message.header.id = AT_S2M_GEN_WALLET_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = len;
 			strncpy(message.para, data, len);
 			result = 0;
 			break;
 		case AT_S2M_SET_PWD_RSP:
-			message.header.id = AT_S2M_SET_PWD_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = 0;
 			result = 0;
 			break;
 		case AT_S2M_SAVE_MNEMONIC_RSP:
-			message.header.id = AT_S2M_SAVE_MNEMONIC_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = 0;
 			result = 0;
 			break;
 		case AT_S2M_RECOVER_WALLET_RSP:
-			message.header.id = AT_S2M_RECOVER_WALLET_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = 0;
 			result = 0;
 			break;
 		case AT_S2M_GET_PUBKEY_RSP:
-			message.header.id = AT_S2M_GET_PUBKEY_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = len;
 			result = 0;
 			strncpy(message.para, data, len);
 			break;
 		case AT_S2M_SIGN_TRANX_RSP:
-			message.header.id = AT_S2M_SIGN_TRANX_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = len;
 			result = 0;
 			strncpy(message.para, data, len);
 			break;
 		case AT_S2M_DEL_WALLET_RSP:
-			message.header.id = AT_S2M_DEL_WALLET_RSP;
+			message.header.id = cmd;
 			message.header.is_ready = 0x55;
 			message.header.len = 0;
 			result = 0;
 			break;
+		default:
+			message.header.id = AT_MAX;
+			message.header.is_ready = 0x77;
+			message.header.len = 0;
+			result = 0;
+			break;
 	}
+	spi_write(message);
 }
 void wallet_interface(message_t message){
 	UINT8 cmd, i;
 	UINT16 mne_number, mne_len, deriveAlgoId, signAlgoId, derive_path_len, trans_hash_len;
 	char pass_pharase[8] = {0};
-	char tmpData[sizeof(UINT16)] = {0};
+	char tmpData[NUM_LEN] = {0};
 	char mnemonic[DATA_LEN] = {0};
 	char derive_path[DATA_LEN] = {0};
 	char tans_hash[DATA_LEN] = {0};
 	cmd = message.header.id;
 	switch(cmd){
-		/*创建钱包*/
+		/*????*/
 		case AT_M2S_GEN_WALLET:
 			wallet_entropy();
 			break;
-		/*用户更改交易密码*/
+		/*????????*/
 		case AT_M2S_SET_PWD:
 			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
 			wallet_password(pass_pharase);
 			break;
-		/*保存助记词*/
+		/*?????*/
 		case AT_M2S_SAVE_MNEMONIC:
 			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
 			mne_number = atoi(tmpData);
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN, NUM_LEN);
 			mne_len = atoi(tmpData);
-			strncpy(mnemonic, message.para+sizeof(pass_pharase)+sizeof(UINT16)*2, mne_len);
+			strncpy(mnemonic, message.para+sizeof(pass_pharase)+NUM_LEN*2, mne_len);
 			wallet_save(pass_pharase, (UINT8 *)mnemonic, mne_len);
 			break;
-		/*恢复钱包*/
+		/*????*/
 		case AT_M2S_RECOVER_WALLET:
 			i = 0;
 			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
 			mne_number = atoi(tmpData);
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
 			i++;
 			mne_len = atoi(tmpData);
-			strncpy(mnemonic, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, mne_len);
+			strncpy(mnemonic, message.para+sizeof(pass_pharase)+NUM_LEN*i, mne_len);
 			wallet_recover(pass_pharase, (UINT8 *)mnemonic, mne_len);
 			break;
-		/*获取某币种主公钥*/
+		/*????????*/
 		case AT_M2S_GET_PUBKEY:
 			i = 0;
 			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
 			mne_number = atoi(tmpData);
 			i++;
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
 			deriveAlgoId = atoi(tmpData);
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
 			signAlgoId = atoi(tmpData);
 			memset(tmpData, 0, sizeof(tmpData));
 			i++;
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
 			derive_path_len = atoi(tmpData);
 			i++;
-			strncpy(derive_path, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, derive_path_len);
+			strncpy(derive_path, message.para+sizeof(pass_pharase)+NUM_LEN*i, derive_path_len);
 			wallet_pubkey(pass_pharase, derive_path, derive_path_len, mne_number);
 			break;
-		/*签名交易*/
+		/*????*/
 		case AT_M2S_SIGN_TRANX:
 			i = 0;
 			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
 			mne_number = atoi(tmpData);
 			i++;
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
 			deriveAlgoId = atoi(tmpData);
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
 			signAlgoId = atoi(tmpData);
 			i++;
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
 			trans_hash_len = atoi(tmpData);
 			i++;
 			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, sizeof(UINT16));
+			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
 			derive_path_len = atoi(tmpData);
 			i++;
-			strncpy(tans_hash, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, trans_hash_len);
+			strncpy(tans_hash, message.para+sizeof(pass_pharase)+NUM_LEN*i, trans_hash_len);
 			i++;
-			strncpy(derive_path, message.para+sizeof(pass_pharase)+sizeof(UINT16)*i, derive_path_len);
+			strncpy(derive_path, message.para+sizeof(pass_pharase)+NUM_LEN*i, derive_path_len);
 			wallet_sign(pass_pharase, derive_path, derive_path_len, tans_hash, trans_hash_len, mne_number);
 			break;
 		case AT_M2S_DEL_WALLET:
@@ -421,10 +460,46 @@ void wallet_interface(message_t message){
 			break;
 	}
 }
+
+UINT8 spi_read(){
+	UINT8 ret = 0;
+	message_t message;
+	memset(spi_data_buf, 0, BUFF_LEN);
+	REG_SPI_CTL(SPIA) = 0 << 5 | 0 << 4 | 0 << 2 | 0 << 0;
+	REG_SPI_OUT_EN(SPIA) = 0x00;
+	spi_rx_bytes(SPIA, spi_data_buf, BUFF_LEN);
+	memcpy(&message, spi_data_buf, sizeof(message));
+	if(message.header.is_ready != 0){
+		printf("spi_read - spi_data_buf = %s\r\n", spi_data_buf);
+		printf("spi_read - message.header.is_ready = %x\r\n", message.header.is_ready);
+	}
+	if(message.header.is_ready == 0x55){
+		wallet_interface(message);
+		ret = 1;
+	}
+	return ret;
+}
+
+UINT8 spi_write(message_t message){
+	UINT8 ret = 0;
+	memset(spi_data_buf, 0, BUFF_LEN);
+	REG_SPI_CTL(SPIA) = 0 << 5 | 0 << 4 | 0 << 2 | 0 << 0;
+	REG_SPI_OUT_EN(SPIA) = 0x02;
+	printf("spi_write - message.header.is_ready = %x\r\n", message.header.is_ready);
+	memcpy(spi_data_buf, &message, sizeof(message));
+	spi_tx_bytes(SPIA, spi_data_buf, BUFF_LEN);
+	return ret;
+}
+
 //uart test code
 void init_boot(void){
 	unsigned char message[EC_MESSAGE_HASH_LEN];
+	printf("spi init\r\n");
+	spi_init(SPIA, WORK_MODE_0);
+	REG_SPI_TX_CTL(SPIA) = (REG_SPI_TX_CTL(SPIA) & ~0xff00) | 0x55 << 8;
+	printf("boot done\r\n");
 	while(1){
+		//uart
 		if(rx_flag == 1){
 			printfS("rx_flag = %d, uart_rx_buf = %s\r\n", rx_flag, uart_rx_buf);
 			if(strstr((char *)(uart_rx_buf), "entropy")){
@@ -432,17 +507,24 @@ void init_boot(void){
 			}else if(strstr((char *)(uart_rx_buf), "store")){
 				wallet_save("12345678", (UINT8 *)MNEMONIC, strlen(MNEMONIC));
 			}else if(strstr((char *)(uart_rx_buf), "derived")){
-				wallet_pubkey("12345678", "m/44H/0H/0H/0", strlen("m/44H/0H/0H/0"), 12);
+				wallet_pubkey("12345678", "m/44'/0'/0'/0", strlen("m/44'/0'/0'/0"), 24);
 			}else if(strstr((char *)(uart_rx_buf), "keysign")){
 				sha256("1234567890", strlen("1234567890"), message);
-				wallet_sign("12345678", "m/44H/0H/0H/0", strlen("m/44H/0H/0H/0"), message, sizeof(message), 24);
+				wallet_sign("12345678", "m/44'/0'/0'/0", strlen("m/44'/0'/0'/0"), message, sizeof(message), 24);
 			}else if(strstr((char *)(uart_rx_buf), "keyverify")){
 				sha256("1234567890", strlen("1234567890"), message);
-				//keyverify(key_out.pub_key, sizeof(key_out.pub_key), message, sizeof(message), sign_out, sizeof(sign_out));
+				wallet_verify("12345678", "m/44'/0'/0'/0", strlen("m/44'/0'/0'/0"), message, sizeof(message), 24);
+			}else if(strstr((char *)(uart_rx_buf), "bootloader")){
+				printf("return_to_boot !!!\r\n");
+				return_to_boot();
 			}
 			rx_flag = 0;
 			rx_count = 0;
 			memset((char*)uart_rx_buf, 0, sizeof(uart_rx_buf));
+		}else {
+			//spi
+			spi_read();
+			delay(200);
 		}
 	}
 }
