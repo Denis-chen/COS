@@ -31,5 +31,7 @@
 #define HAVE_LITTLE_ENDIAN 1
 #define _ECC_256        1
 
+//#define USE_BORAD 1
+
 //#endif // USE_BASIC_CONFIG
 #endif // _SECP256K1_BASIC_CONFIG_

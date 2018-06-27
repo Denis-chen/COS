@@ -66,6 +66,26 @@ void spi_tx_bytes(UINT8 spi_index, UINT8 *tx_data, UINT32 len);
  * return: none
  ************************************************************************/
 void spi_txrx_bytes(UINT8 spi_index, UINT8 *tx_data, UINT8 *rx_data, UINT32 len);
+/************************************************************************
+ * function   : spi_tx_bytes
+ * Description: spi send data by dma mode
+ * input : 
+ *         UINT8 spi_index: spi number    SPIA,SPIB
+ *         UINT8* tx_data: pointer to send data buffer
+ *         UINT32 len: length of bytes to send
+ * return: none
+ ************************************************************************/
+void spi_tx_bytes_dma(UINT8 spi_index, UINT8 *tx_data, UINT32 len);
+/************************************************************************
+ * function   : spi_rx_bytes
+ * Description: spi receive data by dma mode
+ * input : 
+ *         UINT8 spi_index: select spi number    SPIA,SPIB
+ *         UINT8* rx_data: pointer to receive data buffer
+ *         UINT32 len: length of bytes to receive
+ * return: none
+ ************************************************************************/
+void spi_rx_bytes_dma(UINT8 spi_index, UINT8 *rx_data, UINT32 len);
 
 #endif
 

@@ -443,6 +443,11 @@
               <FileType>1</FileType>
               <FilePath>.\ACH512\driver\spi.c</FilePath>
             </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ACH512\driver\dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

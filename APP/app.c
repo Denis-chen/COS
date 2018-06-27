@@ -21,13 +21,38 @@
 #include "internal.h"
 #include "eflash.h"
 #include "spi.h"
+#include "basic-config.h"
 
 extern volatile UINT8 rx_flag;
 extern volatile UINT8 uart_rx_buf[32];
+UINT8 spi_ready = 0;
 UINT8 spi_data_buf[BUFF_LEN];
+message_t rx_message;
+message_t tx_message;
 char *MNEMONIC = "amazing crew job journey drop country subject melody false layer output elite task wrap dish elite example mixed group body aerobic since custom cash";
 void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len);
+UINT8 spi_read(void);
 UINT8 spi_write(message_t message);
+
+int endian_input(char *data, int index, UINT16 input){
+	#ifdef BIG_ENDIAN
+    data[index] = input & 0x00ff;
+    data[index+1] = (input & 0xff00) >> 8;
+	#else
+    data[index] = input & 0xff00;
+    data[index+1] = input & 0x00ff;
+	#endif
+    return 2;
+}
+
+int endian_output(char *data, int index, UINT16 *output){
+	#ifdef BIG_ENDIAN
+	*output = data[index] | data[index+1] << 8;
+	#else
+    *output = (data[index] << 8 ) | data[index+1];
+	#endif
+    return 2;
+}
 
 void wallet_entropy(){
 	UINT32 i;
@@ -62,7 +87,7 @@ void AC_MemoryWrite(UINT8 *inData, UINT32 inLen, UINT32 dstAddr)
     pageBaseAddr = dstAddr & PAGE_ADDRESS_MASK;
     nextPageBaseAddr = pageBaseAddr + PAGE_SIZE;
 
-    if(inLen > nextPageBaseAddr - dstAddr) //??
+    if(inLen > nextPageBaseAddr - dstAddr) //跨页
         tmpLen = nextPageBaseAddr - dstAddr;
     else
         tmpLen = inLen;
@@ -111,17 +136,17 @@ void wallet_password(char *pass_pharase){
 	UINT8 mnemonic[DATA_LEN] = {0};
 	get_mnemonic(EFlashMainBaseAddr, mnemonic);
 	store_mnemonic(pass_pharase, mnemonic, DATA_LEN);
-	wallet_response(AT_S2M_SET_PWD_RSP, mnemonic, 0);
+	wallet_response(AT_S2M_SET_PWD_RSP, NULL, 0);
 }
 
 void wallet_recover(char *pass_pharase, UINT8 *mnemonic, UINT32 len){
 	store_mnemonic(pass_pharase, mnemonic, len);
-	wallet_response(AT_S2M_RECOVER_WALLET_RSP, mnemonic, 0);
+	wallet_response(AT_S2M_RECOVER_WALLET_RSP, NULL, 0);
 }
 
 void wallet_save(char *pass_pharase, UINT8 *mnemonic, UINT32 len){
 	store_mnemonic(pass_pharase, mnemonic, len);
-	wallet_response(AT_S2M_SAVE_MNEMONIC_RSP, mnemonic, 0);
+	wallet_response(AT_S2M_SAVE_MNEMONIC_RSP, NULL, 0);
 }
 
 void wallet_delete(char *pass_pharase){
@@ -163,11 +188,14 @@ void child_path_split(char *in, uint32_t *out, size_t *outlen){
 		ptr = strtok(NULL, "/");
 		if(ptr != NULL){
 			memset(str, 0, sizeof(str));
-			strncpy(str, ptr, strlen(ptr)-1);
 			if(strstr(ptr, "'")){
-				out[len] = BIP32_INITIAL_HARDENED_CHILD|atoi(str);
+				strncpy(str, ptr, strlen(ptr) - 1);
+				out[len] = (uint32_t)(BIP32_INITIAL_HARDENED_CHILD|atoi(str));
+				printf("out[%d] = %x\r\n", len, out[len]);
 			}else{
-				out[len] = atoi(str);
+				strncpy(str, ptr, strlen(ptr));
+				out[len] = (uint32_t)(atoi(str));
+				printf("out[%d] = %x\r\n", len, out[len]);
 			}
 			len++;
 		}
@@ -180,6 +208,7 @@ int derived(char *pass_pharase, char *key_path, UINT16 path_len,
 			struct ext_key *key_out){
 	size_t seed_len;
 	int ret;
+	int i = 0;
 	struct ext_key hdkey;
 	uint32_t child_path[8] = {0};
 	size_t child_path_len = 0;
@@ -187,7 +216,7 @@ int derived(char *pass_pharase, char *key_path, UINT16 path_len,
 	UINT8 mnemonic[DATA_LEN] = {0};
 	printf("derived start !!!\r\n");
 	get_mnemonic_number(EFlashMainBaseAddr, mnemonic, mne_number);
-	printf("mnemonic = %s\r\n", mnemonic);
+	printf("mnemonic = %s, mne_number = %d\r\n", mnemonic, mne_number);
 	bip39_mnemonic_to_seed(mnemonic, NULL, bSeed, sizeof(bSeed), &seed_len);
 	print_hexstr_key("seed", bSeed, sizeof(bSeed));
 	printf("key_path = %s\r\n", key_path);
@@ -227,14 +256,21 @@ int derived(char *pass_pharase, char *key_path, UINT16 path_len,
 	}
 	return ret;
 }
-
+/**
+*	签名交易
+*	输出参数顺序
+*	1,UINT16 pubkey_len
+*	2,UINT16 signhash_len
+*	3,char* pubkey
+*	4,char* signhash
+*/
 int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len, 
 				unsigned char *message, UINT16 len, 
 				UINT16 mne_number){
 	int ret; 
+	int i = 0;
 	UINT8 serial[BIP32_SERIALIZED_LEN] = {0};
 	UINT8 sign_out[EC_SIGNATURE_LEN] = {0};
-	UINT8 number[NUM_LEN] = {0};
 	UINT8 buff[NUM_LEN*2 + BIP32_SERIALIZED_LEN + EC_SIGNATURE_LEN] = {0};
 	struct ext_key key_out;
 	ret = derived(pass_pharase, key_path, path_len, mne_number, serial, BIP32_SERIALIZED_LEN, &key_out);
@@ -246,13 +282,11 @@ int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len,
 			printf("================================keysign=====================================\r\n");
 			print_hexstr_key("message", message, len);
 			print_hexstr_key("signed", sign_out, sizeof(sign_out));
-			sprintf(number, "%d", EC_PUBLIC_KEY_LEN);
-			strncpy(buff, number, sizeof(number));
-			memset(number, 0, sizeof(number));
-			sprintf(number, "%d", EC_SIGNATURE_LEN);
-			strncat(buff, number, sizeof(number));
-			strncat(buff, serial, BIP32_SERIALIZED_LEN);
-			strncat(buff, sign_out, EC_SIGNATURE_LEN);
+			i += endian_input(buff, i, BIP32_SERIALIZED_LEN);
+			i += endian_input(buff, i, EC_SIGNATURE_LEN);
+			
+			memcpy(buff+i, serial, BIP32_SERIALIZED_LEN);
+			memcpy(buff+i+BIP32_SERIALIZED_LEN, sign_out, EC_SIGNATURE_LEN);
 			wallet_response(AT_S2M_SIGN_TRANX_RSP, buff, sizeof(buff));
 		}
 	}
@@ -286,227 +320,356 @@ int wallet_verify(char *pass_pharase, char *key_path, UINT16 path_len,
 	}
 	return ret;
 }
-
+/**
+*	获取某币种主公钥
+*	输出参数顺序
+*	1,UINT16 pubkey_len
+*	2,char* pubkey
+*/
 void wallet_pubkey(char *pass_pharase, char *key_path, UINT16 path_len, UINT16 mne_number){
 	int ret;
+	int i = 0;
 	struct ext_key key_out;
 	UINT8 serial[BIP32_SERIALIZED_LEN] = {0};
-	UINT8 number[NUM_LEN] = {0};
 	UINT8 buff[NUM_LEN + BIP32_SERIALIZED_LEN] = {0};
 	ret = derived(pass_pharase, key_path, path_len, mne_number, serial, BIP32_SERIALIZED_LEN, &key_out);
 	if(ret == WALLY_OK){
-		sprintf(number, "%d", EC_PUBLIC_KEY_LEN);
-		strncpy(buff, number, sizeof(number));
-		strncat(buff, serial, BIP32_SERIALIZED_LEN);
+		i += endian_input(buff, i, BIP32_SERIALIZED_LEN);
+		memcpy(buff+i, serial, BIP32_SERIALIZED_LEN);
 		wallet_response(AT_S2M_GET_PUBKEY_RSP, buff, sizeof(buff));
 	}
 }
+
+void boot_start(){
+	return_to_boot();
+	wallet_response(AT_M2S_RETURN_BOOT_RSP, NULL, 0);
+}
 void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len){
 	UINT8 result = 1;
-	message_t message;
+	memset(&tx_message, 0, sizeof(message_t));
 	switch(cmd){
 		case AT_S2M_GEN_WALLET_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = len;
-			strncpy(message.para, data, len);
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
+			memcpy(tx_message.para, data, len);
 			result = 0;
 			break;
 		case AT_S2M_SET_PWD_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = 0;
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
 			result = 0;
 			break;
 		case AT_S2M_SAVE_MNEMONIC_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = 0;
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
 			result = 0;
 			break;
 		case AT_S2M_RECOVER_WALLET_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = 0;
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
 			result = 0;
 			break;
 		case AT_S2M_GET_PUBKEY_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = len;
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
 			result = 0;
-			strncpy(message.para, data, len);
+			memcpy(tx_message.para, data, len);
 			break;
 		case AT_S2M_SIGN_TRANX_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = len;
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
 			result = 0;
-			strncpy(message.para, data, len);
+			memcpy(tx_message.para, data, len);
 			break;
 		case AT_S2M_DEL_WALLET_RSP:
-			message.header.id = cmd;
-			message.header.is_ready = 0x55;
-			message.header.len = 0;
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
+			result = 0;
+			break;
+		case AT_M2S_RETURN_BOOT_RSP:
+			tx_message.header.id = cmd;
+			tx_message.header.is_ready = IS_READY;
+			tx_message.header.len = len;
 			result = 0;
 			break;
 		default:
-			message.header.id = AT_MAX;
-			message.header.is_ready = 0x77;
-			message.header.len = 0;
+			tx_message.header.id = AT_MAX;
+			tx_message.header.is_ready = IS_BUSY;
+			tx_message.header.len = 0;
 			result = 0;
 			break;
 	}
-	spi_write(message);
 }
 void wallet_interface(message_t message){
+
 	UINT8 cmd, i;
-	UINT16 mne_number, mne_len, deriveAlgoId, signAlgoId, derive_path_len, trans_hash_len;
-	char pass_pharase[8] = {0};
-	char tmpData[NUM_LEN] = {0};
+	UINT16 password_len, mne_number, mne_len, deriveAlgoId, signAlgoId, path_len, transhash_len;
+	char pass_pharase[PRIV_KEY_BIT] = {0};
 	char mnemonic[DATA_LEN] = {0};
 	char derive_path[DATA_LEN] = {0};
-	char tans_hash[DATA_LEN] = {0};
+	char transhash[DATA_LEN] = {0};
 	cmd = message.header.id;
 	switch(cmd){
-		/*????*/
+		/*创建钱包*/
 		case AT_M2S_GEN_WALLET:
 			wallet_entropy();
 			break;
-		/*????????*/
+		/**
+		*	用户更改交易密码
+		* 输入参数
+		*	1,UINT16 password_len
+		*	2,char* pass_pharase
+		*/
 		case AT_M2S_SET_PWD:
-			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
+			i = 0;
+			i += endian_output(message.para, i, &password_len);
+
+			memcpy(pass_pharase,  message.para, password_len);
+			pass_pharase[password_len] = '\0';
+			printf("pass_pharase = %s\r\n", pass_pharase);
 			wallet_password(pass_pharase);
 			break;
-		/*?????*/
+		/**
+		* 保存助记词
+		*	参数顺序
+		*	1,UINT16 number
+		*	2,UINT16 password_len
+		*	3,UINT16 mne_len
+		*	4,char* passphrase
+		*	5,char* mnemonic
+		*/
 		case AT_M2S_SAVE_MNEMONIC:
-			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
-			mne_number = atoi(tmpData);
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN, NUM_LEN);
-			mne_len = atoi(tmpData);
-			strncpy(mnemonic, message.para+sizeof(pass_pharase)+NUM_LEN*2, mne_len);
+			i = 0;
+			i += endian_output(message.para, i, &mne_number);
+			i += endian_output(message.para, i, &password_len);
+			i += endian_output(message.para, i, &mne_len);
+			
+			memcpy(pass_pharase,  message.para+i, password_len);
+			pass_pharase[password_len] = '\0';
+			printf("pass_pharase = %s\r\n", pass_pharase);
+			memcpy(mnemonic, message.para+i+password_len, mne_len);
+			mnemonic[mne_len] = '\0';
+			printf("mnemonic = %s\r\n", mnemonic);
 			wallet_save(pass_pharase, (UINT8 *)mnemonic, mne_len);
 			break;
-		/*????*/
+		/**
+		* 恢复钱包
+		*	参数顺序
+		*	1,UINT16 mne_number
+		*	2,UINT16 password_len
+		*	3,UINT16 mne_len
+		*	4,char* passphrase
+		*	5,char* mnemonic
+		*/
 		case AT_M2S_RECOVER_WALLET:
 			i = 0;
-			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
-			mne_number = atoi(tmpData);
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
-			i++;
-			mne_len = atoi(tmpData);
-			strncpy(mnemonic, message.para+sizeof(pass_pharase)+NUM_LEN*i, mne_len);
+			i += endian_output(message.para, i, &mne_number);
+			i += endian_output(message.para, i, &password_len);
+			i += endian_output(message.para, i, &mne_len);
+			
+			memcpy(pass_pharase,  message.para+i, password_len);
+			pass_pharase[password_len] = '\0';
+			printf("pass_pharase = %s\r\n", pass_pharase);
+			memcpy(mnemonic, message.para+i+password_len, mne_len);
+			mnemonic[mne_len] = '\0';
+			printf("mnemonic = %s\r\n", mnemonic);
 			wallet_recover(pass_pharase, (UINT8 *)mnemonic, mne_len);
 			break;
-		/*????????*/
+		/**
+		* 获取某币种主公钥
+		*	输入参数顺序
+		*	1,UINT16 mne_number
+		*	2,UINT16 password_len
+		*	3,UINT16 deriveAlgoId
+		*	4,UINT16 signAlgoId
+		*	5,UINT16 path_len
+		*	6,char* passphrase
+		*	7,char* derive_path
+		*	输出参数顺序
+		*	1,UINT16 pubkey_len
+		*	2,char* pubkey
+		*/
 		case AT_M2S_GET_PUBKEY:
 			i = 0;
-			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
-			mne_number = atoi(tmpData);
-			i++;
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
-			deriveAlgoId = atoi(tmpData);
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
-			signAlgoId = atoi(tmpData);
-			memset(tmpData, 0, sizeof(tmpData));
-			i++;
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
-			derive_path_len = atoi(tmpData);
-			i++;
-			strncpy(derive_path, message.para+sizeof(pass_pharase)+NUM_LEN*i, derive_path_len);
-			wallet_pubkey(pass_pharase, derive_path, derive_path_len, mne_number);
+			i += endian_output(message.para, i, &mne_number);
+			i += endian_output(message.para, i, &password_len);
+			i += endian_output(message.para, i, &deriveAlgoId);
+			i += endian_output(message.para, i, &signAlgoId);
+			i += endian_output(message.para, i, &path_len);
+
+			memcpy(pass_pharase,  message.para+i, password_len);
+			pass_pharase[password_len] = '\0';
+			printf("pass_pharase = %s\r\n", pass_pharase);
+			memcpy(derive_path,  message.para+i+password_len, path_len);
+			derive_path[path_len] = '\0';
+			printf("derive_path = %s\r\n", derive_path);
+			wallet_pubkey(pass_pharase, derive_path, path_len, mne_number);
 			break;
-		/*????*/
+		/**
+		* 签名交易
+		*	输入参数顺序
+		*	1,UINT16 mne_number
+		*	2,UINT16 password_len
+		*	3,UINT16 deriveAlgoId
+		*	4,UINT16 signAlgoId
+		*	5,UINT16 path_len
+		*	6,UINT16 transhash_len
+		*	7,char* passphrase
+		*	8,char* derive_path
+		*	9,char* transhash
+		*	输出参数顺序
+		*	1,UINT16 pubkey_len
+		*	2,UINT16 signhash_len
+		*	3,char* pubkey
+		*	4,char* signhash
+		*/
 		case AT_M2S_SIGN_TRANX:
 			i = 0;
-			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
-			mne_number = atoi(tmpData);
-			i++;
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase), NUM_LEN);
-			deriveAlgoId = atoi(tmpData);
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
-			signAlgoId = atoi(tmpData);
-			i++;
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
-			trans_hash_len = atoi(tmpData);
-			i++;
-			memset(tmpData, 0, sizeof(tmpData));
-			strncpy(tmpData, message.para+sizeof(pass_pharase)+NUM_LEN*i, NUM_LEN);
-			derive_path_len = atoi(tmpData);
-			i++;
-			strncpy(tans_hash, message.para+sizeof(pass_pharase)+NUM_LEN*i, trans_hash_len);
-			i++;
-			strncpy(derive_path, message.para+sizeof(pass_pharase)+NUM_LEN*i, derive_path_len);
-			wallet_sign(pass_pharase, derive_path, derive_path_len, tans_hash, trans_hash_len, mne_number);
+			i += endian_output(message.para, i, &mne_number);
+			i += endian_output(message.para, i, &password_len);
+			i += endian_output(message.para, i, &deriveAlgoId);
+			i += endian_output(message.para, i, &signAlgoId);
+			i += endian_output(message.para, i, &path_len);
+			i += endian_output(message.para, i, &transhash_len);
+			
+			memcpy(pass_pharase,  message.para+i, password_len);
+			pass_pharase[password_len] = '\0';
+			printf("pass_pharase = %s\r\n", pass_pharase);
+			memcpy(derive_path,  message.para+i+password_len, path_len);
+			derive_path[path_len] = '\0';
+			printf("derive_path = %s\r\n", derive_path);
+			memcpy(transhash,  message.para+i+password_len+path_len, transhash_len);
+			transhash[transhash_len] = '\0';
+			printf("transhash = %s\r\n", transhash);
+			wallet_sign(pass_pharase, derive_path, path_len, transhash, transhash_len, mne_number);
 			break;
+		/**
+		*	删除钱包
+		*	输入参数
+		*	1,UINT16 password_len
+		*	2,char* pass_pharase
+		*/
 		case AT_M2S_DEL_WALLET:
-			strncpy(pass_pharase,  message.para, sizeof(pass_pharase));
+			i = 0;
+			i += endian_output(message.para, i, &password_len);
+		
+			memcpy(pass_pharase,  message.para, password_len);
+			pass_pharase[password_len] = '\0';
+			printf("pass_pharase = %s\r\n", pass_pharase);
 			wallet_delete(pass_pharase);
 			break;
+	   /**
+	   * 返回boot启动
+	   */
+	   case AT_M2S_RETURN_BOOT:
+	   		boot_start();
+	   		break;
 	}
 }
 
-UINT8 spi_read(){
+UINT8 spi_response(UINT8 response){
 	UINT8 ret = 0;
-	message_t message;
-	memset(spi_data_buf, 0, BUFF_LEN);
-	REG_SPI_CTL(SPIA) = 0 << 5 | 0 << 4 | 0 << 2 | 0 << 0;
-	REG_SPI_OUT_EN(SPIA) = 0x00;
-	spi_rx_bytes(SPIA, spi_data_buf, BUFF_LEN);
-	memcpy(&message, spi_data_buf, sizeof(message));
-	if(message.header.is_ready != 0){
-		printf("spi_read - spi_data_buf = %s\r\n", spi_data_buf);
-		printf("spi_read - message.header.is_ready = %x\r\n", message.header.is_ready);
+	UINT8 ready[HEADER_LEN] = {0};
+	switch(response){
+		case IS_READY:
+			ready[0] = IS_READY;
+			printf("spi_response IS_READY\r\n");
+			spi_tx_bytes_dma(SPIA, ready, HEADER_LEN);
+			break;
+		case IS_BUSY:
+			ready[0] = IS_BUSY;
+			printf("spi_response IS_BUSY\r\n");
+			spi_tx_bytes_dma(SPIA, ready, HEADER_LEN);
+			break;
+		case IS_READ:
+			printf("spi_response IS_READ\r\n");
+			spi_write(tx_message);
+			break;
+		default:
+			printf("spi_response default\r\n");
+			break;
 	}
-	if(message.header.is_ready == 0x55){
-		wallet_interface(message);
-		ret = 1;
+	ret = 1;
+	return ret;
+}
+
+UINT8 spi_read(void){
+	UINT8 ret = 0;
+	memset(spi_data_buf, 0, BUFF_LEN);
+	memset(&rx_message, 0, sizeof(rx_message));
+	spi_rx_bytes_dma(SPIA, spi_data_buf, BUFF_LEN);
+	print_hexstr_key("spi_read", spi_data_buf, HEADER_LEN+1);
+	memcpy(&rx_message, spi_data_buf+1, HEADER_LEN);
+	printf("spi_read - message.header.is_ready = %x\r\n", rx_message.header.is_ready);
+	switch(rx_message.header.is_ready){
+		case IS_READY:
+			printf("spi_read - message.header.id = %x\r\n", rx_message.header.id);
+			printf("spi_read - message.header.len = %d\r\n", rx_message.header.len);
+			memcpy(rx_message.para, spi_data_buf+HEADER_LEN+1, rx_message.header.len);
+			spi_response(IS_READY);
+			printf("spi_read return is ready\r\n");
+			wallet_interface(rx_message);
+			spi_ready = IS_READY;
+			break;
+		case IS_READ:
+			spi_response(IS_READ);
+			spi_ready = IS_READ;
+			break;
+		default:
+			spi_response(IS_BUSY);
+			break;
 	}
 	return ret;
 }
 
 UINT8 spi_write(message_t message){
 	UINT8 ret = 0;
+	UINT8 i = 0;
+	UINT16 len = message.header.len + HEADER_LEN;
 	memset(spi_data_buf, 0, BUFF_LEN);
-	REG_SPI_CTL(SPIA) = 0 << 5 | 0 << 4 | 0 << 2 | 0 << 0;
-	REG_SPI_OUT_EN(SPIA) = 0x02;
-	printf("spi_write - message.header.is_ready = %x\r\n", message.header.is_ready);
-	memcpy(spi_data_buf, &message, sizeof(message));
-	spi_tx_bytes(SPIA, spi_data_buf, BUFF_LEN);
+	memcpy(spi_data_buf, &message, len);
+	//endian_input(spi_data_buf, PARA_LEN_START, message.header.len);
+	print_hexstr_key("spi_write", spi_data_buf,  len);
+	spi_tx_bytes_dma(SPIA, spi_data_buf, BUFF_LEN);
 	return ret;
 }
 
 //uart test code
 void init_boot(void){
+	UINT8 ret = 0;
 	unsigned char message[EC_MESSAGE_HASH_LEN];
+	#ifndef USE_BORAD
 	printf("spi init\r\n");
 	spi_init(SPIA, WORK_MODE_0);
-	REG_SPI_TX_CTL(SPIA) = (REG_SPI_TX_CTL(SPIA) & ~0xff00) | 0x55 << 8;
+	printf("dma init\r\n");
+	dma_init();
+	#endif
 	printf("boot done\r\n");
 	while(1){
+		#ifdef USE_BORAD
 		//uart
 		if(rx_flag == 1){
 			printfS("rx_flag = %d, uart_rx_buf = %s\r\n", rx_flag, uart_rx_buf);
 			if(strstr((char *)(uart_rx_buf), "entropy")){
+				int data = 0x12345678;
+				char *c = (char *)&data;
+				if((c[0] == 0x78) && (c[1] == 0x56) && (c[2] == 0x34) && (c[3] == 0x12)){
+					printf("little endian\r\n");
+				}else{
+					printf("big endian\r\n");
+				}
 				wallet_entropy();
 			}else if(strstr((char *)(uart_rx_buf), "store")){
 				wallet_save("12345678", (UINT8 *)MNEMONIC, strlen(MNEMONIC));
 			}else if(strstr((char *)(uart_rx_buf), "derived")){
+				wallet_save("12345678", (UINT8 *)MNEMONIC, strlen(MNEMONIC));
 				wallet_pubkey("12345678", "m/44'/0'/0'/0", strlen("m/44'/0'/0'/0"), 24);
 			}else if(strstr((char *)(uart_rx_buf), "keysign")){
 				sha256("1234567890", strlen("1234567890"), message);
@@ -521,11 +684,13 @@ void init_boot(void){
 			rx_flag = 0;
 			rx_count = 0;
 			memset((char*)uart_rx_buf, 0, sizeof(uart_rx_buf));
-		}else {
-			//spi
-			spi_read();
-			delay(200);
 		}
+		#else
+		//spi
+		printf("REG_SPI_CS(SPIA) = %d\r\n", REG_SPI_CS(SPIA));
+		ret = spi_read();
+		printf("spi spi_read ok ret=%d\r\n", ret);
+		#endif
 	}
 }
 
