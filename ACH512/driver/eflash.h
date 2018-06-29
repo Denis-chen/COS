@@ -18,7 +18,7 @@
 
 #define EFLASH_BASE_ADDR            0x00000000  
                                    
-#define EFlashMainBaseAddr	        (EFLASH_BASE_ADDR + 0x00070000)
+#define EFlashMainBaseAddr	        (EFLASH_BASE_ADDR + 0x0007fc00) //剩余2k存储
 #define EFlashNVR2BaseAddr		    (EFLASH_BASE_ADDR + 0x00080200)
 
 #define SM_FLASH_FF_VALUE_ADDR 	    (EFlashNVR2BaseAddr + 0x64)		//flash加密后FF对应的加密值

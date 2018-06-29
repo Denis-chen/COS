@@ -31,9 +31,6 @@ extern "C" {
 #define BIP32_VER_TEST_PUBLIC  0x043587CF
 #define BIP32_VER_TEST_PRIVATE 0x04358394
 
-#ifdef SWIG
-struct ext_key;
-#else
 /** An extended key */
 struct ext_key {
     /** The chain code for this key */
@@ -55,9 +52,7 @@ struct ext_key {
     /** The public key with prefix byte 0x2 or 0x3 */
     unsigned char pub_key[33];
 };
-#endif /* SWIG */
 
-#ifndef SWIG_PYTHON
 /**
  * Free a key allocated by `bip32_key_from_seed_alloc`
  * or `bip32_key_unserialize_alloc`.
@@ -66,7 +61,7 @@ struct ext_key {
  */
 WALLY_CORE_API int bip32_key_free(
     const struct ext_key *hdkey);
-#endif /* SWIG_PYTHON */
+
 
 /**
  */
@@ -86,7 +81,6 @@ WALLY_CORE_API int bip32_key_init_alloc(
     size_t parent160_len,
     struct ext_key **output);
 
-#ifndef SWIG
 /**
  * Create a new master extended key from entropy.
  *
@@ -109,7 +103,6 @@ WALLY_CORE_API int bip32_key_from_seed(
     uint32_t version,
     uint32_t flags,
     struct ext_key *output);
-#endif
 
 /**
  * As per `bip32_key_from_seed`, but allocates the key.
@@ -139,7 +132,6 @@ WALLY_CORE_API int bip32_key_serialize(
     size_t len);
 
 
-#ifndef SWIG
 /**
  * Un-serialize an extended key from memory.
  *
@@ -151,7 +143,7 @@ WALLY_CORE_API int bip32_key_unserialize(
     const unsigned char *bytes,
     size_t bytes_len,
     struct ext_key *output);
-#endif
+
 
 /**
  * As per `bip32_key_unserialize`, but allocates the key.
@@ -163,7 +155,6 @@ WALLY_CORE_API int bip32_key_unserialize_alloc(
     size_t bytes_len,
     struct ext_key **output);
 
-#ifndef SWIG
 /**
  * Create a new child extended key from a parent extended key.
  *
@@ -182,7 +173,6 @@ WALLY_CORE_API int bip32_key_from_parent(
     uint32_t child_num,
     uint32_t flags,
     struct ext_key *output);
-#endif
 
 /**
  * As per `bip32_key_from_parent`, but allocates the key.
@@ -195,7 +185,6 @@ WALLY_CORE_API int bip32_key_from_parent_alloc(
     uint32_t flags,
     struct ext_key **output);
 
-#ifndef SWIG
 /**
  * Create a new child extended key from a parent extended key and a path.
  *
@@ -211,7 +200,6 @@ WALLY_CORE_API int bip32_key_from_parent_path(
     size_t child_path_len,
     uint32_t flags,
     struct ext_key *output);
-#endif
 
 /**
  * As per `bip32_key_from_parent_path`, but allocates the key.

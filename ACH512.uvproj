@@ -448,6 +448,16 @@
               <FileType>1</FileType>
               <FilePath>.\ACH512\driver\dma.c</FilePath>
             </File>
+            <File>
+              <FileName>ed25519_20180625.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>.\ACH512\driver\ed25519_20180625.lib</FilePath>
+            </File>
+            <File>
+              <FileName>aes_20171106.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>.\ACH512\driver\aes_20171106.lib</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -537,6 +547,11 @@
               <FileName>bip39.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\bip39.c</FilePath>
+            </File>
+            <File>
+              <FileName>aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\aes.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -27,9 +27,14 @@ typedef struct
 	UINT16	len;		  //para data len
 }message_header;
 
+typedef struct
+{
+	UINT8  state;
+}response_t;
 typedef struct 
 {
 	message_header	header;	
+	response_t      response;
 	char 			para[DATA_LEN-4];	// pointer to the actual data in the buffer
 }message_t;
 
@@ -61,6 +66,12 @@ typedef enum
 #define IS_READY 0x55
 #define IS_READ  0xaa
 #define IS_BUSY	 0x77
+
+#define RSP_OK             0x00
+#define RSP_CHECK_PD       0x01
+#define RSP_NEW_PD		   0x02		
+#define RSP_ERROR_PD 	   0x11
+#define RSP_UNKNOWN        0xff
 void init_boot(void);
 #endif
 

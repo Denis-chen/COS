@@ -2,7 +2,6 @@
 #include "hmac.h"
 #include "wally_bip32.h"
 #include "wally_crypto.h"
-#include "bip32_int.h"
 #include "endian.h"
 #include <stdbool.h>
 
@@ -579,46 +578,3 @@ int bip32_key_init_alloc(uint32_t version, uint32_t depth, uint32_t child_num,
     return WALLY_OK;
 }
 
-
-#if defined (SWIG_JAVA_BUILD) || defined (SWIG_PYTHON_BUILD) || defined (SWIG_JAVASCRIPT_BUILD)
-
-/* Getters for ext_key values */
-
-static int getb_impl(const struct ext_key *hdkey,
-                     const unsigned char *src, size_t src_len,
-                     unsigned char *bytes_out, size_t len)
-{
-    if (!hdkey || !bytes_out || len != src_len)
-        return WALLY_EINVAL;
-    memcpy(bytes_out, src, len);
-    return WALLY_OK;
-}
-
-#define GET_B(name) \
-    int bip32_key_get_ ## name(const struct ext_key *hdkey, unsigned char *bytes_out, size_t len) { \
-        return getb_impl(hdkey, hdkey->name, sizeof(hdkey->name), bytes_out, len); \
-    }
-
-GET_B(chain_code)
-GET_B(parent160)
-GET_B(hash160)
-GET_B(pub_key)
-
-int bip32_key_get_priv_key(const struct ext_key *hdkey, unsigned char *bytes_out, size_t len) {
-    return getb_impl(hdkey, hdkey->priv_key + 1, sizeof(hdkey->priv_key) - 1, bytes_out, len);
-}
-
-
-#define GET_I(name) \
-    int bip32_key_get_ ## name(const struct ext_key *hdkey, size_t *written) { \
-        if (written) *written = 0; \
-        if (!hdkey || !written) return WALLY_EINVAL; \
-        *written = hdkey->name; \
-        return WALLY_OK; \
-    }
-
-GET_I(depth)
-GET_I(child_num)
-GET_I(version)
-
-#endif /* SWIG_JAVA_BUILD/SWIG_PYTHON_BUILD */

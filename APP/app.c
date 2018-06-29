@@ -10,7 +10,6 @@
 #include "common.h"
 #include "app.h"
 #include "hrng.h"
-#include "sha256.h"
 #include "uart.h"
 #include "hmac_sha2.h"
 #include "wally_bip32.h"
@@ -22,6 +21,7 @@
 #include "eflash.h"
 #include "spi.h"
 #include "basic-config.h"
+#include "ed25519.h"
 
 extern volatile UINT8 rx_flag;
 extern volatile UINT8 uart_rx_buf[32];
@@ -30,7 +30,7 @@ UINT8 spi_data_buf[BUFF_LEN];
 message_t rx_message;
 message_t tx_message;
 char *MNEMONIC = "amazing crew job journey drop country subject melody false layer output elite task wrap dish elite example mixed group body aerobic since custom cash";
-void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len);
+void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len, UINT8 resp);
 UINT8 spi_read(void);
 UINT8 spi_write(message_t message);
 
@@ -56,7 +56,7 @@ int endian_output(char *data, int index, UINT16 *output){
 
 void wallet_entropy(){
 	UINT32 i;
-	UINT8 entropy[DATA_LEN] = {0};
+	UINT8 entropy[PRIV_KEY_BIT] = {0};
 	hrng_initial();
 	if(get_hrng(entropy, PRIV_KEY_BIT))
 	{
@@ -64,7 +64,7 @@ void wallet_entropy(){
 		return;
 	}
 	print_hexstr_key("entropy", entropy, PRIV_KEY_BIT);
-	wallet_response(AT_S2M_GEN_WALLET_RSP, entropy, PRIV_KEY_BIT);
+	wallet_response(AT_S2M_GEN_WALLET_RSP, entropy, PRIV_KEY_BIT, RSP_OK);
 }
 
 static void eflash_write_page(UINT32 *buf, UINT32 pageAddr)
@@ -107,46 +107,102 @@ void AC_MemoryWrite(UINT8 *inData, UINT32 inLen, UINT32 dstAddr)
 }
 
 
-void get_mnemonic(UINT32 base_addr, UINT8 *value){
+void get_mnemonic(UINT32 base_addr, UINT8 *value, UINT32 *data_len){
 	UINT32 i, len, addr;
 	addr = base_addr,
 	len = eflash_read_word(addr);
 	printf("get_mnemonic len = %d\r\n", len);
-	addr = addr+4;
+	*data_len = len;
+	addr = addr + 4 + SHA256_DIGEST_SIZE;
 	for(i = 0; i < len; i++){
 		*value = eflash_read_byte(addr+i);
 		value++;
 	}
 }
 
-void store_mnemonic(char *pass_pharase, UINT8 *mnemonic, UINT32 len){
+void get_pass_pharase(UINT32 base_addr, UINT8 *value){
 	UINT32 i, addr;
-	addr = EFlashMainBaseAddr,
-	printf("store_mnemonic len = %d\r\n", len);
-	eflash_erase_page(addr);
-	eflash_write_word(addr, len);
-	addr = addr+4;
-	for(i = 0; i < len; i++){
-		AC_MemoryWrite(mnemonic+i, 1, addr+i);
+	addr = base_addr,
+
+	addr = addr + 4;
+	for(i = 0; i < SHA256_DIGEST_SIZE; i++){
+		*value = eflash_read_byte(addr+i);
+		value++;
 	}
+}
+
+int check_pass_pharase(char *pass_pharase, UINT8 *value){
+	int ret, i;
+	UINT8 digest[SHA256_DIGEST_SIZE];
+	sha256(pass_pharase, strlen(pass_pharase), digest);
+	get_pass_pharase(EFlashMainBaseAddr, value);
+	for(i = 0; i < SHA256_DIGEST_SIZE; i++){
+		if(digest[i] != *(value+i)){
+			return WALLY_ERROR;
+		}
+	}
+	return WALLY_OK;
+}
+
+void store_mnemonic(char *pass_pharase, UINT8 *mnemonic, UINT32 len){
+	UINT32 i, addr, data_len;
+	char *data;
+	UINT8 digest[SHA256_DIGEST_SIZE];
+	addr = EFlashMainBaseAddr;
+	data_len = len + (16 - len % 16);
+	data = wally_malloc(data_len);
+	printf("store_mnemonic len = %d, pass_pharase = %s\r\n", len, pass_pharase);
+	eflash_erase_page(addr);
+	eflash_write_word(addr, data_len);
+	addr = addr+4;
+	sha256(pass_pharase, strlen(pass_pharase), digest);
+	print_hexstr_key("store_mnemonic-digest", digest, sizeof(digest));
+	for(i = 0; i < SHA256_DIGEST_SIZE; i++){
+		AC_MemoryWrite(digest + i, 1, addr+i);
+	}
+	aes_ecb_crypt(digest, mnemonic, data_len, data);
+	addr = addr+SHA256_DIGEST_SIZE;
+	for(i = 0; i < data_len; i++){
+		AC_MemoryWrite(data + i, 1, addr+i);
+	}
+	wally_clear(data, data_len);
+	wally_free(data);
 	printf("store_mnemonic ok!!!\r\n");
 }
 
-void wallet_password(char *pass_pharase){
+void wallet_password(char *pass_pharase, UINT8 state){
+	int ret;
+	UINT32 data_len;
+	UINT8 digest[SHA256_DIGEST_SIZE];
+	UINT8 crypt_data[DATA_LEN] = {0};
 	UINT8 mnemonic[DATA_LEN] = {0};
-	get_mnemonic(EFlashMainBaseAddr, mnemonic);
-	store_mnemonic(pass_pharase, mnemonic, DATA_LEN);
-	wallet_response(AT_S2M_SET_PWD_RSP, NULL, 0);
+	printf("pass_pharase = %s, state = %x\r\n", pass_pharase, state);
+	if(state == RSP_CHECK_PD){
+		ret = check_pass_pharase(pass_pharase, digest);
+		if(ret == WALLY_OK){
+			printf("check_pass_pharase ok\r\n");
+			get_mnemonic(EFlashMainBaseAddr, crypt_data, &data_len);
+			ret = aes_ecb_uncrypt(digest, crypt_data, data_len, mnemonic);
+			printf("wallet_password mnemonic = %s, data_len = %d\r\n", mnemonic, data_len);
+			wallet_response(AT_S2M_SET_PWD_RSP, NULL, 0, RSP_OK);
+		}else{
+			printf("check_pass_pharase fail\r\n");
+			wallet_response(AT_S2M_SET_PWD_RSP, NULL, 0, RSP_ERROR_PD);
+		}
+	}else if(state == RSP_NEW_PD){
+		store_mnemonic(pass_pharase, mnemonic, strlen((char *)mnemonic));
+		wallet_response(AT_S2M_SET_PWD_RSP, NULL, 0, RSP_OK);
+	}
 }
 
 void wallet_recover(char *pass_pharase, UINT8 *mnemonic, UINT32 len){
 	store_mnemonic(pass_pharase, mnemonic, len);
-	wallet_response(AT_S2M_RECOVER_WALLET_RSP, NULL, 0);
+	wallet_response(AT_S2M_RECOVER_WALLET_RSP, NULL, 0, RSP_OK);
 }
 
 void wallet_save(char *pass_pharase, UINT8 *mnemonic, UINT32 len){
 	store_mnemonic(pass_pharase, mnemonic, len);
-	wallet_response(AT_S2M_SAVE_MNEMONIC_RSP, NULL, 0);
+	wallet_response(AT_S2M_SAVE_MNEMONIC_RSP, NULL, 0, RSP_OK);
 }
 
 void wallet_delete(char *pass_pharase){
@@ -159,15 +215,27 @@ void wallet_delete(char *pass_pharase){
 	for(i = 0; i < len; i=i+4){
 		eflash_erase_page(addr+i);	
 	}
-	wallet_response(AT_S2M_DEL_WALLET_RSP, NULL, 0);
+	wallet_response(AT_S2M_DEL_WALLET_RSP, NULL, 0, RSP_OK);
 }
 
-void get_mnemonic_number(UINT32 base_addr, UINT8 *value, UINT16 number){
+int get_mnemonic_number(char *pass_pharase, UINT32 base_addr, UINT8 *value, UINT16 number){
+	int ret;
 	char *ptr;
+	UINT32 data_len;
 	UINT16 index = 0;
 	UINT8 mnemonic[DATA_LEN] = {0};
-	get_mnemonic(EFlashMainBaseAddr, mnemonic);
-	
+	UINT8 data[DATA_LEN] = {0};
+	UINT8 digest[SHA256_DIGEST_SIZE];
+	ret = check_pass_pharase(pass_pharase, digest);
+	if(ret != WALLY_OK){
+		return ret;
+	}
+	get_mnemonic(EFlashMainBaseAddr, data, &data_len);
+	printf("get_mnemonic_number data_len = %d\r\n", data_len);
+	ret = aes_ecb_uncrypt(digest, data, data_len, mnemonic);
+	if(ret == 0){
+		return WALLY_ERROR;
+	}
 	ptr = strtok(mnemonic, " ");
 	do{
 		index++;
@@ -177,6 +245,7 @@ void get_mnemonic_number(UINT32 base_addr, UINT8 *value, UINT16 number){
 		}
 		ptr = strtok(NULL, " ");
 	}while (ptr != NULL && index < number);
+	return WALLY_OK;
 }
 
 void child_path_split(char *in, uint32_t *out, size_t *outlen){
@@ -215,7 +284,11 @@ int derived(char *pass_pharase, char *key_path, UINT16 path_len,
 	BYTE bSeed[BIP39_SEED_LEN_512] = {0};
 	UINT8 mnemonic[DATA_LEN] = {0};
 	printf("derived start !!!\r\n");
-	get_mnemonic_number(EFlashMainBaseAddr, mnemonic, mne_number);
+	ret = get_mnemonic_number(pass_pharase, EFlashMainBaseAddr, mnemonic, mne_number);
+	if(ret != WALLY_OK){
+		printf("pass_pharase error!!\r\n");
+		return ret;
+	}
 	printf("mnemonic = %s, mne_number = %d\r\n", mnemonic, mne_number);
 	bip39_mnemonic_to_seed(mnemonic, NULL, bSeed, sizeof(bSeed), &seed_len);
 	print_hexstr_key("seed", bSeed, sizeof(bSeed));
@@ -226,29 +299,33 @@ int derived(char *pass_pharase, char *key_path, UINT16 path_len,
 	printf("bip32_key_from_seed -- ret = %d\r\n", ret);
 	if(ret == WALLY_OK){
 		//debug log
-		printf("================================master=====================================\r\n");
-		print_hexstr_key("prvkey", hdkey.priv_key, sizeof(hdkey.priv_key));
-		print_hexstr_key("pubkey", hdkey.pub_key, sizeof(hdkey.pub_key));
-		print_hexstr_key("chcode", hdkey.chain_code, sizeof(hdkey.chain_code));
-		print_hexstr_key("has160", hdkey.hash160, sizeof(hdkey.hash160));
-		printf("================================serialize=====================================\r\n");
-		bip32_key_serialize(&hdkey, BIP32_FLAG_KEY_PRIVATE, serial, serial_len);
-		print_hexstr_key("prvkey", serial, serial_len);
-		bip32_key_serialize(&hdkey, BIP32_FLAG_KEY_PUBLIC, serial, serial_len);
-		print_hexstr_key("pubkey", serial, serial_len);
+		#if USE_DEBUG
+			printf("================================master=====================================\r\n");
+			print_hexstr_key("prvkey", hdkey.priv_key, sizeof(hdkey.priv_key));
+			print_hexstr_key("pubkey", hdkey.pub_key, sizeof(hdkey.pub_key));
+			print_hexstr_key("chcode", hdkey.chain_code, sizeof(hdkey.chain_code));
+			print_hexstr_key("has160", hdkey.hash160, sizeof(hdkey.hash160));
+			printf("================================serialize=====================================\r\n");
+			bip32_key_serialize(&hdkey, BIP32_FLAG_KEY_PRIVATE, serial, serial_len);
+			print_hexstr_key("prvkey", serial, serial_len);
+			bip32_key_serialize(&hdkey, BIP32_FLAG_KEY_PUBLIC, serial, serial_len);
+			print_hexstr_key("pubkey", serial, serial_len);
+		#endif
 		if(child_path_len != 0){
 			ret = bip32_key_from_parent_path(&hdkey, child_path, child_path_len, BIP32_FLAG_KEY_PRIVATE, key_out);
 			printf("bip32_key_from_parent_path -- ret = %d\r\n", ret);
 			if(ret == WALLY_OK){
 				//debug log
-				printf("================================child======================================\r\n");
-				print_hexstr_key("prvkey", key_out->priv_key, sizeof(key_out->priv_key));
-				print_hexstr_key("pubkey", key_out->pub_key, sizeof(key_out->priv_key));
-				print_hexstr_key("chcode", key_out->chain_code, sizeof(key_out->priv_key));
-				print_hexstr_key("has160", key_out->hash160, sizeof(key_out->priv_key));
-				printf("================================serialize=====================================\r\n");
-				bip32_key_serialize(key_out, BIP32_FLAG_KEY_PRIVATE, serial, serial_len);
-				print_hexstr_key("prvkey", serial, serial_len);
+				#if USE_DEBUG
+					printf("================================child======================================\r\n");
+					print_hexstr_key("prvkey", key_out->priv_key, sizeof(key_out->priv_key));
+					print_hexstr_key("pubkey", key_out->pub_key, sizeof(key_out->priv_key));
+					print_hexstr_key("chcode", key_out->chain_code, sizeof(key_out->priv_key));
+					print_hexstr_key("has160", key_out->hash160, sizeof(key_out->priv_key));
+					printf("================================serialize=====================================\r\n");
+					bip32_key_serialize(key_out, BIP32_FLAG_KEY_PRIVATE, serial, serial_len);
+					print_hexstr_key("prvkey", serial, serial_len);
+				#endif
 				bip32_key_serialize(key_out, BIP32_FLAG_KEY_PUBLIC, serial, serial_len);
 				print_hexstr_key("pubkey", serial, serial_len);
 			}
@@ -287,8 +364,10 @@ int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len,
 			
 			memcpy(buff+i, serial, BIP32_SERIALIZED_LEN);
 			memcpy(buff+i+BIP32_SERIALIZED_LEN, sign_out, EC_SIGNATURE_LEN);
-			wallet_response(AT_S2M_SIGN_TRANX_RSP, buff, sizeof(buff));
+			wallet_response(AT_S2M_SIGN_TRANX_RSP, buff, sizeof(buff), RSP_OK);
 		}
+	}else {
+		wallet_response(AT_S2M_SIGN_TRANX_RSP, NULL, 0, RSP_ERROR_PD);
 	}
 	return ret;
 }
@@ -336,80 +415,82 @@ void wallet_pubkey(char *pass_pharase, char *key_path, UINT16 path_len, UINT16 m
 	if(ret == WALLY_OK){
 		i += endian_input(buff, i, BIP32_SERIALIZED_LEN);
 		memcpy(buff+i, serial, BIP32_SERIALIZED_LEN);
-		wallet_response(AT_S2M_GET_PUBKEY_RSP, buff, sizeof(buff));
+		wallet_response(AT_S2M_GET_PUBKEY_RSP, buff, sizeof(buff), RSP_OK);
+	}else{
+		wallet_response(AT_S2M_GET_PUBKEY_RSP, NULL, 0, RSP_ERROR_PD);
 	}
 }
 
 void boot_start(){
 	return_to_boot();
-	wallet_response(AT_M2S_RETURN_BOOT_RSP, NULL, 0);
+	wallet_response(AT_M2S_RETURN_BOOT_RSP, NULL, 0, RSP_OK);
 }
-void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len){
-	UINT8 result = 1;
+
+void wallet_response(UINT8 cmd, UINT8 *data, UINT16 len, UINT8 resp){
 	memset(&tx_message, 0, sizeof(message_t));
 	switch(cmd){
 		case AT_S2M_GEN_WALLET_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
+			tx_message.response.state = resp;
 			memcpy(tx_message.para, data, len);
-			result = 0;
 			break;
 		case AT_S2M_SET_PWD_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			break;
 		case AT_S2M_SAVE_MNEMONIC_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			break;
 		case AT_S2M_RECOVER_WALLET_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			break;
 		case AT_S2M_GET_PUBKEY_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			memcpy(tx_message.para, data, len);
 			break;
 		case AT_S2M_SIGN_TRANX_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			memcpy(tx_message.para, data, len);
 			break;
 		case AT_S2M_DEL_WALLET_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			break;
 		case AT_M2S_RETURN_BOOT_RSP:
 			tx_message.header.id = cmd;
 			tx_message.header.is_ready = IS_READY;
 			tx_message.header.len = len;
-			result = 0;
+			tx_message.response.state = resp;
 			break;
 		default:
 			tx_message.header.id = AT_MAX;
 			tx_message.header.is_ready = IS_BUSY;
 			tx_message.header.len = 0;
-			result = 0;
+			tx_message.response.state = RSP_UNKNOWN;
 			break;
 	}
 }
 void wallet_interface(message_t message){
 
-	UINT8 cmd, i;
+	UINT8 cmd, i, state;
 	UINT16 password_len, mne_number, mne_len, deriveAlgoId, signAlgoId, path_len, transhash_len;
 	char pass_pharase[PRIV_KEY_BIT] = {0};
 	char mnemonic[DATA_LEN] = {0};
@@ -430,11 +511,11 @@ void wallet_interface(message_t message){
 		case AT_M2S_SET_PWD:
 			i = 0;
 			i += endian_output(message.para, i, &password_len);
-
+			state = message.para[i];
 			memcpy(pass_pharase,  message.para, password_len);
 			pass_pharase[password_len] = '\0';
 			printf("pass_pharase = %s\r\n", pass_pharase);
-			wallet_password(pass_pharase);
+			wallet_password(pass_pharase, state);
 			break;
 		/**
 		* 保存助记词
@@ -658,18 +739,14 @@ void init_boot(void){
 		if(rx_flag == 1){
 			printfS("rx_flag = %d, uart_rx_buf = %s\r\n", rx_flag, uart_rx_buf);
 			if(strstr((char *)(uart_rx_buf), "entropy")){
-				int data = 0x12345678;
-				char *c = (char *)&data;
-				if((c[0] == 0x78) && (c[1] == 0x56) && (c[2] == 0x34) && (c[3] == 0x12)){
-					printf("little endian\r\n");
-				}else{
-					printf("big endian\r\n");
-				}
 				wallet_entropy();
+			}else if(strstr((char *)(uart_rx_buf), "check_pd")){
+				wallet_password("12345678", RSP_CHECK_PD);
+			}else if(strstr((char *)(uart_rx_buf), "new_pd")){
+				wallet_password("87654321", RSP_NEW_PD);
 			}else if(strstr((char *)(uart_rx_buf), "store")){
 				wallet_save("12345678", (UINT8 *)MNEMONIC, strlen(MNEMONIC));
 			}else if(strstr((char *)(uart_rx_buf), "derived")){
-				wallet_save("12345678", (UINT8 *)MNEMONIC, strlen(MNEMONIC));
 				wallet_pubkey("12345678", "m/44'/0'/0'/0", strlen("m/44'/0'/0'/0"), 24);
 			}else if(strstr((char *)(uart_rx_buf), "keysign")){
 				sha256("1234567890", strlen("1234567890"), message);
