@@ -713,7 +713,7 @@ UINT8 spi_read(void){
 UINT8 spi_write(message_t message){
 	UINT8 ret = 0;
 	UINT8 i = 0;
-	UINT16 len = message.header.len + HEADER_LEN;
+	UINT16 len = message.header.len + HEADER_LEN + 1;
 	memset(spi_data_buf, 0, BUFF_LEN);
 	memcpy(spi_data_buf, &message, len);
 	//endian_input(spi_data_buf, PARA_LEN_START, message.header.len);
