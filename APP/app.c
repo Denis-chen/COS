@@ -354,6 +354,7 @@ int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len,
 	if(ret == WALLY_OK){
 		printf("keysign start !!!\r\n");
 		ret = wally_ec_sig_from_bytes(key_out.priv_key+1, sizeof(key_out.priv_key)-1, message, len, EC_FLAG_ECDSA, sign_out, sizeof(sign_out));
+		printf("keysign ret = %d\r\n", ret);
 		if(ret == WALLY_OK){
 			//debug log
 			printf("================================keysign=====================================\r\n");
@@ -365,6 +366,8 @@ int wallet_sign(char *pass_pharase, char *key_path, UINT16 path_len,
 			memcpy(buff+i, serial, BIP32_SERIALIZED_LEN);
 			memcpy(buff+i+BIP32_SERIALIZED_LEN, sign_out, EC_SIGNATURE_LEN);
 			wallet_response(AT_S2M_SIGN_TRANX_RSP, buff, sizeof(buff), RSP_OK);
+		}else{
+			wallet_response(AT_S2M_SIGN_TRANX_RSP, NULL, 0, RSP_ERROR_SIGN);
 		}
 	}else {
 		wallet_response(AT_S2M_SIGN_TRANX_RSP, NULL, 0, RSP_ERROR_PD);
@@ -496,6 +499,8 @@ void wallet_interface(message_t message){
 	char mnemonic[DATA_LEN] = {0};
 	char derive_path[DATA_LEN] = {0};
 	char transhash[DATA_LEN] = {0};
+	unsigned char *hash;
+	size_t hash_len;
 	cmd = message.header.id;
 	switch(cmd){
 		/*创建钱包*/
@@ -628,8 +633,13 @@ void wallet_interface(message_t message){
 			printf("derive_path = %s\r\n", derive_path);
 			memcpy(transhash,  message.para+i+password_len+path_len, transhash_len);
 			transhash[transhash_len] = '\0';
-			printf("transhash = %s\r\n", transhash);
-			wallet_sign(pass_pharase, derive_path, path_len, transhash, transhash_len, mne_number);
+			printf("transhash = %s, transhash_len = &d\r\n", transhash, transhash_len);
+			hash = wally_malloc(transhash_len);
+			wally_hex_to_bytes(transhash, hash, transhash_len, &hash_len);
+			printf("hash_len = &d\r\n", hash_len);
+			wallet_sign(pass_pharase, derive_path, path_len, hash, hash_len, mne_number);
+			wally_clear(hash, transhash_len);
+			wally_free(hash);
 			break;
 		/**
 		*	删除钱包

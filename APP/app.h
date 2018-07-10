@@ -71,6 +71,7 @@ typedef enum
 #define RSP_CHECK_PD       0x01
 #define RSP_NEW_PD		   0x02		
 #define RSP_ERROR_PD 	   0x11
+#define RSP_ERROR_SIGN	   0x12
 #define RSP_UNKNOWN        0xff
 void init_boot(void);
 #endif
